@@ -1,0 +1,138 @@
+/*
+*****************************************
+*          button  : start
+*****************************************
+*/
+//
+// icon-box        : icon-box mixin
+// date            : 2020.07.27
+///
+/// @param {string} $icon-name         : 이름
+/// @param {string} $icon-url          : 경로
+/// @param { } $icon-width             : 가로
+/// @param { } $icon-height            : 높이
+/// @param {string} $icon-bg-size      : 배경 사이즈
+///
+@mixin icon-box(
+    $icon-name,
+    $icon-url :null,
+    $icon-width : auto,
+    $icon-height : auto,
+    $icon-bg-size : cover,
+){
+i.icon_#{$icon-name}{
+    @if $icon-url{
+        background-image   : url(quote(#{$icon-url}));
+    }
+        background-size    : $icon-bg-size;
+        width              : $icon-width;
+        height             : $icon-height;
+    }
+}
+
+/*icon*/
+i[class*=icon_], i[class^=icon_]{
+    display: inline-block;
+    text-align: center;
+    text-indent: -9999px;
+    font-size: 1px;
+    overflow: hidden;
+    width: 20px; height: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+    vertical-align: baseline;
+}
+
+
+
+@include icon-box("close_bk"             , "../img/common/icon_close_bk.png",         rem(22),  rem(22),   contain );
+@include icon-box("link_bk"              , "../img/common/icon_link_bk.png",          rem(14),  rem(14),   contain );
+@include icon-box("menu_bk"              , "../img/common/icon_menu_bk.png",          rem(26),  rem(21),   contain );
+@include icon-box("search_bk"            , "../img/common/icon_search_bk.png",        rem(23),  rem(23),   contain );
+@include icon-box("search"               , "../img/common/icon_search_bk.png",        rem(23),  rem(23),   contain );
+@include icon-box("date_bk"              , "../img/common/icon_day_bk.png",           rem(24),  rem(23),   contain );
+@include icon-box("time_bk"              , "../img/common/icon_time_bk.png",          rem(22),  rem(26),   contain );
+@include icon-box("view_bk"              , "../img/common/icon_view_bk.png",          rem(21),  rem(12),   contain );
+@include icon-box("next_bk"              , "../img/common/icon_next.png",             rem(15),  rem(11),   contain );
+@include icon-box("prev_bk"              , "../img/common/icon_prev.png",             rem(15),  rem(11),   contain );
+@include icon-box("arrow_down_w"         , "../img/common/icon_arrow_down_w.png",     rem(17),  rem(12),   contain );
+@include icon-box("cal"                  , "../img/common/icon_cal.png",              rem(26),  rem(26),   contain );
+@include icon-box("plus_b"               , "../img/common/icon_plus_b.png",           rem(20),  rem(20),   contain );
+@include icon-box("minus_b"              , "../img/common/icon_minus_b.png",          rem(20),  rem(20),   contain );
+@include icon-box("info"                 , "../img/common/icon_info_w.png",           rem(19),  rem(19),   contain );
+@include icon-box("map_marker"           , "../img/common/icon_map_marker.png",       rem(73),  rem(94),   contain );
+@include icon-box("heart_w"              , "../img/common/icon_heart_w.png",          rem(20),  rem(18),   contain );
+@include icon-box("heart_line"           , "../img/common/icon_heart_line.png",       rem(20),  rem(18),   contain );
+@include icon-box("location"             , "../img/common/icon_location.png",         rem(16),  rem(24),   contain );
+@include icon-box("tel"                  , "../img/common/icon_tel.png",             rem(22),  rem(18),   contain );
+@include icon-box("subway"               , "../img/common/icon_subway.png",           rem(17),  rem(25),   contain );
+@include icon-box("bus"                  , "../img/common/icon_bus.png",              rem(21),  rem(20),   contain );
+@include icon-box("home_b"               , "../img/common/icon_home_b.png",           rem(23),  rem(19),   contain );
+@include icon-box("home"                 , "../img/common/icon_home.png",             rem(23),  rem(19),   contain );
+@include icon-box("bubble"               , "../img/common/icon_bubble.png",           rem(23),  rem(17),   contain );
+@include icon-box("worker_blue"          , "../img/common/icon_worker_blue.png",      rem(18),  rem(22),   contain );
+
+@include icon-box("cal2"                 , "../img/common/icon_cal2.png",        rem(22),  rem(20),   contain );
+@include icon-box("money"                , "../img/common/icon_money.png",       rem(22),  rem(20),   contain );
+@include icon-box("time"                 , "../img/common/icon_time.png",        rem(22),  rem(20),   contain );
+@include icon-box("check"                , "../img/common/icon_check.png",       rem(22),  rem(20),   contain );
+@include icon-box("paper"                , "../img/common/icon_paper.png",       rem(22),  rem(22),   contain );
+@include icon-box("man"                  , "../img/common/icon_man.png",         rem(22),  rem(22),   contain );
+@include icon-box("phon"                 , "../img/common/icon_phon.png",        rem(22),  rem(22),   contain );
+@include icon-box("q"                    , "../img/common/icon_q.png",           rem(44),  rem(44),   contain );
+@include icon-box("q2"                   , "../img/common/icon_q2.png",          rem(34),  rem(34),   contain );
+@include icon-box("qw"                   , "../img/common/icon_q_w.png",         rem(44),  rem(44),   contain );
+@include icon-box("a"                    , "../img/common/icon_a.png",           rem(44),  rem(44),   contain );
+@include icon-box("ql_up_b"              , "../img/common/icon_ql_up_b.png",     rem(10),  rem(8),    contain );
+@include icon-box("more"                 , "../img/common/icon_more.png",        rem(28),  rem(28),   contain );
+@include icon-box("share"                 , "../img/common/icon_share.png",      rem(28),  rem(30),   contain );
+@include icon-box("print"                 , "../img/common/icon_print.png",      rem(32),  rem(30),   contain );
+@include icon-box("URL"                   , "../img/common/icon_URL.png",        rem(40),  rem(40),   contain );
+@include icon-box("kakao"                 , "../img/common/icon_kakao.png",      rem(40),  rem(40),   contain );
+@include icon-box("facebook"              , "../img/common/icon_facebook.png",   rem(40),  rem(40),   contain );
+@include icon-box("twitter"               , "../img/common/icon_twitter.png",    rem(40),  rem(40),   contain );
+@include icon-box("success"               , "../img/common/icon_success.png",    rem(18),  rem(15),   contain );
+@include icon-box("faceBook2"             , "../img/common/icon_faceBook2.png",  rem(24),  rem(24),   contain );
+@include icon-box("instar2"               , "../img/common/icon_instar2.png",    rem(24),  rem(24),   contain );
+@include icon-box("book"                  , "../img/common/icon_book.png",       rem(17),  rem(19),   contain );
+@include icon-box("building"              , "../img/common/icon_building.png",   rem(18),  rem(19),   contain );
+@include icon-box("download"              , "../img/common/icon_download.png",   rem(18),  rem(16),   contain );
+
+
+
+@include tab {
+    @include icon-box("cal"              , null,              resRem(40,'md'),  resRem(38,'md'),   contain );
+    @include icon-box("q"                , null,              resRem(50,'md'),  resRem(50,'md'),   contain );
+    @include icon-box("qw"               , null,              resRem(50,'md'),  resRem(50,'md'),   contain );
+    @include icon-box("a"                , null,              resRem(50,'md'),  resRem(50,'md'),   contain );
+    @include icon-box("download"         , null,              resRem(18,'md'),  resRem(16,'md'),   contain );
+}
+
+@include mob {
+}
+
+
+i.icon_info {
+    background-color: #999999;
+    border-radius: 100%;;
+    vertical-align: middle;
+}
+i.icon_a{
+    border-radius: 100%;
+    background-color: #222222;
+}
+i.icon_q {
+    border-radius: 100%;
+    background-color: #f7f7f7;
+}
+i.icon_qw {
+    border-radius: 100%;
+    background-color: #222222;
+}
+
+i.icon_heart_line.on{
+    background-image: url("../img/common/icon_heart_red.png");
+}
+
+

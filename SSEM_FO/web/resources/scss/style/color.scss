@@ -1,0 +1,577 @@
+@import '../common/vendor';        //vendor
+@import '../common/variables';     //
+@import '../common/functions';     //함수
+@import '../common/mixin';         //미디어 쿼리
+@import '../common/mixin_media';   //미디어 쿼리
+@import '../common/color';      //color
+
+
+/*청소년교육*/
+#container{
+	.main_top{
+		[class*=_dot_list], .slick-dots {
+			li{
+				&.act button,
+				&.act a,
+				&.slick-active button,
+				&.slick-active a{
+					background-color: map-get($colors, 1 );
+				}
+			}
+		}
+	}
+	.notice_wrap.main{
+		[class*=_dot_list], .slick-dots {
+			li{
+				&.act button,
+				&.act a,
+				&.slick-active button,
+				&.slick-active a{
+					background-color: map-get($colors, 1 );
+				}
+			}
+		}
+	}
+	.program_box_wrap.main{
+		[class*=_dot_list], .slick-dots {
+			li{
+				&.act button,
+				&.act a,
+				&.slick-active button,
+				&.slick-active a{
+					background-color: map-get($colors, 1 );
+				}
+			}
+		}
+	}
+}
+/*평생교육*/
+#container.st_5{
+
+#header .h_area_top .h_top_right li a{
+	&:focus{
+		background-color: #0f5041 !important;
+	}
+}
+#header .h_area_top .h_top_right li a.on{
+	background: map-get($colors, 5 );
+	&.focus{
+		background: #0f5041 !important;
+	}
+}
+
+
+.banner_box .banner_item.st_1{
+	background-image: url(../img/main/mb_01_03.jpg);
+}
+[class*=_dot_list], .slick-dots {
+	
+	li{
+		&.act button,
+		&.act a,
+		&.slick-active button,
+		&.slick-active a{
+			background-color: map-get($colors, 5 );
+		}
+	}
+}
+.notice_wrap .icon_new{ 
+	background: map-get($colors, 5 );
+}
+
+
+
+.f_info_box .f_link > div:first-child{
+	color: map-get($colors, 5 );
+}
+.top_btn button{
+	background-color: map-get($colors, 5 );
+}
+
+.main_top{
+	[class*=_dot_list], .slick-dots {
+		li{
+			&.act button,
+			&.act a,
+			&.slick-active button,
+			&.slick-active a{
+				background-color: map-get($colors, 5 );
+			}
+		}
+	}
+}
+.notice_wrap.main{
+	[class*=_dot_list], .slick-dots {
+		li{
+			&.act button,
+			&.act a,
+			&.slick-active button,
+			&.slick-active a{
+				background-color: map-get($colors, 5 );
+			}
+		}
+	}
+}
+
+.program_box_wrap.main{
+	[class*=_dot_list], .slick-dots {
+		li{
+			&.act button,
+			&.act a,
+			&.slick-active button,
+			&.slick-active a{
+				background-color: map-get($colors, 5 );
+			}
+		}
+	}
+}
+
+.q_box_wrap{
+	background:#008365; /* Old browsers */
+	background: -moz-linear-gradient(135deg, #008365 0%, #00ae86 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(135deg, #008365 0%, #00ae86 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(135deg, #008365 0%, #00ae86 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#{#008365}, endColorstr=#{#00ae86},GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+.q_box_wrap .q_open {
+	background-image: url(../img/main/q_open2.jpg);
+}
+.q_box_wrap .q_close {
+	background-image: url(../img/main/q_close2.jpg);
+}
+.banner_box2 a {
+    background-image: url(../img/main/mb_bg2.jpg);
+}
+.noDate{
+	P{
+		.fw_600{
+			color: map-get($colors, 5 );
+		}
+	}
+}
+#gnb{
+	.depth_1{
+		> a{
+			&:after{
+				background:map-get($colors, 5);
+			}
+			&.on, &:focus {
+				color: map-get($colors, 5 );
+			}
+		}
+	}
+	.depth_title + ul > li .depth_3 a:hover,
+	.depth_title + ul > li .depth_3 a:focus{
+		color: map-get($colors, 5 );
+	}
+	.depth_title + ul > li > a:hover, 
+	.depth_title + ul > li > a:focus {
+		outline: 0;
+		color: map-get($colors, 5 );
+	}
+}
+}
+
+@include tab {
+
+#container.st_5{
+	.all_menu_gnb > ul .depth_1.on{
+		background-color: map-get($colors, 5 );
+	}
+	.q_box_wrap .q_open {
+		background-image: url(../img/main/q_close_m2.jpg);
+	}
+	.q_box_wrap .q_close {
+		background-image: url(../img/main/q_open_m2.jpg);
+	}
+}
+
+
+}
+
+@include mob {
+
+#container.st_5{
+	.banner_box2 a {
+		background-image: url(../img/main/mb_bg_m2.jpg);
+	}
+}
+
+}
+
+// 꿈마루
+
+#container.sub_st_5 {
+	#header .h_area_top .h_top_right li a:not(.on){
+		background: map-get($colors, 5 );
+	}
+	[class*=_dot_list], .slick-dots {
+	
+		li{
+			&.act button,
+			&.act a,
+			&.slick-active button,
+			&.slick-active a{
+				background-color: map-get($colors, 1 );
+			}
+		}
+	}
+}
+
+.sub_nav_wrap.bg_st_01 {
+	.location_nav {
+		ul {
+			.home {
+				background-color: map-get($colors, 1 );
+			}
+		}
+	}
+}	
+
+
+
+
+
+
+@mixin  sub-contents-st ($st-color, $ind){
+	$color-icon: rgba($st-color, 0.999);
+	.middot:before {
+		background-color: $st-color;
+	}
+	.info_tit strong{
+		color: $st-color;
+	}
+	.tab_box > .tab li.on{
+		background-color: $st-color;
+	}
+	.tab_box2 > .tab li.on{
+		background-color: $st-color;
+	}
+	.data_search i.icon_search{
+		background-image: svgIconSearch($st-color);
+	}
+	.img_list_box .img_list_item .catalogue_box > *{
+		border-color: $st-color;
+		background:  $st-color;
+		color: #ffffff;
+	}
+	.img_list_wrap.st_2 .img_list_box .img_list_item .catalogue_box > *{
+		border: 0;
+		background-color : $st-color;
+		color: #ffffff;
+	}
+	.img_list_box .img_list_item a:hover .catalogue_box > *{
+		color : $st-color;
+		background-color: #ffffff;
+	}
+	.page .page_p a.act {
+		border-color: $st-color;
+		background: $st-color;
+		color: #ffffff;
+	}
+	.page .page_p a:hover{
+		border-color: $st-color;
+	}
+	.table_box_ul{
+		border-top: 2px solid $st-color;
+	}
+	.table_box{
+		border-top: 2px solid $st-color;
+	}
+
+
+	.fm_ch{
+		._icon{
+			&::after {
+				background-image: url("data:image/svg+xml,%3Csvg version='1.1' data-png-path='../images/common/icon_radio.png' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='20px' height='20px' viewBox='0 0 10 10' enable-background='new 0 0 10 10' xml:space='preserve'%3E%3Cpolygon fill='#{$color-icon}' points='1.174,4.625 2.373,3.425 4.547,5.6 7.881,2.266 8.975,3.359 4.6,7.734 '/%3E%3C/svg%3E%0A");
+			}
+		}
+	}
+	.fm_rd {
+		._icon{
+			&::after {
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30' width='30' height='30'%3e%3ccircle cx='15' cy='15' r='15' fill='#{$color-icon}' /%3e%3c/svg%3e");
+			}
+		}
+	}
+	
+	$icons : (
+		1 : '../img/common/icon_cal_bl.png',
+		2 : '../img/common/icon_cal_or.png',
+		3 : '../img/common/icon_cal_pp.png',
+		4 : '../img/common/icon_cal_pk.png',
+		5 : '../img/common/icon_cal_gr.png',
+	);
+
+	@each $i, $icon in $icons {
+		@if( $ind == $i){
+			i.icon_cal {
+				background-image: url( $icon );
+			}
+		}
+		@if( $ind == 5){
+			.fm_cal .fm_date .fm_date_btn{
+				background-color: #ffffff;
+				border-left: 0;
+			}
+		}
+	}
+
+
+	$icons : (
+		1 : '../img/common/icon_tit_deapth_2_st0.png',
+		2 : '../img/common/icon_tit_deapth_2_st2.png',
+		3 : '../img/common/icon_tit_deapth_2_st3.png',
+		4 : '../img/common/icon_tit_deapth_2_st4.png',
+		5 : '../img/common/icon_tit_deapth_2_st5.png',
+	);
+
+	@each $i, $icon in $icons {
+		@if( $ind == $i){
+			.text_con .c_tit_2 {
+				background-image: url( $icon );
+			}
+		}
+	}
+
+	.table_list_ul{
+		border-top: 2px solid $st-color;
+	}
+	.table_list_ul li:not(.t_head):hover {
+		background: rgba($st-color, 0.1);
+	}
+	
+	.category_list li b{
+		border-color: $st-color;
+		color: $st-color;
+	}
+
+	.completion_box h5 b{
+		color: $st-color;
+	}
+	.completion_box .btn{
+		border-color: $st-color;
+	}
+
+	.img_step_box_st_2 .setp_grap_wrap{
+		background:  $st-color;
+	}
+	.img_step_box_st_2 .setp_grap_wrap.outline::before{
+		border-color: $st-color;
+	}
+	.grap_wrap{
+		background:  $st-color;
+	}
+	.cal_table .end{
+		background-color: rgba($st-color, 0.1);
+	}
+	.profile_box .p_tit_box{
+		border-top-color: $st-color;
+	}
+	.profile_box .date{
+		background:  $st-color;
+	}
+	.time_btn_box .btn.on{
+		background-color: $st-color;
+	}
+	.list_box_wrap .list_box .list_item a .catalogue_box > * {
+		border-color: $st-color;
+		background:  $st-color;
+	}
+	.list_box_wrap .list_box .list_item a:hover .catalogue_box > * {
+		background:  #ffffff;
+		color: $st-color;
+	}
+
+	.list_box_wrap_v_2 .list_box .list_item section:hover .text_box .cl_tit,
+	.list_box_wrap_v_2 .list_box .list_item section:hover .text_box .more {
+		border-color: $st-color;
+		background:  $st-color;
+	}
+	.list_box_wrap_v_2 .list_box .list_item section:focus .text_box .cl_tit,
+	.list_box_wrap_v_2 .list_box .list_item section:focus .text_box .more {
+		border-color: $st-color;
+		background:  $st-color;
+	}
+	.program_info_box .top .link_btn{
+		border-color: $st-color;
+	}
+	.program_info_box .catalogue_box > *{
+		border-color: $st-color;
+		background:  $st-color;
+		color:#ffffff;
+	}
+	.table_img_ul > ul > li .text_top.line_top {
+		border-top-color: $st-color;
+	}
+
+	.text_con .c_tit_2.st_1 .num {
+		background:  $st-color;
+	}
+	.sub_notice_wrap .icon_new{
+		background:  $st-color;
+	}
+
+	[class*=_dot_list] li.act button, [class*=_dot_list] li.act a, [class*=_dot_list] li.slick-active button, [class*=_dot_list] li.slick-active a, .slick-dots li.act button, .slick-dots li.act a, .slick-dots li.slick-active button, .slick-dots li.slick-active a{
+		background:  $st-color;
+	}
+	.sub_main_list_wrap:before{
+		@include gradation( mix($st-color, #eeeeee), $st-color, 0deg);
+	}
+
+	.sub_main_list_wrap .snt_item .catalogue_box > * {
+		border-color: $st-color;
+		background:  $st-color;
+	}
+	.sub_main_list_wrap .snt_item a:hover .catalogue_box > * {
+		background:  #ffffff;
+		color:  $st-color;
+	}
+	.img_info_slide.library_img_box .lib_month_box{
+		background : $st-color;
+	}
+	.sub_main_list_box > li a:hover{
+		background-color: $st-color;
+	}
+	.sub_main_list_box > li a:hover .catalog{
+		color: $st-color;
+	}
+	.sub_main_list_img_col_box .item a:focus:before, 
+	.sub_main_list_img_col_box .item a:hover:before,
+	.sub_main_list_img_row_box .item a:focus:before, 
+	.sub_main_list_img_row_box .item a:hover:before {
+		border-color: $st-color;
+	}
+	i.icon_a{
+		background-color : $st-color;
+	}
+	.questions_list .contents {
+		background-color: rgba($st-color, 0.1);
+	}
+	.questions_list ul .ql_itme:first-child {
+		border-top-color : $st-color;
+	}
+	.slide_list ul .sl_itme:first-child {
+		border-top-color : $st-color;
+	}
+	.table_img_ul.st_2 .category_list li b.st_2{
+		background-color : $st-color;
+	}
+	.sub_main_list_wrap.st_3 .snl_item .catalogue_box > *{
+		background-color : $st-color;
+		border-color : $st-color;
+	}
+	.sub_main_list_wrap.st_3 .snl_item a:hover .catalogue_box > *{
+		background-color : #ffffff;
+		color : $st-color;
+	}
+	.view_mark{
+		background-color : $st-color;
+		border-color : $st-color;
+		&.st_line{
+			background-color : #ffffff;
+			color : $st-color;
+		}
+	}
+	.mypage_tab_box{
+		background-color : $st-color;
+	}
+	.line_mark_box{
+		color : $st-color;
+		border-color : $st-color;
+	}
+	.magnet_view_info{
+		background-color: rgba($st-color, 0.1);
+	}
+	.table_box_ul .magnet_view_info .img_box{
+		background: transparent;
+	}
+	.program_info_box.st_2 .catalogue_box > *{
+		color: #222222;
+		background:  #ffffff;
+		border: 1px solid #dddddd;
+	}
+	.program_info_box.st_2 .catalogue_box > *:first-child{
+		color: #ffffff;
+		background:  $st-color;
+		border-color : $st-color;
+	}
+	.jil_img_text_box .col:first-child::before{
+		background:  $st-color;
+	}
+	.img_slide_gallery{
+		.sg_img_wrap .sg_img + div{
+			background-color:  $st-color;
+		}
+		.sg_img_nav .slick-current img{
+			border-color:  $st-color;
+		}
+	}
+	.dot_dashed_list > ul > li > span:before{
+		box-shadow: 0 0 0 1px $st-color;
+		background: $st-color;
+	}
+	.dot_dashed_list > ul:before{
+		border-color:  $st-color;
+	}
+	.slide_list.st_2 ul .sl_itme.on{
+		background: $st-color;
+	}
+	.number_box{
+		background: $st-color;
+	}
+	.smb_title_box{
+		color:  $st-color;
+	}
+}
+
+@mixin  sub-contents-st-md ($st-color,$ind){
+	.tab_box .tab_m.act{
+		background-color : $st-color;
+	}
+	.tab_box > .tab li.on{
+		background-color: #ffffff;
+		&:hover{
+			background-color: #f7f7f7;
+		}
+	}
+	.tab_box2 .tab_m.act{
+		background-color : $st-color;
+	}
+	.tab_box2 > .tab li.on{
+		background-color: #ffffff;
+		&:hover{
+			background-color: #f7f7f7;
+		}
+	}
+	.page .current_m .on {
+		color: $st-color;
+	}
+	.mo_table_list_ul a::before {
+		border-color:  $st-color;
+	}
+	.mypage_tab_box > .tab .tab_item.on, .mypage_tab_box > .tab .tab_item:hover{
+		color: $st-color;
+	}
+	.mypage_tab_box > .tab .tab_item:after{
+		background-color : $st-color;
+	}
+	.music_table_img_box .mti_border_top{
+		border-color:  $st-color;
+	}
+}
+
+
+@each $ind, $color in $colors {
+	.sub_con.st_#{$ind} {
+		@include sub-contents-st ($color, $ind) ;
+	}
+}
+
+@include tab {
+	@each $ind, $color in $colors {
+		.sub_con.st_#{$ind} {
+			@include sub-contents-st-md ($color, $ind) ;
+		}
+	}
+}

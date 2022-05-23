@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!--!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd"-->
+
+<tiles-definitions>
+
+    <!-- 메세지 처리 -->
+    <definition name="blank" template="/WEB-INF/views/layouts/blank/blank_layout.jsp">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/blank/body.jsp"/>
+    </definition>
+    <definition name="common/message" extends="blank">
+        <put-attribute name="body" value="/WEB-INF/views/common/message.jsp"/>
+    </definition>
+
+    <!-- 관리자 내용 -->
+    <definition name="admin_layout" template="/WEB-INF/views/layouts/cont/layout.jsp">
+        <put-attribute name="title" value="관리자서브페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/cont/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/cont/left_menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/cont/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/cont/footer.jsp"/>
+    </definition>
+    <definition name="cont/*/*" extends="admin_layout">
+        <put-attribute name="body" value="/WEB-INF/views/cont/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 관리자 팝업 -->
+    <definition name="admin_poplayout" template="/WEB-INF/views/layouts/popup/popup_layout.jsp">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/popup/header_popup.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/popup/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/popup/footer_popup.jsp"/>
+    </definition>
+    <definition name="popup/*/*" extends="admin_poplayout">
+        <put-attribute name="body" value="/WEB-INF/views/popup/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 관리자 로그인 -->
+    <definition name="notlayout" template="/WEB-INF/views/layouts/login/not_layout.jsp">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/login/body.jsp"/>
+    </definition>
+    <definition name="login/login" extends="notlayout">
+        <put-attribute name="body" value="/WEB-INF/views/login/login.jsp"/>
+    </definition>
+
+    <!-- 관리자 회원가입 -->
+    <definition name="notlayout" template="/WEB-INF/views/layouts/login/not_layout.jsp">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/login/body.jsp"/>
+    </definition>
+    <definition name="admin/join" extends="notlayout">
+        <put-attribute name="body" value="/WEB-INF/views/cont/admin/join.jsp"/>
+    </definition>
+
+</tiles-definitions>

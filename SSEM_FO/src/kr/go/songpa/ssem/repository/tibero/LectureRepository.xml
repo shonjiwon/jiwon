@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.LectureRepository">
+
+    <select id="selectLectureList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.LectureVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM LECTURE A
+        WHERE
+        1=1 AND A.USE_YN = 'Y'
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.FEE_TYPE = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchArrayVal != null">
+            AND
+            <foreach collection="searchArrayVal" item="item" separator="OR" open="(" close=")">
+                A.GROUP_IDX = #{item}
+            </foreach>
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.GUBUN = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            AND A.ICT_YN = #{searchVal5}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND A.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            <choose>
+                <when test="searchVal7 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt; TO_CHAR(A.REG_START_ST, 'YYYY-MM-DD HH24:MI') )
+                </when>
+                <when test="searchVal7 == '2'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY &gt; 0
+                </when>
+                <when test="searchVal7 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY = 0 AND WAIT_CAN_QTY = 0
+                </when>
+                <when test="searchVal7 == '4'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt; TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; START_DT )
+                </when>
+                <when test="searchVal7 == '5'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt;= START_DT AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt;= END_DT )
+                </when>
+                <when test="searchVal7 == '6'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; END_DT )
+                </when>
+                <when test="searchVal7 == '7'.toString()">
+                  AND A.REG_METHOD LIKE '%'||'4'||'%'
+                </when>
+                <when test="searchVal7 == '8'.toString()">
+                  AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY = 0 AND WAIT_CAN_QTY &gt; 0
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.TGT_CODE LIKE '%'||UPPER(#{searchVal8})||'%'
+        </if>
+        <choose>
+            <when test="searchKind2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.REG_START_ST BETWEEN #{searchSDate} AND #{searchEDate} OR A.REG_END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( (A.REG_START_ST BETWEEN #{searchSDate} AND #{searchEDate} OR A.REG_END_DT BETWEEN #{searchSDate} AND #{searchEDate}) OR (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate}) )
+                </if>
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal10 != null and searchVal10 !=''">
+            AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal10})||'%' )
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.GROUP_IDX = #{searchKind4}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectLectureListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE A
+        WHERE
+        1=1 AND A.USE_YN = 'Y'
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.FEE_TYPE = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchArrayVal != null">
+            AND
+            <foreach collection="searchArrayVal" item="item" separator="OR" open="(" close=")">
+                A.GROUP_IDX = #{item}
+            </foreach>
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.GUBUN = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            AND A.ICT_YN = #{searchVal5}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND A.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            <choose>
+                <when test="searchVal7 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt; TO_CHAR(A.REG_START_ST, 'YYYY-MM-DD HH24:MI') )
+                </when>
+                <when test="searchVal7 == '2'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY &gt; 0
+                </when>
+                <when test="searchVal7 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY = 0 AND WAIT_CAN_QTY = 0
+                </when>
+                <when test="searchVal7 == '4'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt; TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; START_DT )
+                </when>
+                <when test="searchVal7 == '5'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt;= START_DT AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt;= END_DT )
+                </when>
+                <when test="searchVal7 == '6'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; END_DT )
+                </when>
+                <when test="searchVal7 == '7'.toString()">
+                    AND A.REG_METHOD LIKE '%'||'4'||'%'
+                </when>
+                <when test="searchVal7 == '8'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &gt;= TO_CHAR(REG_START_ST, 'YYYY-MM-DD HH24:MI') AND TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI') &lt;= TO_CHAR(REG_END_DT, 'YYYY-MM-DD HH24:MI')) AND ONLINE_CAN_QTY = 0 AND WAIT_CAN_QTY &gt; 0
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.TGT_CODE LIKE '%'||UPPER(#{searchVal8})||'%'
+        </if>
+        <choose>
+            <when test="searchKind2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.REG_START_ST BETWEEN #{searchSDate} AND #{searchEDate} OR A.REG_END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( (A.REG_START_ST BETWEEN #{searchSDate} AND #{searchEDate} OR A.REG_END_DT BETWEEN #{searchSDate} AND #{searchEDate}) OR (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate}) )
+                </if>
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal10 != null and searchVal10 !=''">
+            AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal10})||'%' )
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.GROUP_IDX = #{searchKind4}
+        </if>
+    </select>
+
+    <select id="selectGroupDiscountList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.GroupVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, (SELECT COUNT(*) FROM DISCOUNT WHERE A.GROUP_IDX = GROUP_IDX) DISCOUNT_CNT FROM GROUP_INFO A
+        WHERE
+        1=1 AND A.P_IDX != 0
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.P_IDX = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        ORDER BY A.GROUP_IDX DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectGroupDiscountListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM GROUP_INFO A
+        WHERE
+        1=1 AND A.P_IDX != 0
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.P_IDX = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+    </select>
+
+    <select id="selectDiscountList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.DiscountVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME, G.NAME, G.P_IDX FROM DISCOUNT A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectDiscountListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM DISCOUNT A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+    </select>
+
+    <select id="selectGroupInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.GroupVo">
+        SELECT G.* FROM GROUP_INFO G
+        WHERE
+        G.GROUP_IDX = #{value}
+    </select>
+
+    <select id="selectDiscountUseYn" parameterType="kr.go.songpa.ssem.model.DiscountVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE WHERE DISCOUNT_IDX = #{discount_idx}
+    </select>
+
+    <select id="selectGroupRoomList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.GroupVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, (SELECT COUNT(*) FROM STUDY_PLACE WHERE A.GROUP_IDX = GROUP_IDX) ROOM_CNT FROM GROUP_INFO A
+        WHERE
+        1=1 AND A.P_IDX != 0
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.P_IDX = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        ORDER BY A.GROUP_IDX DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectGroupRoomListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM GROUP_INFO A
+        WHERE
+        1=1 AND A.P_IDX != 0
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.P_IDX = #{searchVal2}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+    </select>
+
+    <select id="selectRoomList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.StudyPlaceVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME, G.NAME GRP_NAME, G.P_IDX FROM STUDY_PLACE A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectRoomListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM STUDY_PLACE A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+    </select>
+
+    <select id="selectRoomCntByGroupIdx" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM STUDY_PLACE WHERE GROUP_IDX = #{value}
+    </select>
+
+    <select id="selectRoomUseYn" parameterType="kr.go.songpa.ssem.model.StudyPlaceVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE WHERE STUDY_PLACE_IDX = #{study_place_idx}
+    </select>
+
+    <select id="selectTeacherList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TeacherVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME, G.NAME GRP_NAME, G.P_IDX FROM TEACHER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CODE_IDX = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            AND A.GUBUN = #{searchVal5}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND A.STATUS = #{searchVal6}
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            AND A.GENDER = #{searchVal7}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeacherListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TEACHER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CODE_IDX = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            AND A.GUBUN = #{searchVal5}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND A.STATUS = #{searchVal6}
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            AND A.GENDER = #{searchVal7}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( A.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.END_DT BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectTeacherListEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TeacherVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME, G.NAME GRP_NAME, G.P_IDX FROM TEACHER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.STATUS = 'A'
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CODE_IDX = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            AND A.GENDER = #{searchVal7}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+            </when>
+            <when test="searchKind == '2'.toString()">
+                AND (UPPER(A.PROF_FIELD) like '%'||UPPER(#{searchVal})||'%')
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PROF_FIELD) like '%'||UPPER(#{searchVal})||'%' )
+            </when>
+        </choose>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeacherListTotalEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TEACHER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.STATUS = 'A'
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CODE_IDX = #{searchVal4}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+
+        </if>
+        <if test="searchVal7 != null and searchVal7 !=''">
+            AND A.GENDER = #{searchVal7}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+            </when>
+            <when test="searchKind == '2'.toString()">
+                AND (UPPER(A.PROF_FIELD) like '%'||UPPER(#{searchVal})||'%')
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                AND ( UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PROF_FIELD) like '%'||UPPER(#{searchVal})||'%' )
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectTeacherInfo" parameterType="kr.go.songpa.ssem.model.TeacherVo" resultType="kr.go.songpa.ssem.model.TeacherVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM TEACHER A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.TEACHER_IDX=#{teacher_idx}
+	</select>
+
+    <select id="selectTeacherUseYn" parameterType="kr.go.songpa.ssem.model.TeacherVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE WHERE TEACHER_IDX = #{teacher_idx}
+    </select>
+
+    <select id="selectDiscountListEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.DiscountVo">
+        SELECT A.*, G.P_NAME, G.NAME, G.P_IDX FROM DISCOUNT A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        ORDER BY A.REG_DT DESC
+    </select>
+
+    <select id="selectLectureInfo" parameterType="kr.go.songpa.ssem.model.LectureVo" resultType="kr.go.songpa.ssem.model.LectureVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM LECTURE A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.LECTURE_IDX=#{lecture_idx}
+	</select>
+
+    <select id="selectStudyPlaceByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.StudyPlaceVo">
+		SELECT * FROM STUDY_PLACE WHERE STUDY_PLACE_IDX = #{value}
+	</select>
+
+    <select id="selectDiscountByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.DiscountVo">
+		SELECT * FROM DISCOUNT WHERE DISCOUNT_IDX = #{value}
+	</select>
+
+    <select id="selectTeacherInfoByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.TeacherVo">
+		SELECT * FROM TEACHER WHERE TEACHER_IDX = #{value}
+	</select>
+
+    <select id="selectLoveCount" parameterType="long" resultType="int">
+		SELECT COUNT(*) FROM LOVE WHERE LECTURE_IDX = #{value}
+	</select>
+
+    <select id="checkLoveDupByUserId" parameterType="kr.go.songpa.ssem.model.LoveVo" resultType="int">
+		SELECT COUNT(*) FROM LOVE WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id}
+	</select>
+
+    <select id="selectTeacherScoreTotalCnt" parameterType="kr.go.songpa.ssem.model.TeacherVo" resultType="int">
+		SELECT COUNT(*) FROM TEACHER_SATISFACTION WHERE LECTURE_IDX = #{lecture_idx} AND TEACHER_IDX = #{teacher_idx}
+	</select>
+
+    <select id="selectTeacherScoreTotal" parameterType="kr.go.songpa.ssem.model.TeacherVo" resultType="int">
+		SELECT SUM(SCORE) FROM TEACHER_SATISFACTION WHERE LECTURE_IDX = #{lecture_idx} AND TEACHER_IDX = #{teacher_idx}
+	</select>
+
+    <select id="checkOnlineCanQtyByIdx" parameterType="long" resultType="int">
+		SELECT ONLINE_CAN_QTY FROM LECTURE WHERE LECTURE_IDX = #{value}
+	</select>
+
+    <select id="checkWaitCanQtyByIdx" parameterType="long" resultType="int">
+		SELECT WAIT_CAN_QTY FROM LECTURE WHERE LECTURE_IDX = #{value}
+	</select>
+
+    <select id="selectLectureApyInfoByIdx" parameterType="kr.go.songpa.ssem.model.LectureApyVo" resultType="kr.go.songpa.ssem.model.LectureApyVo">
+		SELECT * FROM LECTURE_APY WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id} AND APY_STATUS != '3'
+	</select>
+
+    <select id="selectLectureApyInfoByIdxEx" parameterType="int" resultType="kr.go.songpa.ssem.model.LectureApyVo">
+		SELECT * FROM LECTURE_APY WHERE LECTURE_APY_IDX = #{value}
+	</select>
+
+    <select id="checkLectureApySame" parameterType="kr.go.songpa.ssem.model.LectureApyVo" resultType="int">
+		SELECT COUNT(*) FROM LECTURE_APY WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id} AND APY_STATUS != '3'
+	</select>
+
+    <select id="selectLectureApyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.LectureApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM LECTURE_APY A, LECTURE L
+        WHERE
+        1=1 AND A.LECTURE_IDX = L.LECTURE_IDX AND L.USE_YN = 'Y'
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND L.GROUP_IDX = #{searchKind4}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND L.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.APY_STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.PAY_STATUS = #{searchKind3}
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (TO_CHAR(L.REG_START_ST, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(L.REG_END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                AND ( (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate}) OR (TO_CHAR(L.REG_START_ST, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(L.REG_END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}) )
+            </when>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(L.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(L.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectLectureApyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE_APY A, LECTURE L
+        WHERE
+        1=1 AND A.LECTURE_IDX = L.LECTURE_IDX AND L.USE_YN = 'Y'
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND L.GROUP_IDX = #{searchKind4}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND L.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.APY_STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.PAY_STATUS = #{searchKind3}
+        </if>
+        <choose>
+            <when test="searchKind == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND (TO_CHAR(L.REG_START_ST, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(L.REG_END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                </if>
+            </when>
+            <when test="searchKind == 'ALL'.toString()">
+                AND ( (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate}) OR (TO_CHAR(L.REG_START_ST, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(L.REG_END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}) )
+            </when>
+        </choose>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(L.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(L.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectLectureHistoryList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.LectureApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM LECTURE_APY A, LECTURE L
+        WHERE
+        1=1 AND A.LECTURE_IDX = L.LECTURE_IDX AND L.USE_YN = 'Y' AND A.APPV_CD = '1' AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; L.START_DT
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND L.GROUP_IDX = #{searchKind4}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND L.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN L.START_DT AND L.END_DT )
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD')  ) &gt; L.END_DT
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CPL_YN = #{searchVal4}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.TEACHER_LOVE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(L.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(L.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeacherLove" parameterType="kr.go.songpa.ssem.model.TeacherSatisfactionVo" resultType="kr.go.songpa.ssem.model.TeacherSatisfactionVo">
+		SELECT * FROM TEACHER_SATISFACTION WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id} AND TEACHER_IDX = #{teacher_idx}
+	</select>
+
+    <select id="selectLectureHistoryListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM LECTURE_APY A, LECTURE L
+        WHERE
+        1=1 AND A.LECTURE_IDX = L.LECTURE_IDX AND L.USE_YN = 'Y' AND A.APPV_CD = '1' AND TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; L.START_DT
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND L.GROUP_IDX = #{searchKind4}
+        </if>
+        <if test="searchVal6 != null and searchVal6 !=''">
+            AND L.PART_CODE_IDX = #{searchVal6}
+        </if>
+        <if test="searchVal5 != null and searchVal5 !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN L.START_DT AND L.END_DT )
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD')  ) &gt; L.END_DT
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal4 != null and searchVal4 !=''">
+            AND A.CPL_YN = #{searchVal4}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.TEACHER_LOVE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND ( UPPER(L.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(L.TEACHER_NM) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectLectureTeachHistoryList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.LectureVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT L.*, (SELECT NAME FROM GROUP_INFO WHERE L.GROUP_IDX = GROUP_IDX) AS GRP_NAME FROM TEACHER A, LECTURE L
+        WHERE
+        1=1 AND A.TEACHER_IDX = L.TEACHER_IDX AND L.USE_YN = 'Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND L.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.USER_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectLectureTeachHistoryListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TEACHER A, LECTURE L
+        WHERE
+        1=1 AND A.TEACHER_IDX = L.TEACHER_IDX AND L.USE_YN = 'Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND L.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (L.START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR L.END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.USER_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectLecureInfoByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.LectureVo">
+        SELECT * FROM LECTURE WHERE LECTURE_IDX = #{value}
+    </select>
+
+    <select id="selectLoveCountBySelf" parameterType="kr.go.songpa.ssem.model.LoveVo" resultType="int">
+        SELECT COUNT(*) FROM LOVE WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id}
+    </select>
+
+    <select id="selectStudentInfoByID" parameterType="String" resultType="kr.go.songpa.ssem.model.StudentVo">
+        SELECT * FROM STUDENT WHERE USER_ID = #{value}
+    </select>
+
+    <select id="selectStudentInfo" parameterType="kr.go.songpa.ssem.model.StudentVo" resultType="kr.go.songpa.ssem.model.StudentVo">
+        SELECT * FROM STUDENT WHERE NAME = #{name} AND MOB_NO = #{mob_no}
+    </select>
+
+    <select id="selectStudentLectCheckByID" parameterType="kr.go.songpa.ssem.model.StudentVo" resultType="int">
+        SELECT COUNT(*) FROM STUDENT_LECT L, STUDENT S WHERE L.STUDENT_IDX = S.STUDENT_IDX AND S.USER_ID = #{user_id}
+    </select>
+
+    <select id="selectStudentLectInfo" parameterType="kr.go.songpa.ssem.model.StudentVo" resultType="kr.go.songpa.ssem.model.StudentLectVo">
+        SELECT * FROM STUDENT_LECT WHERE STUDENT_IDX = #{student_idx} AND LECTURE_APY_IDX = #{lecture_apy_idx}
+    </select>
+
+    <select id="selectStudentLectCheck" parameterType="kr.go.songpa.ssem.model.StudentVo" resultType="int">
+        SELECT COUNT(*) FROM STUDENT_LECT L, STUDENT S WHERE L.STUDENT_IDX = S.STUDENT_IDX AND S.NAME = #{name} AND S.MOB_NO = #{mob_no}
+    </select>
+
+    <insert id="insertDiscountInfo" parameterType="kr.go.songpa.ssem.model.DiscountVo">
+        <selectKey resultType="int" keyProperty="discount_idx" order="BEFORE">
+            SELECT nvl(MAX(DISCOUNT_IDX),0)+1 AS DISCOUNT_IDX  FROM DISCOUNT
+        </selectKey>
+        INSERT INTO DISCOUNT (
+        DISCOUNT_IDX
+        ,GROUP_IDX
+        ,TGT_NAME
+        ,DTL_TXT
+        ,RATE
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{discount_idx}
+        ,#{group_idx}
+        ,#{tgt_name}
+        ,#{dtl_txt}
+        ,#{rate}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertRoomInfo" parameterType="kr.go.songpa.ssem.model.StudyPlaceVo">
+        <selectKey resultType="int" keyProperty="study_place_idx" order="BEFORE">
+            SELECT nvl(MAX(STUDY_PLACE_IDX),0)+1 AS STUDY_PLACE_IDX  FROM STUDY_PLACE
+        </selectKey>
+        INSERT INTO STUDY_PLACE (
+        STUDY_PLACE_IDX
+        ,GROUP_IDX
+        ,ADDR
+        ,ADDR2
+        ,NAME
+        ,CONT
+        ,MAX_QTY
+        ,GD_QTY
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{study_place_idx}
+        ,#{group_idx}
+        ,#{addr}
+        ,#{addr2}
+        ,#{name}
+        ,#{cont}
+        ,#{max_qty}
+        ,#{gd_qty}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertTeacherInfo" parameterType="kr.go.songpa.ssem.model.TeacherVo">
+        <selectKey resultType="int" keyProperty="teacher_idx" order="BEFORE">
+            SELECT nvl(MAX(TEACHER_IDX),0)+1 AS TEACHER_IDX  FROM TEACHER
+        </selectKey>
+        INSERT INTO TEACHER (
+        TEACHER_IDX
+        ,GROUP_IDX
+        ,CODE_IDX
+        ,PIC_ATCH_FILE_ID
+        ,ALT_TXT
+        ,NAME
+        ,GENDER
+        ,MOB_NO
+        ,BIRTH
+        ,EMAIL
+        ,GUBUN
+        ,STATUS
+        ,START_DT
+        ,END_DT
+        ,PROF_FIELD
+        ,CAREER
+        ,CERT
+        ,PAY
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{teacher_idx}
+        ,#{group_idx}
+        ,#{code_idx}
+        ,#{pic_atch_file_id}
+        ,#{alt_txt}
+        ,#{name}
+        ,#{gender}
+        ,#{mob_no}
+        ,#{birth}
+        ,#{email}
+        ,#{gubun}
+        ,#{status}
+        ,#{start_dt}
+        ,#{end_dt}
+        ,#{prof_field}
+        ,#{career}
+        ,#{cert}
+        ,#{pay}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertLectureInfo" parameterType="kr.go.songpa.ssem.model.LectureVo">
+        <selectKey resultType="int" keyProperty="lecture_idx" order="BEFORE">
+            SELECT nvl(MAX(LECTURE_IDX),0)+1 AS LECTURE_IDX  FROM LECTURE
+        </selectKey>
+        INSERT INTO LECTURE (
+        LECTURE_IDX
+        ,GROUP_IDX
+        ,GUBUN
+        ,USE_YN
+        ,NAME
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,ICT_YN
+        ,PART_CODE_IDX
+        ,TGT_DETAIL
+        ,START_DT
+        ,END_DT
+        ,DT_TXT
+        ,DT_TYPE
+        ,DT_WEEK
+        ,START_TIME
+        ,END_TIME
+        ,TIME_TYPE
+        ,REG_START_ST
+        ,REG_END_DT
+        ,REG_TYPE
+        ,REG_METHOD
+        ,REG_METHOD_URL
+        ,STUDENT_QTY
+        ,ONLINE_QTY
+        ,WAIT_QTY
+        ,TEL_QTY
+        ,QTY_OPEN_YN
+        ,AGE_TYPE
+        ,FEE_TYPE
+        ,FEE
+        ,FEE_DETAIL
+        ,PAY_TYPE
+        ,DISCOUNT_YN
+        ,REFUND_TXT
+        ,REFUND_START_DT
+        ,REFUND_END_DT
+        ,DESC_TXT
+        ,CONT
+        ,TEACHER_IDX
+        ,TEACHER_YN
+        ,STUDY_PLACE_IDX
+        ,DISCOUNT_STR
+        ,TGT_CODE
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{lecture_idx}
+        ,#{group_idx}
+        ,#{gubun}
+        ,#{use_yn}
+        ,#{name}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{ict_yn}
+        ,#{part_code_idx}
+        ,#{tgt_detail}
+        ,#{start_dt}
+        ,#{end_dt}
+        ,#{dt_txt}
+        ,#{dt_type}
+        ,#{dt_week}
+        ,#{start_time}
+        ,#{end_time}
+        ,#{time_type}
+        ,TO_DATE(#{reg_start_st}, 'YYYY-MM-DD hh24:mi')
+        ,TO_DATE(#{reg_end_dt}, 'YYYY-MM-DD hh24:mi')
+        ,#{reg_type}
+        ,#{reg_method}
+        ,#{reg_method_url}
+        ,#{student_qty}
+        ,#{online_qty}
+        ,#{wait_qty}
+        ,#{tel_qty}
+        ,#{qty_open_yn}
+        ,#{age_type}
+        ,#{fee_type}
+        ,#{fee}
+        ,#{fee_detail}
+        ,#{pay_type}
+        ,#{discount_yn}
+        ,#{refund_txt}
+        ,#{refund_start_dt}
+        ,#{refund_end_dt}
+        ,#{desc_txt}
+        ,#{cont}
+        ,#{teacher_idx}
+        ,#{teacher_yn}
+        ,#{study_place_idx}
+        ,#{discount_str}
+        ,#{tgt_code}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertLoveInfo" parameterType="kr.go.songpa.ssem.model.LoveVo">
+        <selectKey resultType="int" keyProperty="love_idx" order="BEFORE">
+            SELECT nvl(MAX(LOVE_IDX),0)+1 AS LOVE_IDX  FROM LOVE
+        </selectKey>
+        INSERT INTO LOVE (
+        LOVE_IDX
+        ,LECTURE_IDX
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{love_idx}
+        ,#{lecture_idx}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertLectureApyInfo" parameterType="kr.go.songpa.ssem.model.LectureApyVo">
+        <selectKey resultType="int" keyProperty="lecture_apy_idx" order="BEFORE">
+            SELECT nvl(MAX(LECTURE_APY_IDX),0)+1 AS LECTURE_APY_IDX  FROM LECTURE_APY
+        </selectKey>
+        INSERT INTO LECTURE_APY (
+        LECTURE_APY_IDX
+        ,LECTURE_IDX
+        ,GROUP_IDX
+        ,APY_ID
+        ,APY_NAME
+        ,APY_MOB_NO
+        ,POSTCODE
+        ,APY_ADDR1
+        ,APY_ADDR2
+        ,APY_REF
+        ,APY_REAL_NAME
+        ,APY_REF_MOB_NO
+        ,APY_TYPE
+        ,APY_STATUS
+        ,PAY_STATUS
+        ,APPV_CD
+        ,APY_GENDER
+        ,APY_BIRTH
+        ,APY_METHOD
+        ,TEACHER_LOVE_YN
+        ,CPL_YN
+        ,REG_ID
+        ,REG_DT
+        ,VACCINE_YN
+        ,VACCINE_DT
+        ,STUDENT_TYPE
+        ,STUDENT_GRADE
+        ) VALUES (
+        #{lecture_apy_idx}
+        ,#{lecture_idx}
+        ,#{group_idx}
+        ,#{apy_id}
+        ,#{apy_name}
+        ,#{apy_mob_no}
+        ,#{postcode}
+        ,#{apy_addr1}
+        ,#{apy_addr2}
+        ,#{apy_ref}
+        ,#{apy_real_name}
+        ,#{apy_ref_mob_no}
+        ,#{apy_type}
+        ,#{apy_status}
+        ,#{pay_status}
+        ,#{appv_cd}
+        ,#{apy_gender}
+        ,#{apy_birth}
+        ,'1'
+        ,'N'
+        ,'N'
+        ,#{reg_id}
+        ,SYSDATE
+        ,#{vaccine_yn}
+        ,#{vaccine_dt}
+        ,#{student_type}
+        ,#{student_grade}
+        )
+    </insert>
+
+    <insert id="insertTeacherLoveInfo" parameterType="kr.go.songpa.ssem.model.LectureVo">
+        <selectKey resultType="int" keyProperty="idx" order="BEFORE">
+            SELECT nvl(MAX(IDX),0)+1 AS IDX  FROM TEACHER_SATISFACTION
+        </selectKey>
+        INSERT INTO TEACHER_SATISFACTION (
+        IDX
+        ,LECTURE_IDX
+        ,TEACHER_IDX
+        ,SCORE
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{idx}
+        ,#{lecture_idx}
+        ,#{teacher_idx}
+        ,#{score}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertStudentLectInfo" parameterType="kr.go.songpa.ssem.model.StudentLectVo">
+        <selectKey resultType="int" keyProperty="student_lect_idx" order="BEFORE">
+            SELECT nvl(MAX(STUDENT_LECT_IDX),0)+1 AS STUDENT_LECT_IDX  FROM STUDENT_LECT
+        </selectKey>
+        INSERT INTO STUDENT_LECT (
+        STUDENT_LECT_IDX
+        ,STUDENT_IDX
+        ,LECTURE_APY_IDX
+        ,GROUP_IDX
+        ,P_IDX
+        ,LECTURE_IDX
+        ) VALUES (
+        #{student_lect_idx}
+        ,#{student_idx}
+        ,#{lecture_apy_idx}
+        ,#{group_idx}
+        ,#{p_idx}
+        ,#{lecture_idx}
+        )
+    </insert>
+
+    <insert id="insertStudentInfo" parameterType="kr.go.songpa.ssem.model.StudentVo">
+        <selectKey resultType="int" keyProperty="student_idx" order="BEFORE">
+            SELECT nvl(MAX(STUDENT_IDX),0)+1 AS STUDENT_IDX  FROM STUDENT
+        </selectKey>
+        INSERT INTO STUDENT (
+        STUDENT_IDX
+        ,USER_ID
+        ,NAME
+        ,BIRTH
+        ,GENDER
+        ,MOB_NO
+        ,POSTCODE
+        ,ADDR1
+        ,ADDR2
+        ,REF_YN
+        ,REF_ID
+        ,REF_NAME
+        ,REF_REL
+        ,REF_MOB_NO
+        ,LIKE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{student_idx}
+        ,#{user_id}
+        ,#{name}
+        ,#{birth}
+        ,#{gender}
+        ,#{mob_no}
+        ,#{postcode}
+        ,#{addr1}
+        ,#{addr2}
+        ,#{ref_yn}
+        ,#{ref_id}
+        ,#{ref_name}
+        ,#{ref_rel}
+        ,#{ref_mob_no}
+        ,'N'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateDiscountInfo" parameterType="kr.go.songpa.ssem.model.DiscountVo">
+		UPDATE DISCOUNT SET
+			TGT_NAME = #{tgt_name}
+			, DTL_TXT = #{dtl_txt}
+			, RATE = #{rate}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE DISCOUNT_IDX = #{discount_idx}
+	</update>
+
+    <update id="updateRoomInfo" parameterType="kr.go.songpa.ssem.model.StudyPlaceVo">
+		UPDATE STUDY_PLACE SET
+			ADDR = #{addr}
+			, ADDR2 = #{addr2}
+			, NAME = #{name}
+			, CONT = #{cont}
+			, MAX_QTY = #{max_qty}
+			, GD_QTY = #{gd_qty}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE STUDY_PLACE_IDX = #{study_place_idx}
+	</update>
+
+    <update id="updateTeacherInfo" parameterType="kr.go.songpa.ssem.model.TeacherVo">
+		UPDATE TEACHER SET
+            GROUP_IDX = #{group_idx}
+			, CODE_IDX = #{code_idx}
+            <if test="pic_atch_file_id != null  and pic_atch_file_id !=''">
+                ,PIC_ATCH_FILE_ID = #{pic_atch_file_id}
+            </if>
+            , ALT_TXT = #{alt_txt}
+			, NAME = #{name}
+			, GENDER = #{gender}
+            , MOB_NO = #{mob_no}
+            , BIRTH = #{birth}
+            , EMAIL = #{email}
+            , GUBUN = #{gubun}
+            , STATUS = #{status}
+			, START_DT = #{start_dt}
+            , END_DT = #{end_dt}
+            , PROF_FIELD = #{prof_field}
+            , CAREER = #{career}
+            , CERT = #{cert}
+            , PAY = #{pay}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE TEACHER_IDX = #{teacher_idx}
+	</update>
+
+    <update id="updateOnlineCanQtyMinusByIdx" parameterType="long">
+		UPDATE LECTURE SET
+			ONLINE_CAN_QTY = ONLINE_CAN_QTY - 1
+		WHERE LECTURE_IDX = #{value}
+	</update>
+
+    <update id="updateOnlineCanQtyPlusByIdx" parameterType="long">
+		UPDATE LECTURE SET
+			ONLINE_CAN_QTY = ONLINE_CAN_QTY + 1
+		WHERE LECTURE_IDX = #{value}
+	</update>
+
+    <update id="updateWaitCanQtyMinusByIdx" parameterType="long">
+		UPDATE LECTURE SET
+			WAIT_CAN_QTY = WAIT_CAN_QTY - 1
+		WHERE LECTURE_IDX = #{value}
+	</update>
+
+    <update id="updateLectureApyPayResult" parameterType="kr.go.songpa.ssem.model.LectureApyVo">
+        UPDATE LECTURE_APY SET
+        UP_ID = #{up_id}
+        <if test="pay_sucs_yn != null and pay_sucs_yn !=''">
+            ,PAY_SUCS_YN = #{pay_sucs_yn}
+        </if>
+        <if test="pay_sum != null and pay_sum !=''">
+            ,PAY_SUM = #{pay_sum}
+        </if>
+        , PAY_DT = SYSDATE
+        <if test="pay_code != null and pay_code !=''">
+            ,PAY_CODE = #{pay_code}
+        </if>
+        <if test="trade_code != null and trade_code !=''">
+            ,TRADE_CODE = #{trade_code}
+        </if>
+        , PAY_STATUS = '2'
+        , UP_DT = SYSDATE
+        WHERE LECTURE_APY_IDX = #{lecture_apy_idx}
+    </update>
+
+    <update id="updateLectureApyDiscountInfo" parameterType="kr.go.songpa.ssem.model.LectureApyVo">
+		UPDATE LECTURE_APY SET
+			DISCOUNT_IDX = #{discount_idx}
+			, DISCOUNT_RATE = #{discount_rate}
+		WHERE LECTURE_APY_IDX = #{lecture_apy_idx}
+	</update>
+
+    <update id="updateLectureApyPayCancel" parameterType="kr.go.songpa.ssem.model.LectureApyVo">
+		UPDATE LECTURE_APY SET
+			UP_ID = #{up_id}
+			, APY_STATUS = '3'
+			, PAY_STATUS = #{pay_status}
+			, PAY_CANCEL_DT = SYSDATE
+			, UP_DT = SYSDATE
+		WHERE LECTURE_APY_IDX = #{lecture_apy_idx}
+	</update>
+
+    <update id="updateLectureApyCancelByIdx" parameterType="long">
+		UPDATE LECTURE_APY SET
+			APY_STATUS = '3'
+		    , APPV_CD = '2'
+		    , UP_DT = SYSDATE
+		WHERE LECTURE_APY_IDX = #{value}
+	</update>
+
+    <update id="updateLectureApyRefund" parameterType="kr.go.songpa.ssem.model.LectureApyVo">
+		UPDATE LECTURE_APY SET
+			UP_ID = #{up_id}
+			, PAY_STATUS = '4'
+			, REFUND_APY_YN = 'Y'
+			, REFUND_MOB_NO = #{refund_mob_no}
+			, REFUND_CONT = #{refund_cont}
+			, UP_DT = SYSDATE
+		WHERE LECTURE_APY_IDX = #{lecture_apy_idx}
+	</update>
+
+    <update id="updateLectureApyTeacherLoveByIdx" parameterType="int">
+		UPDATE LECTURE_APY SET
+			TEACHER_LOVE_YN = 'Y'
+		WHERE LECTURE_APY_IDX = #{value}
+	</update>
+
+    <update id="updateLectureAppvCdByIdx" parameterType="long">
+        UPDATE LECTURE_APY SET
+            APPV_CD = '1'
+        WHERE LECTURE_APY_IDX = #{value}
+    </update>
+
+    <delete id="deleteDiscountInfo" parameterType="kr.go.songpa.ssem.model.DiscountVo">
+	    DELETE FROM DISCOUNT WHERE DISCOUNT_IDX = #{discount_idx}
+	</delete>
+
+    <delete id="deleteRoomInfo" parameterType="kr.go.songpa.ssem.model.StudyPlaceVo">
+	    DELETE FROM STUDY_PLACE WHERE STUDY_PLACE_IDX = #{study_place_idx}
+	</delete>
+
+    <delete id="deleteTeacherInfo" parameterType="kr.go.songpa.ssem.model.TeacherVo">
+	    DELETE FROM TEACHER WHERE TEACHER_IDX = #{teacher_idx}
+	</delete>
+
+    <delete id="deleteLoveInfo" parameterType="kr.go.songpa.ssem.model.LoveVo">
+        DELETE FROM LOVE WHERE LECTURE_IDX = #{lecture_idx} AND REG_ID = #{reg_id}
+    </delete>
+
+    <delete id="deleteStudentLectInfoByIdx" parameterType="long">
+        DELETE FROM STUDENT_LECT WHERE STUDENT_LECT_IDX = #{value}
+    </delete>
+
+    <delete id="deleteStudentInfoByIdx" parameterType="long">
+        DELETE FROM STUDENT WHERE STUDENT_IDX = #{value}
+    </delete>
+
+</mapper>

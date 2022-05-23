@@ -1,0 +1,170 @@
+$page-style : (
+    border     : 1px solid,  //필수
+    width      : rem(50),   //필수
+    height     : rem(50),    //필수
+    line-height: rem(48),    //필수
+    round      : 0,     
+    font-size  : rem(20)
+);
+
+$page-style-color  : (
+    bg                : #ffffff,           //필수
+    text              : $color-text-b,       //필수
+    focus-bg          : rgba(0,0,0,0.05),
+    border            : #dddddd,
+);
+
+
+.page_wrap {
+    text-align: center;
+    padding-top: rem(30);
+  }
+  .current_m{display: none;}
+  
+  .page {
+    font-size:  map-get($page-style, "font-size");
+    
+    > .clearfix{
+      display: inline-block;
+    }
+    a {
+      z-index: 0;
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+
+      width: map-get($page-style, "width");
+      height: map-get($page-style, "height");
+      line-height: map-get($page-style, "line-height");
+
+      color: map-get($page-style-color, "text");
+      border: map-get($page-style, "border") map-get($page-style-color, "border");
+      border-radius: map-get($page-style, "round");
+      border-color: rgba(0,0,0,0);
+
+      vertical-align: top;
+
+      &:hover{
+        z-index: 1;
+        i[class*=icon_], i[class^=icon_]{
+          opacity: 0.6;
+        }
+      }
+      
+      &.prev {
+        margin-right: rem(5);
+        color: $color-text-b;
+        margin-left: -1px;
+      }
+      &.next {
+        margin-left: rem(5);
+        margin-right: -1px;
+      }
+      i[class*=icon_], i[class^=icon_]{
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        &.icon_prev2{
+          background-image: url(../img/common/icon_page_01.png);
+        }
+        &.icon_prev{
+          background-image: url(../img/common/icon_page_02.png);
+        }
+        &.icon_next{
+          background-image: url(../img/common/icon_page_03.png);
+        }
+        &.icon_next2{
+          background-image: url(../img/common/icon_page_04.png);
+        }
+      }
+    }
+    .page_p {
+      display: inline-block;
+      @include clearfix;
+      a {
+        float: left;
+        text-indent: 0;
+        display: block;
+        position: relative;
+        background: none;
+        width: map-get($page-style, "width");
+        color: map-get($page-style-color, "text");
+        font-weight: 400;
+        margin: 0 0px;
+        text-decoration: none;
+        z-index: 0;
+        border-color: map-get($page-style-color, "border");
+        border-left: 0;
+        &:first-child{
+          border-left: 1px solid  map-get($page-style-color, "border");
+        }
+        &:hover{
+          z-index: 1;
+          border: 1px solid #222222;
+        }
+        &.act {
+          border-color: #222222;
+          background:  #222222;
+          color: $color-text-w;
+        }
+      }
+    }
+  }
+
+  
+@include tab {
+  .page{
+    .page_p { display: none; }
+    a {
+      width: rem(40,$var-browser-md-context);
+      height: rem(80,$var-browser-md-context);
+      background: transparent !important;
+      overflow: hidden;
+      i[class*=icon_], i[class^=icon_]{
+        width: 150%;
+        margin-left: -25%;
+      }
+    }
+    .current_m { 
+      width: rem(150,$var-browser-md-context);
+      height: rem(80,$var-browser-md-context);
+      display: inline-block;
+      border: 1px solid #bbbbbb;
+      font-size: rem(26);
+      letter-spacing: 0.05em;
+      .on { color: #222222; }
+      > span{
+        margin-top : rem(17,$var-browser-md-context);
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+    a.first { margin-right: 0; border-right: 0; }
+    a.prev { margin-right: 0.38462em; }
+    a.next { margin-left: 0.38462em; margin-right: 0; border-right: 0; }
+  }
+}
+
+
+@each $name, $color in $colors {
+  .page_wrap.st_b_#{$name} {
+    .page .page_p a.act {
+      border-color: $color !important;
+      background: $color !important;
+    }
+    .page .page_p a:hover{
+      border-color: $color !important;
+    }
+  }
+}
+
+@include tab {
+  @each $name, $color in $colors {
+    .page_wrap.st_b_#{$name} {
+      .page .current_m .on {
+        color: $color !important;
+      }
+    }
+  }
+}

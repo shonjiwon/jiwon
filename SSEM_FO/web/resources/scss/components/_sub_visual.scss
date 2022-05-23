@@ -1,0 +1,352 @@
+$sub_visual : (
+    "height"          : rem(390),                 //필수
+    "text-color"      : #ffffff,           //필수
+    "pb"              : rem(70),
+);
+
+/*sub_visual*/
+#contents{
+    .sub_visual{
+        position: relative;
+        background:#dddddd no-repeat center center;
+        background-size: cover;
+        height: map-get($sub_visual, "height");
+        @include vendor(transition, 'background 0.5s');
+        > .wrap{
+            height: map-get($sub_visual, "height");
+        }
+        .sv_text_box{
+            position: absolute;
+            width: 100%;
+            top: 40%;
+            @include vendor(transform,translate(0, -50%));
+            @include vendor(transition, 'all 0.5s');
+            text-align: left;
+            color: map-get($sub_visual, "text-color");
+            opacity: 0;
+            .tit{
+                text-align: left;
+                font-size: rem(42);
+                position: relative;
+                padding-bottom: rem(25);
+                margin-top:0;
+                margin-bottom: rem(25);
+                line-height: 1;
+                &:after{
+                    content: '';
+                    display: block;
+                    position: absolute;
+                    width: 1em;
+                    height: 1px;
+                    background-color: $color-text-b;
+                    left: em(0.15);
+                    bottom: 0;
+                    background-color: #ffffff;
+                }
+                &.line_none:after{
+                    display: none;
+                }
+            }
+            .tit_sub{
+                strong{
+                    display: block;
+                    font-size: rem(26);
+                    font-weight: 500;
+                    margin-bottom: rem(15);
+                }
+                font-size: rem(18);
+                font-weight: 200;
+                line-height: 1.6;
+            }
+            &.on{
+               top:50%;
+               opacity: 1;
+            }
+        }
+
+        .al_text_box {
+            position: absolute;
+            width: 100%;
+            top: 40%;
+            left: 0;
+            text-align: left;
+            color: #ffffff;
+            opacity: 0;
+            @include vendor(transform, translate(0, -50%));
+            @include vendor(transition, 'all 0.5s');
+            &.on {
+                top:50%; opacity: 1;
+            }
+            .tit {
+                font-size: rem(50);
+                margin-top:rem(-70);
+            }
+        }
+    }
+
+    @for $i from 1 to 20  {
+        .sub_visual.st_#{$i} {
+            background-image: url('../img/sub/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.mr_st_#{$i} {
+            background-image: url('../img/sub/maru/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.youth_st_#{$i} {
+            background-image: url('../img/sub/youth/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.macheon_st_#{$i} {
+            background-image: url('../img/sub/macheon/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.jamsil_st_#{$i} {
+            background-image: url('../img/sub/jamsil/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.songpa_st_#{$i} {
+            background-image: url('../img/sub/songpa/sub_visual_#{$i}.jpg');
+        }
+    }
+    @for $i from 1 to 6  {
+        .sub_visual.foreverEdu_st_#{$i} {
+            background-image: url('../img/sub/foreverEdu/sub_visual_#{$i}.jpg');
+        }
+    }
+    .sub_visual.st_mypage{
+        background-image: url('../img/sub/mypage/sub_visual_mypage.jpg');
+    }
+
+    [class *= foreverEdu_st].sub_visual .sv_text_box{
+        .tit{
+            &::after{
+                display: none;
+            }
+        }
+    }
+}
+
+@include tab {
+    #contents {
+        .sub_visual {
+            .al_text_box {
+                .tit {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}
+
+
+
+$sub_visual : (
+    "height"          : resRem(505,'sm'),                 //필수
+);
+
+@include mob {
+    #contents{
+        .sub_visual{
+            height: map-get($sub_visual, "height");
+            .sv_text_box{
+                padding-top: resRem(40,'sm')  ;
+                .tit{
+                    font-size: resRem(46,'sm')  ;
+                    padding-bottom: resRem(20,'sm');
+                    margin-bottom: resRem(20,'sm');
+                }
+                .tit_sub{
+                    max-width: 90%;
+                    strong{
+                        font-size: resRem(30,'sm')  ;
+                        margin-bottom: resRem(20,'sm')  ;
+                    }
+                    font-size: resRem(24,'sm');
+                }
+            }
+            .al_text_box {
+                .tit {
+                    font-size: resRem(60, 'sm'); 
+                }
+            }
+        }
+        .sub_visual.st_1{
+            .sv_text_box{
+                .tit_sub{
+                    max-width: 60%;
+                }
+            }
+        }
+        //@for $i from 1 to 20  {
+        //    .sub_visual.st_#{$i} {
+        //        background-image: url('../img/sub/sub_visual_#{$i}_m.jpg');
+        //    }
+        //}
+        //@for $i from 1 to 6 {
+        //    .sub_visual.mr_st_#{$i} {
+        //        background-image: url('../img/sub/maru/sub_visual_#{$i}_m.jpg');
+        //    }
+        //}
+        //@for $i from 1 to 6  {
+        //    .sub_visual.youth_st_#{$i} {
+        //        background-image: url('../img/sub/youth/sub_visual_#{$i}_m.jpg');
+        //    }
+        //}
+        //@for $i from 1 to 6  {
+        //    .sub_visual.macheon_st_#{$i} {
+        //        background-image: url('../img/sub/macheon/sub_visual_#{$i}_m.jpg');
+        //    }
+        //}
+    } 
+}
+
+$sub_visual : (
+    "height"          : rem(500),            //필수
+    "text-color"      : #ffffff,           //필수
+    "pb"              : rem(70),
+);
+.sub_visual_sd_wrap{
+    position: relative;
+    background:#dddddd;
+    overflow: hidden;
+    height: map-get($sub_visual, "height");
+    @include vendor(transition, 'background 0.5s');
+    .svsw_img_box{
+        .svsw_img_item{
+            position: relative;
+            width: 100%;
+            height: map-get($sub_visual, "height");
+            .wrap{
+                @include ps-center();
+            }
+            a{
+                display: block;
+            }
+            img{
+                @include ps-center();
+                max-width: none;
+                width: auto;
+                height: 100%;
+                display: block;
+            }
+        }
+    }
+    .sv_text_box{
+        position: absolute;
+        z-index: 100;
+        width: 100%;
+        top: 40%;
+        @include vendor(transform,translate(0, -50%));
+        @include vendor(transition, 'all 0.5s');
+        text-align: left;
+        color: map-get($sub_visual, "text-color");
+        opacity: 0;
+        color: #ffffff;
+        .tit{
+            text-align: left !important;
+            font-size: rem(42);
+            position: relative;
+            padding-bottom: rem(25);
+            margin-bottom: rem(25);
+            margin-top:0 !important;
+            line-height: 1;
+            &:after{
+                content: '';
+                display: block;
+                position: absolute;
+                width: 1em;
+                height: 1px;
+                background-color: $color-text-b;
+                left: em(0.15);
+                bottom: 0;
+                background-color: #ffffff;
+            }
+            &.line_none:after{
+                display: none;
+            }
+        }
+        .tit_sub{
+            strong{
+                display: block;
+                font-size: rem(26);
+                font-weight: 500;
+                margin-bottom: rem(15);
+            }
+            font-size: rem(22);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+        &.on{
+           top:50%;
+           opacity: 1;
+        }
+    }
+
+    ._control{
+		margin-top: rem(20);
+		text-align: center;
+		.slick-next, .slick-prev{
+			position: absolute;
+			top: 50%;
+			margin-top:rem(-27);
+			left: rem(20);
+			width: rem(31);
+			&:hover,&:focus{
+				img{
+					opacity: 1;
+				}
+			}
+		}
+		.slick-next{
+			left:auto;
+			right: rem(20);
+		}
+		img{
+			width: 100%;
+			opacity: 0.4;
+		}
+	}
+}
+
+$sub_visual : (
+    "height"          : resRem(505,'sm'),                 //필수
+);
+
+@include mob {
+    #contents{
+        .sub_visual_sd_wrap{
+            height: map-get($sub_visual, "height");
+            .svsw_img_item{
+                height: map-get($sub_visual, "height");
+            }
+            .sv_text_box{
+                padding: 0 resRem(50,'sm') 0;
+                .tit{
+                    font-size: resRem(46,'sm')  ;
+                    padding-bottom: resRem(20,'sm');
+                    margin-bottom: resRem(20,'sm');
+                }
+                .tit_sub{
+                    max-width: 90%;
+                    strong{
+                        font-size: resRem(30,'sm')  ;
+                        margin-bottom: resRem(20,'sm')  ;
+                    }
+                    font-size: resRem(24,'sm');
+                }
+            }
+            ._control{
+                .slick-next, .slick-prev{
+                    width: resRem(28,'sm');
+                }
+               
+            }
+        }
+    } 
+}

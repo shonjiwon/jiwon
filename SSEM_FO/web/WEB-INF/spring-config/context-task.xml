@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- 스케쥴러파일이 존재하는 패키지 설정 -->
+    <!--context:component-scan base-package="kr.go.songpa.ssem.service"/-->
+    <!-- 해당 태그들은 크론탭을 설정에 필요한 태그들 -->
+    <!--task:scheduler id="jobScheduler" pool-size="10"/-->
+    <!--task:annotation-driven scheduler="jobScheduler"/-->
+</beans>

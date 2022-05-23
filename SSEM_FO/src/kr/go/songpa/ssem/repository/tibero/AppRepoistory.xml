@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.AppRepoistory">
+    <select id="seletTopMenuList" parameterType="kr.go.songpa.ssem.model.MenuVo" resultType="kr.go.songpa.ssem.model.MenuVo">
+		SELECT
+			*
+		FROM
+			MENU_MST
+		WHERE
+			P_MENU_IDX = 0
+			AND
+			USE_YN = #{yn_use}
+			AND
+			LANG = #{lang}
+			AND
+			TYPE = #{type}
+		ORDER BY
+			ORD ASC
+	</select>
+
+    <select id="selectMenu" parameterType="String" resultType="kr.go.songpa.ssem.model.MenuVo">
+		SELECT * FROM MENU_MST WHERE URL=#{value} AND KIND != 'NON' AND USE_YN = 'Y'
+	</select>
+
+    <select id="selectMenuByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.MenuVo">
+		SELECT * FROM MENU_MST WHERE MENU_IDX=#{value}
+	</select>
+
+    <select id="selectSubMenuList" parameterType="int" resultType="kr.go.songpa.ssem.model.MenuVo">
+		SELECT * FROM MENU_MST WHERE P_MENU_IDX=#{value} AND USE_YN = 'Y' ORDER BY ORD ASC
+	</select>
+
+    <select id="selectMenuUrl" parameterType="int" resultType="String">
+		SELECT
+			URL
+		FROM
+			MENU_MST
+		WHERE
+			MENU_IDX = #{value}
+	</select>
+
+	<select id="getMasterGroupList" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE P_IDX = 0 ORDER BY GROUP_IDX ASC
+	</select>
+
+	<select id="getSubGroupList" parameterType="long" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE P_IDX = #{value} ORDER BY GROUP_IDX ASC
+	</select>
+
+	<select id="selectGruopByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE GROUP_IDX = #{value}
+	</select>
+
+	<select id="selectCodeList" parameterType="String" resultType="kr.go.songpa.ssem.model.CodeVo">
+		SELECT * FROM CODE WHERE GUBUN=#{value} ORDER BY ORD ASC
+	</select>
+
+	<select id="selectStatConList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.StatConVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM STAT_CON A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchVal4 != null and searchVal4 !=''">
+			AND A.TYPE = #{searchVal4}
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.LOGIN_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.LOGIN_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectStatConListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM STAT_CON A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchVal4 != null and searchVal4 !=''">
+			AND A.TYPE = #{searchVal4}
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.LOGIN_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="selectStatUpList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.StatUpVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM STAT_UP A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.REG_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectStatUpListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM STAT_UP A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="selectStatPrivateList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.StatPrivateVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM STAT_PRIVATE A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.REG_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectStatPrivateListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM STAT_PRIVATE A, GROUP_INFO G
+		WHERE
+		1=1 AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+			AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="selectGroupList" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE P_IDX=0 ORDER BY GROUP_IDX ASC
+	</select>
+
+	<select id="selectSubGroupList" parameterType="kr.go.songpa.ssem.model.GroupVo" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE P_IDX=#{group_idx} ORDER BY GROUP_IDX ASC
+	</select>
+
+	<select id="selectSubGroupListAll" resultType="kr.go.songpa.ssem.model.GroupVo">
+		SELECT * FROM GROUP_INFO WHERE P_IDX!=0 ORDER BY GROUP_IDX ASC
+	</select>
+
+	<select id="selectCodeByIdx" parameterType="long" resultType="String">
+		SELECT CD_VAL FROM CODE WHERE CODE_IDX=#{code_idx}
+	</select>
+
+	<select id="selectGroupIdx" parameterType="String" resultType="int">
+		SELECT GROUP_IDX FROM GROUP_INFO WHERE NAME=#{value}
+	</select>
+
+	<select id="selectGroupIdxList" parameterType="String" resultType="String">
+		SELECT GROUP_IDX FROM GROUP_INFO WHERE P_NAME=#{value}
+	</select>
+
+	<insert id="insertStatUpInfo" parameterType="kr.go.songpa.ssem.model.StatUpVo">
+		<selectKey resultType="int" keyProperty="stat_up_idx" order="BEFORE">
+			SELECT nvl(MAX(STAT_UP_IDX),0)+1 AS STAT_UP_IDX  FROM STAT_UP
+		</selectKey>
+		INSERT INTO STAT_UP (
+		STAT_UP_IDX
+		,GROUP_IDX
+		,ADMIN_ID
+		,NAME
+		,CONT
+		,REG_ID
+		,REG_DT
+		) VALUES (
+		#{stat_up_idx}
+		,#{group_idx}
+		,#{admin_id}
+		,#{name}
+		,#{cont}
+		,#{reg_id}
+		,SYSDATE
+		)
+	</insert>
+
+	<insert id="insertGroupMainInfo" parameterType="kr.go.songpa.ssem.model.GroupVo">
+		<selectKey resultType="int" keyProperty="group_idx" order="BEFORE">
+			SELECT nvl(MAX(GROUP_IDX),0)+1 AS GROUP_IDX  FROM GROUP_INFO
+		</selectKey>
+		INSERT INTO GROUP_INFO (
+		GROUP_IDX
+		,LVL_CD
+		,P_IDX
+		,NAME
+		,USE_YN
+		,REG_ID
+		,REG_DT
+		) VALUES (
+		#{group_idx}
+		,1
+		,0
+		,#{p_name}
+		,'Y'
+		,#{reg_id}
+		,SYSDATE
+		)
+	</insert>
+
+	<insert id="insertGroupSubInfo" parameterType="kr.go.songpa.ssem.model.GroupVo">
+		<selectKey resultType="int" keyProperty="group_idx" order="BEFORE">
+			SELECT nvl(MAX(GROUP_IDX),0)+1 AS GROUP_IDX  FROM GROUP_INFO
+		</selectKey>
+		INSERT INTO GROUP_INFO (
+		GROUP_IDX
+		,LVL_CD
+		,P_IDX
+		,P_NAME
+		,NAME
+		,USE_YN
+		,ADDR1
+		,ADDR2
+		,TEL_NO
+		,REG_ID
+		,REG_DT
+		) VALUES (
+		#{group_idx}
+		,2
+		,#{p_idx}
+		,#{p_name}
+		,#{name}
+		,'Y'
+		,#{addr1}
+		,#{addr2}
+		,#{tel_no}
+		,#{reg_id}
+		,SYSDATE
+		)
+	</insert>
+
+	<insert id="insertPrivateInfo" parameterType="kr.go.songpa.ssem.model.StatPrivateVo">
+		<selectKey resultType="int" keyProperty="stat_private_idx" order="BEFORE">
+			SELECT nvl(MAX(STAT_PRIVATE_IDX),0)+1 AS STAT_PRIVATE_IDX  FROM STAT_PRIVATE
+		</selectKey>
+		INSERT INTO STAT_PRIVATE (
+		STAT_PRIVATE_IDX
+		,GROUP_IDX
+		,ADMIN_ID
+		,NAME
+		,LEVEL1
+		,LEVEL2
+		,LEVEL3
+		,CONT
+		,REG_DT
+		) VALUES (
+		#{stat_private_idx}
+		,#{group_idx}
+		,#{admin_id}
+		,#{name}
+		,#{level1}
+		,#{level2}
+		,#{level3}
+		,#{reason_txt}
+		,SYSDATE
+		)
+	</insert>
+
+	<update id="updateGroupMainInfo" parameterType="kr.go.songpa.ssem.model.GroupVo">
+		UPDATE GROUP_INFO SET
+			NAME = #{name}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE GROUP_IDX = #{group_idx}
+	</update>
+
+	<update id="updateGroupSubInfo" parameterType="kr.go.songpa.ssem.model.GroupVo">
+		UPDATE GROUP_INFO SET
+			NAME = #{name}
+			, ADDR1 = #{addr1}
+			, ADDR2 = #{addr2}
+			, TEL_NO = #{tel_no}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE GROUP_IDX = #{group_idx}
+	</update>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>common_properties</comment>
+
+    <!-- Common Prop Definition -->
+    <entry key="code.response.success">200</entry>
+    <entry key="code.response.error">400</entry>
+
+    <!-- Naver Map API -->
+    <!-- <entry key="naver.map.client.id">0h3CoByX17VzsIrSmoaX</entry>
+    <entry key="naver.map.client.secret">e8r9Tmn8RL</entry> -->
+
+    <!-- <entry key="naver.cloud.access.key">fKR06hrozfCL3pQVz5a4</entry>
+    <entry key="naver.cloud.secret.key">Ny6d7XDi4mcUbU5a1tSUxyWRTZ9B3Pvo1jdo0TKk</entry>
+    <entry key="naver.cloud.request.url">https://api.ncloud.com/geolocation/</entry> -->
+
+
+    <!-- 구글 Captcha API -->
+    <!-- <entry key="google.recaptcha.scretkey">6Le9TXgUAAAAALAr6lxDkERl9-HGlV_ZK-sia70G</entry>
+    <entry key="google.recaptcha.sitekey">6Le9TXgUAAAAANXz70yaCbZTvtDLWo95j5VfL-LF</entry>
+    <entry key="google.recaptcha.secretparam">secret</entry>
+    <entry key="google.recaptcha.responseparam">response</entry>
+    <entry key="google.recaptcha.grecaptcharesponse">g-recaptcha-response</entry>
+    <entry key="google.recaptcha.siteverifyurl">https://www.google.com/recaptcha/api/siteverify</entry> -->
+    <!--  crypto -->
+    <entry key="crypto.secretKey">a2klaba2klaba2klaba2klaba2klab66</entry>
+    <!-- Test  -->
+    <!-- LOCAL -->
+    <entry key="Globals.fileStorePath">f:\_project_source\SSEM_REAL\upfile\</entry>
+    <entry key="bd.file.path">f:\_project_source\SSEM_REAL\upfile\attach\</entry>
+    <entry key="bd.file.url.path">/ssem/upfile/attach</entry>
+    <entry key="excel.file.path">f:\_project_source\SSEM_REAL\upfile\excel\</entry>
+    <entry key="excel.file.url.path">/ssem/upfile/excel</entry>
+    <entry key="ckeditor.file.path">f:\_project_source\SSEM_REAL\upfile\editor\</entry>
+    <entry key="ckeditor.file.url.path">/ssem/upfile/editor/</entry>
+
+    <!--<entry key="jsp.file.url.path">F:\SMA\eGovFrameDev-3.6.0-64bit\workspace\SMA\src\main\webapp\WEB-INF\view\front\kor\</entry>-->
+
+    <entry key="domain.name">http://127.0.0.1:8080</entry>
+    <entry key="system.mode">dev</entry>
+    <entry key="system.mail">beomjinj@nrf.re.kr</entry>
+
+    <entry key="xpay.config">f:\lgdacom</entry>
+    <entry key="xpay.platform">service</entry>
+    <!--entry key="xpay.platform">service</entry-->
+    <!--entry key="xpay.mid">tlgdacomxpay</entry-->
+    <!--<entry key="system.mode">op</entry>-->
+
+    <entry key="msg.send">no</entry>
+    <entry key="sso.action">no</entry>
+    <!--entry key="msg.send">no</entry-->
+
+</properties>

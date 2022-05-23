@@ -1,0 +1,21 @@
+# robots.txt for https://www.songpa.go.kr/ssem
+
+User-agent: Googlebot-Image
+Crawl-delay: 3600
+Allow: /ssem
+
+User-agent: Mediapartners-Google
+Crawl-delay: 3600
+Allow: /ssem
+
+User-agent: Gooblebot
+Crawl-delay: 3600
+
+User-agent: bingbot
+Crawl-delay: 3600
+
+User-agent: NaverBot
+Crawl-delay: 60
+
+User-agent: Yeti
+Crawl-delay: 60

@@ -1,0 +1,43 @@
+/*ani*/
+.ani{@include vendor(transition, ' all 0.3s');}
+.ani_eo{@include vendor(transition, ' all 0.3s ease-out');}
+
+
+
+@-webkit-keyframes icon-menu-hover {
+    0% {
+      -webkit-transform: translateX(0) scaleX(1);
+              transform: translateX(0) scaleX(1);
+    }
+    49% {
+      -webkit-transform: translateX(17.5px) scaleX(0);
+              transform: translateX(17.5px) scaleX(0);
+    }
+    50% {
+      -webkit-transform: translateX(-17.5px) scaleX(0);
+              transform: translateX(-17.5px) scaleX(0);
+    }
+    100% {
+      -webkit-transform: translateX(0) scaleX(1);
+              transform: translateX(0) scaleX(1);
+    }
+  }
+  
+  @keyframes icon-menu-hover {
+    0% {
+      -webkit-transform: translateX(0) scaleX(1);
+              transform: translateX(0) scaleX(1);
+    }
+    49% {
+      -webkit-transform: translateX(17.5px) scaleX(0);
+              transform: translateX(17.5px) scaleX(0);
+    }
+    50% {
+      -webkit-transform: translateX(-17.5px) scaleX(0);
+              transform: translateX(-17.5px) scaleX(0);
+    }
+    100% {
+      -webkit-transform: translateX(0) scaleX(1);
+              transform: translateX(0) scaleX(1);
+    }
+  }

@@ -1,0 +1,81 @@
+@charset "utf-8";
+
+//
+//****************************************
+//    common    : 1.2v
+//    writer    : 이보람
+//    last date : 2020.09.09
+//****************************************
+//
+
+@import '../common/vendor';
+@import '../common/variables';
+@import '../common/functions';
+@import '../common/mixin';
+@import '../common/mixin_media';
+@import '../common/color';
+
+
+// lg  : font-size - 14px
+// md  : font-size - 13px
+// sm  : font-size - 11px
+// xs  : font-size - 8px
+// xxs : font-size - 7px
+
+:root{font-size:	$var-browser-context + px;}
+@include tab {
+:root{font-size:	$var-browser-md-context + px;}
+}
+@include mob {
+:root{font-size:	$var-browser-sm-context + px;}
+}
+@include mob-mid {
+:root{font-size:	$var-browser-xs-context + px;}
+}
+@include mob-small {
+:root{font-size:	$var-browser-xxs-context + px;}
+}
+
+
+body { 
+    color:$color-text-b;
+	img{
+		width: auto; 
+		max-width: 100%;
+	}
+}
+
+@import '../components/typography';
+@import '../components/area';      
+@import '../components/text';      
+@import '../components/button';    
+@import '../components/animation';    
+@import '../components/icon';    
+@import '../components/form';    
+@import '../components/pages';    
+@import '../components/popup';    
+@import '../components/error';    
+
+
+
+
+@media print { 
+	body { 
+		width:1440px;
+		opacity:1 !important;
+		zoom:0.75;
+	}
+	body * {
+		-webkit-print-color-adjust:exact;
+		print-color-adjust: exact;
+	}
+	#container{
+		padding-top:0 !important;
+	}
+	#header, #footer, .sub_nav_wrap, .sub_visual {
+		display: none !important;
+	}
+	[class*=wrap], [class^=wrap]{
+		width:1440px !important;
+	}
+}

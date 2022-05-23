@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!--!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd"-->
+
+<tiles-definitions>
+    <definition name="errortmp" template="/WEB-INF/views/layouts/error/error_layout.jsp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/error/body.jsp"/>
+    </definition>
+    <definition name="cmmn/dataAccessFailure" extends="errortmp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/error/error500.jsp"/>
+    </definition>
+    <definition name="cmmn/transactionFailure" extends="errortmp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/error/error500.jsp"/>
+    </definition>
+    <definition name="cmmn/bizError" extends="errortmp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/error/error500.jsp"/>
+    </definition>
+    <definition name="cmmn/accessDenied" extends="errortmp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/error/error500.jsp"/>
+    </definition>
+    <definition name="exception" extends="errortmp">
+        <put-attribute name="title" value="error" type="string"/>
+        <put-attribute name="body" value="/WEB-INF/views/error/error500.jsp"/>
+    </definition>
+</tiles-definitions>

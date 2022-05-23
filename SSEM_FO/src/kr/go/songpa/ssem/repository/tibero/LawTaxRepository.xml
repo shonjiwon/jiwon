@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.LawTaxRepository">
+
+    <select id="selectLawTaxCounselApyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.LawtaxCounselVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM LAWTAX_COUNSEL A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GBN = #{searchKind2}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.STATUS = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal2 != null  and searchVal2 !=''">
+          <choose>
+                <when test="searchVal2 == 'Y'.toString()">
+                    AND ( A.APY_ID = #{searchVal3} )
+                </when>
+          </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectLawTaxCounselApyTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM LAWTAX_COUNSEL A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GBN = #{searchKind2}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.STATUS = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal2 != null  and searchVal2 !=''">
+            <choose>
+                <when test="searchVal2 == 'Y'.toString()">
+                    AND ( A.APY_ID = #{searchVal3} )
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectLawTaxCounsel" parameterType="kr.go.songpa.ssem.model.LawtaxCounselVo" resultType="kr.go.songpa.ssem.model.LawtaxCounselVo">
+        SELECT A.* FROM LAWTAX_COUNSEL A WHERE A.LAWTAX_IDX = #{lawtax_idx} AND A.APY_ID = #{apy_id}
+    </select>
+
+    <insert id="insertLawTaxCounsel" parameterType="kr.go.songpa.ssem.model.LawtaxCounselVo">
+        <selectKey resultType="int" keyProperty="lawtax_idx" order="BEFORE">
+            SELECT nvl(MAX(LAWTAX_IDX),0)+1 AS LAWTAX_IDX FROM LAWTAX_COUNSEL
+        </selectKey>
+        INSERT INTO LAWTAX_COUNSEL (
+        LAWTAX_IDX
+        ,GBN
+        ,TITLE
+        ,CONT
+        ,STATUS
+        ,APY_ID
+        ,APY_NM
+        ,APY_MOB_NO
+        ,APY_EMAIL
+        ,APY_ADDR
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{lawtax_idx}
+        ,#{gbn}
+        ,#{title}
+        ,#{cont}
+        ,'A'
+        ,#{apy_id}
+        ,#{apy_nm}
+        ,#{apy_mob_no}
+        ,#{apy_email}
+        ,#{apy_addr}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateLawTaxCounsel" parameterType="kr.go.songpa.ssem.model.LawtaxCounselVo">
+		UPDATE LAWTAX_COUNSEL SET
+        TITLE = #{title}
+        ,CONT = #{cont}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+		WHERE LAWTAX_IDX = #{lawtax_idx}
+	</update>
+
+    <delete id="deleteLawTaxCounsel" parameterType="kr.go.songpa.ssem.model.LawtaxCounselVo">
+        DELETE FROM LAWTAX_COUNSEL WHERE LAWTAX_IDX = #{lawtax_idx}
+    </delete>
+
+</mapper>

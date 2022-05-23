@@ -1,0 +1,64 @@
+@import '../common/vendor';        //vendor 
+@import '../common/variables';     //
+@import '../common/functions';     //함수
+@import '../common/mixin';         //미디어 쿼리
+@import '../common/mixin_media';   //미디어 쿼리
+@import '../common/color';      //color
+
+
+#skipNav a {
+    position: absolute; display: block;
+    font-size: 0px; top: -9999px; left: -9999px;
+    &:focus {
+        top: 0; left: 0;
+        width: 100%; height: 40px;
+        line-height: 40px; background: #333; color: #fff;
+        font-size: 20px; z-index: 9999; text-align: center;
+    }
+}
+
+html,body{
+    height: 100%;
+}
+body{
+    
+}
+body._load{
+    opacity: 0;
+}
+#container{
+    word-break: keep-all;
+    position: relative; 
+    @include margin-auto;
+    letter-spacing: -0.05em; 
+    min-height: 100%;
+    padding-top: rem(160);
+    overflow-x: hidden;
+}
+#contents{
+    background: #ffffff;
+    .tit{
+        text-align: center;
+        font-size: rem(40);
+        line-height: 1.5;
+        margin-top:rem(80);
+        margin-bottom:rem(40);
+    }
+}
+
+@include tab{
+    #container{
+        padding-top: resRem(170, 'md');
+    }
+}
+
+
+@import '../components/header';
+@import '../components/footer';
+
+
+
+
+//sub
+@import '../components/sub_visual';
+@import '../components/sub_nav';

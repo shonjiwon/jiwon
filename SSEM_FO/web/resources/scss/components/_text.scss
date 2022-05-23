@@ -1,0 +1,312 @@
+/*
+*****************************************
+*             text  : start
+*****************************************
+
+fs_[num]     : font 사이즈
+fs_md_[num]  : tab 이하 사이즈 
+
+*/
+
+/*font-size*/
+@for $i from 0 to 47  {
+  .fs_#{8+$i*2} {
+    font-size: rem(8 + (2 * $i));
+  }
+}
+
+@include pc-small {  
+  /*font-size*/
+  @for $i from 0 to 47  {
+    .fs_lg_#{8+$i*2} {
+      font-size: rem(8 + (2 * $i), $var-browser-lg-context);
+    }
+  }
+}
+
+@include tab {  
+  /*font-size*/
+  @for $i from 0 to 47  {
+    .fs_md_#{8+$i*2} {
+      font-size: rem(8 + (2 * $i), $var-browser-md-context);
+    }
+  }
+}
+
+@include mob {  
+  /*font-size*/
+  @for $i from 0 to 47  {
+    .fs_sm_#{8+$i*2} {
+      font-size: rem(8 + (2 * $i), $var-browser-sm-context);
+    }
+  }
+}
+
+@include mob-mid {  
+  /*font-size*/
+  @for $i from 0 to 47  {
+    .fs_xs_#{8+$i*2} {
+      font-size: rem(8 + (2 * $i), $var-browser-xs-context);
+    }
+  }
+}
+  
+  /*font-Weight*/
+  .fw_100{font-weight: 200}
+  .fw_200{font-weight: 300}
+  .fw_300{font-weight: 300}
+  .fw_400{font-weight: 400}
+  .fw_500{font-weight: 500}
+  .fw_600{font-weight: 600}
+  .fw_700{font-weight: 700}
+  .fw_800{font-weight: 800}
+  .fw_900{font-weight: 900}
+
+@include tab {  
+  /*font-Weight*/
+  .fw_md_100{font-weight: 200}
+  .fw_md_200{font-weight: 300}
+  .fw_md_300{font-weight: 300}
+  .fw_md_400{font-weight: 400}
+  .fw_md_500{font-weight: 500}
+  .fw_md_600{font-weight: 600}
+  .fw_md_700{font-weight: 700}
+  .fw_md_800{font-weight: 800}
+  .fw_md_900{font-weight: 900}
+}
+  /*line-hight*/
+@for $i from 0 to 11  {
+  .lh_#{10+$i} {
+    line-height: 1 + (0.1 * $i);
+  }
+}
+@include tab {  
+  /*line-hight*/
+  @for $i from 0 to 11  {
+    .lh_md_#{10+$i} {
+      line-height: 1 + (0.1 * $i);
+    }
+  }
+}
+  
+  .maker {
+    color: #fff;
+    display: inline-block;
+    font-size: 0.85em;
+    line-height: 1.3;
+    background: $color-text-b;
+    color: #fff;
+    padding: 0 0.5em;
+    border-radius: 5em;
+    overflow: hidden;
+  
+    @each $name, $color in $colors {
+      &.color_#{$name}{background:$color;}
+    }
+  }
+  
+  .t_center{text-align: center;}
+  .t_justify{text-align: justify;}
+  .t_left{text-align: left;}
+  .t_right{text-align: right;}
+
+  .va_m{vertical-align: middle;}
+  .va_t{vertical-align: top;}
+  .va_b{vertical-align: bottom;}
+  .va_base{vertical-align: baseline;}
+  
+  @include tab { 
+    .t_md_justify{text-align: justify;}
+    .t_md_center{text-align: center;}
+    .t_md_left{text-align: left;}
+    .t_md_right{text-align: right;}
+
+    .va_md_m{vertical-align: middle;}
+    .va_md_t{vertical-align: top;}
+    .va_md_b{vertical-align: bottom;}
+    .va_md_base{vertical-align: baseline;}
+  }
+  
+  
+  @each $name, $color in $colors {
+    &.tc_#{$name}{color:$color;}
+  }
+  
+  .tc_sub{color:$color-text-sub;}
+  .tc_sub2{color:$color-text-sb;}
+  .tc_w{color:$color-text-w }
+  .tc_b{color:$color-text-b }
+  .tc_point{color: $color-text-point; }
+  
+  .ls-75{letter-spacing: -0.075em;}
+  .ls-55{letter-spacing: -0.055em;}
+  .ls-50{letter-spacing: -0.05em;}
+  .ls-35{letter-spacing: -0.035em;}
+
+  .ls_75 * {letter-spacing: -0.090em;} 
+  .ls_75 * {letter-spacing: -0.075em;} 
+  .ls_55 * {letter-spacing: -0.055em;} 
+  .ls_50 * {letter-spacing: -0.05em;} 
+  .ls_35 * {letter-spacing: -0.035em;} 
+  .ls_0 * {letter-spacing: 0;} 
+
+  .ls_90{letter-spacing: -0.090em;}
+  .ls_75{letter-spacing: -0.075em;}
+  .ls_55{letter-spacing: -0.055em;}
+  .ls_50{letter-spacing: -0.05em;}
+  .ls_35{letter-spacing: -0.035em;}
+  .ls_0{letter-spacing: 0;}
+  
+  
+  /*opacity*/
+  @for $i from 0 to 11  {
+    .op_#{$i*10}{opacity: 0.1 * $i}
+  }
+  
+  
+  /*display*/
+  .text_hide {
+    position: absolute;
+    z-index: -1;
+    line-height: 1 !important;
+    font-size: 1px !important;
+    width: 1px !important;
+    height: 1px !important;
+    color: transparent !important;
+    background: transparent !important;
+    font-size: 1px;
+    text-indent: -99999px;
+    opacity: 0.05 !important;
+    &:before, &:after {
+      display: none !important;
+    }
+  }
+  button.text_hide{
+    &:focus{
+        width: auto !important;
+        height: auto !important;
+        z-index: 0;
+        font-size: 0.75em !important;
+        text-indent: 0 !important;
+        color: #222222 !important;
+        background:#ffffff !important;
+        overflow: visible !important;
+        opacity: 1 !important;
+    }
+}
+  
+  /*text*/
+  .ellipsis_one {display: block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width: 100%;; }
+  .wb-ka, .wb_ka{word-break: keep-all;}
+
+
+
+  
+/*list*/
+.list_dec{
+  > li{
+    line-height: 1.2;
+    margin-left: 1.35em;
+    margin-bottom: 0.25em;
+    list-style: decimal;
+  }
+}
+
+.list_dot{
+  > li{
+    line-height: 1.2;
+    position: relative;
+    padding-left: rem(15);
+    text-indent: rem(-12);
+    margin-bottom: 0.25em;
+    &:before{
+      content: '';
+      background: $color-text_b;
+      display: inline-block;
+      width: rem(3);
+      height: rem(3);
+      margin-top: -rem(3);
+      margin-left: rem(3);
+      margin-right: rem(5);
+      border-radius: rem(50);
+      overflow: hidden;
+      vertical-align: middle;
+    }
+  }
+}
+
+
+ 
+/* necessary plugin styles */
+.ellip {
+display: block;
+height: 100%;
+}
+
+.ellip-line {
+display: inline-block;
+text-overflow: ellipsis;
+white-space: nowrap;
+word-wrap: normal;
+max-width: 100%;
+vertical-align: top;
+}
+
+.ellip,
+.ellip-line {
+position: relative;
+overflow: hidden;
+}
+.ellip_1{
+    max-height: 1.5em;
+    line-height: 1.5;
+    overflow: hidden;
+    max-width:100%;
+}
+.ellip_2{
+    max-height: 3em;
+    line-height: 1.5;
+    overflow: hidden;
+    max-width:100%;
+}
+.ellip_3{
+    max-height: 4.5em;
+    line-height: 1.5;
+    overflow: hidden;
+    max-width:100%;
+}
+
+
+
+.link_down{
+  display: inline-block;
+}
+
+.link_blank{
+  &:hover, &:focus{
+    text-decoration: underline;
+    color:map-get($colors, 1 )
+  }
+}
+.link_blank2{
+  color:map-get($colors, 1 );
+  &:hover, &:focus{
+    text-decoration: underline;
+  }
+}
+
+br.pc{
+  display: block;
+}
+br.mo{
+  display: none;
+}
+@include tab{
+  br.pc{
+    display: none;
+  }
+  br.mo{
+    display: block;
+  }
+}
+

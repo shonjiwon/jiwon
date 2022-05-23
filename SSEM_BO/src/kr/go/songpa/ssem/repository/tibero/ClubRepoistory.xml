@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.ClubRepoistory">
+
+    <select id="selectClubList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.ClubVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, (SELECT CD_VAL FROM CODE WHERE CODE_IDX = A.CODE_IDX) AS CODE_NM FROM CLUB A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.CODE_IDX = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            <if test="searchKind4 != null and searchKind4 !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchKind4 == 'ALL'.toString()">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+            </choose>
+            </if>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '3'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectClubListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM CLUB A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.CODE_IDX = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            <if test="searchKind4 != null and searchKind4 !=''">
+                <choose>
+                    <when test="searchKind4 == '1'.toString()">
+                        AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </when>
+                    <when test="searchKind4 == '2'.toString()">
+                        AND TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </when>
+                    <when test="searchKind4 == 'ALL'.toString()">
+                        AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </when>
+                </choose>
+            </if>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '3'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectClubInfo" parameterType="kr.go.songpa.ssem.model.ClubVo" resultType="kr.go.songpa.ssem.model.ClubVo">
+		SELECT A.*, (SELECT CD_VAL FROM CODE WHERE CODE_IDX = A.CODE_IDX) AS CODE_NM FROM CLUB A WHERE A.CLUB_IDX=#{club_idx}
+	</select>
+
+    <select id="selectClubNewsList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.ClubNewsVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM CLUB_NEWS A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.USE_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectClubNewsListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM CLUB_NEWS A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectClubNewsInfo" parameterType="kr.go.songpa.ssem.model.ClubNewsVo" resultType="kr.go.songpa.ssem.model.ClubNewsVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM CLUB_NEWS A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.CLUB_NEWS_IDX=#{club_news_idx}
+	</select>
+
+    <select id="selectClubStatusList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.ClubStatusVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME, (SELECT CD_VAL FROM CODE WHERE CODE_IDX = A.CODE_IDX) AS CODE_NM FROM CLUB_STATUS A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.CODE_IDX = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectClubStatusListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM CLUB_STATUS A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.CODE_IDX = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectClubStatusInfo" parameterType="kr.go.songpa.ssem.model.ClubStatusVo" resultType="kr.go.songpa.ssem.model.ClubStatusVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM CLUB_STATUS A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.CLUB_STATUS_IDX=#{club_status_idx}
+	</select>
+
+    <insert id="insertClubNewsInfo" parameterType="kr.go.songpa.ssem.model.ClubNewsVo">
+        <selectKey resultType="int" keyProperty="club_news_idx" order="BEFORE">
+            SELECT nvl(MAX(CLUB_NEWS_IDX),0)+1 AS CLUB_NEWS_IDX  FROM CLUB_NEWS
+        </selectKey>
+        INSERT INTO CLUB_NEWS (
+        CLUB_NEWS_IDX
+        ,GROUP_IDX
+        ,USE_YN
+        ,TITLE
+        ,CONT
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,ATCH_FILE_ID
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{club_news_idx}
+        ,#{group_idx}
+        ,#{use_yn}
+        ,#{title}
+        ,#{cont}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{atch_file_id}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertClubStatusInfo" parameterType="kr.go.songpa.ssem.model.ClubStatusVo">
+        <selectKey resultType="int" keyProperty="club_status_idx" order="BEFORE">
+            SELECT nvl(MAX(CLUB_STATUS_IDX),0)+1 AS CLUB_STATUS_IDX  FROM CLUB_STATUS
+        </selectKey>
+        INSERT INTO CLUB_STATUS (
+        CLUB_STATUS_IDX
+        ,GROUP_IDX
+        ,CODE_IDX
+        ,NAME
+        ,STAND_DT
+        ,ORG_NAME
+        ,MEM_CNT
+        ,MEET_DT
+        ,INTRO
+        ,ACTION
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{club_status_idx}
+        ,#{group_idx}
+        ,#{code_idx}
+        ,#{name}
+        ,#{stand_dt}
+        ,#{org_name}
+        ,#{mem_cnt}
+        ,#{meet_dt}
+        ,#{intro}
+        ,#{action}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateClubNewsViewCnt" parameterType="kr.go.songpa.ssem.model.ClubNewsVo">
+		UPDATE CLUB_NEWS SET
+			CNT = CNT + 1
+		WHERE CLUB_NEWS_IDX = #{club_news_idx}
+	</update>
+
+    <update id="updateClubInfo" parameterType="kr.go.songpa.ssem.model.ClubVo">
+        UPDATE CLUB SET
+        STATUS = #{status}
+        ,MEMO = #{memo}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE CLUB_IDX = #{club_idx}
+    </update>
+
+    <update id="updateClubNewsInfo" parameterType="kr.go.songpa.ssem.model.ClubNewsVo">
+        UPDATE CLUB_NEWS SET
+        USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        ,ATCH_FILE_ID = #{atch_file_id}
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        ,ALT_TXT = #{alt_txt}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE CLUB_NEWS_IDX = #{club_news_idx}
+    </update>
+
+    <update id="updateClubStatusInfo" parameterType="kr.go.songpa.ssem.model.ClubStatusVo">
+        UPDATE CLUB_STATUS SET
+        CODE_IDX = #{code_idx}
+        ,NAME = #{name}
+        ,STAND_DT = #{stand_dt}
+        ,ORG_NAME = #{org_name}
+        ,MEM_CNT = #{mem_cnt}
+        ,MEET_DT = #{meet_dt}
+        ,INTRO = #{intro}
+        ,ACTION = #{action}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE CLUB_STATUS_IDX = #{club_status_idx}
+    </update>
+
+    <delete id="deleteClubNewsInfo" parameterType="kr.go.songpa.ssem.model.ClubNewsVo">
+	    DELETE FROM CLUB_NEWS WHERE CLUB_NEWS_IDX = #{club_news_idx}
+	</delete>
+
+    <delete id="deleteClubStatusInfo" parameterType="kr.go.songpa.ssem.model.ClubStatusVo">
+	    DELETE FROM CLUB_STATUS WHERE CLUB_STATUS_IDX = #{club_status_idx}
+	</delete>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:annotation-config/>
+
+    <!-- DB PROPERTIES -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="classpath:dbconfig.properties"/>
+    </bean>
+
+    <!-- datasource -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <tx:annotation-driven transaction-manager="transactionManagerMaria" proxy-target-class="true"/>
+
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="kr.go.songpa.ssem.model"/>
+        <property name="configLocation" value="/WEB-INF/spring-config/mybatis-config.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="kr.go.songpa.ssem.repository.tibero"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- dataSourceOracle -->
+    <bean id="dataSourceOracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.oracle.driver}"/>
+        <property name="url" value="${jdbc.oracle.url}"/>
+        <property name="username" value="${jdbc.oracle.username}"/>
+        <property name="password" value="${jdbc.oracle.password}"/>
+    </bean>
+
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManagerMaria">
+        <property name="dataSource" ref="dataSourceOracle"/>
+    </bean>
+
+    <bean id="sqlSessionFactoryOracle" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceOracle"/>
+        <property name="typeAliasesPackage" value="kr.go.songpa.ssem.model"/>
+        <property name="configLocation" value="/WEB-INF/spring-config/mybatis-config.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="kr.go.songpa.ssem.repository.oracle"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryOracle"/>
+    </bean>
+
+    <!-- dataSourceMaria -->
+    <!--<bean id="dataSourceMaria" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.maria.driver}"/>
+        <property name="url" value="${jdbc.maria.url}"/>
+        <property name="username" value="${jdbc.maria.username}"/>
+        <property name="password" value="${jdbc.maria.password}"/>
+        &lt;!&ndash;<property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>&ndash;&gt;
+    </bean>-->
+
+    <!--<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManagerMaria">
+        <property name="dataSource" ref="dataSourceMaria"/>
+    </bean>
+
+    <bean id="sqlSessionFactoryMaria" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceMaria"/>
+        <property name="typeAliasesPackage" value="kr.re.nrf.recruit.model"/>
+        <property name="configLocation" value="/WEB-INF/spring-config/mybatis-config.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="kr.re.nrf.recruit.repository.maria"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryMaria"/>
+    </bean>-->
+</beans>

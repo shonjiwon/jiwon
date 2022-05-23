@@ -1,0 +1,2174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.CampusRepository">
+
+    <select id="selectPersonBookList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM PERSON_BOOK A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.GUBUN = #{searchVal2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="searchVal2 == 'M'.toString()">
+                ORDER BY A.YEAR DESC, A.MONTH DESC, A.REG_DT DESC
+            </when>
+            <otherwise>
+                ORDER BY A.ORD_DT DESC, A.UP_DT DESC, A.REG_DT DESC
+            </otherwise>
+        </choose>
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPersonBookListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM PERSON_BOOK A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchVal2 != null and searchVal2 !=''">
+            AND A.GUBUN = #{searchVal2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectPersonBookInfo" parameterType="kr.go.songpa.ssem.model.PersonBookVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM PERSON_BOOK A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.PERSON_BOOK_IDX=#{person_book_idx}
+	</select>
+
+    <select id="selectPersonBookApplyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.STATUS = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '3'.toString()">
+                    AND (UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '4'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '5'.toString()">
+                    AND (UPPER(A.GRP_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.GRP_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPersonBookApplyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM PERSON_BOOK_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.STATUS = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '3'.toString()">
+                    AND (UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '4'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '5'.toString()">
+                    AND (UPPER(A.GRP_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.REG_ID) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.GRP_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+    </select>
+
+    <select id="selectPersonBookApplyInfo" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo" resultType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        SELECT A.* FROM PERSON_BOOK_APY A WHERE A.PERSON_BOOK_APY_IDX=#{person_book_apy_idx}
+	</select>
+
+    <select id="selectPersonBookRegList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookRegVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK_REG A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.CATE_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPersonBookRegListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM PERSON_BOOK_REG A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.CATE_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectPersonBookRegInfo" parameterType="kr.go.songpa.ssem.model.PersonBookRegVo" resultType="kr.go.songpa.ssem.model.PersonBookRegVo">
+        SELECT A.* FROM PERSON_BOOK_REG A WHERE A.PERSON_BOOK_REG_IDX=#{person_book_reg_idx}
+	</select>
+
+    <select id="selectFutureEduIntroList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM FUTURE_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.MAIN_YN = 'Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.MAIN_YN = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT ASC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectFutureEduIntroListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM FUTURE_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.MAIN_YN = 'Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.MAIN_YN = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectFutureEduIntroInfo" parameterType="kr.go.songpa.ssem.model.FutureEduIntroVo" resultType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM FUTURE_EDU_INTRO A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.FUTURE_EDU_INTRO_IDX=#{future_edu_intro_idx}
+	</select>
+
+    <select id="selectFutureEduReviewList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM FUTURE_EDU_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectFutureEduReviewListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM FUTURE_EDU_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectFutureEduReviewInfo" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo" resultType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM FUTURE_EDU_REVIEW A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.FUTURE_EDU_REVIEW_IDX=#{future_edu_review_idx}
+	</select>
+
+    <select id="selectSelfEduIntroList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM SELF_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectSelfEduIntroListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM SELF_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectSelfEduIntroInfo" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo" resultType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM SELF_EDU_INTRO A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.SELF_EDU_INTRO_IDX=#{self_edu_intro_idx} AND A.USE_YN='Y'
+	</select>
+
+    <select id="selectSelfEduCounselList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.SelfCounselVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM SELF_COUNSEL A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.GUBUN = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            <choose>
+                <when test="searchVal2 == '1'.toString()">
+                    AND SUBSTRING(A.MEET_DT, 0, 10) BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchVal2 == '2'.toString()">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchVal2 == '3'.toString()">
+                    AND TO_CHAR(A.RESV_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectSelfEduCounselListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM SELF_COUNSEL A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.GUBUN = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            <choose>
+                <when test="searchVal2 == '1'.toString()">
+                    AND SUBSTRING(A.MEET_DT, 0, 10) BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchVal2 == '2'.toString()">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+                <when test="searchVal2 == '3'.toString()">
+                    AND TO_CHAR(A.RESV_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectSelfEduCounselInfo" parameterType="kr.go.songpa.ssem.model.SelfCounselVo" resultType="kr.go.songpa.ssem.model.SelfCounselVo">
+        SELECT A.* FROM SELF_COUNSEL A WHERE A.SELF_COUNSEL_IDX=#{self_counsel_idx}
+	</select>
+
+    <select id="selectInstrumReviewList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.InstrumReviewVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM INSTRUM_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectInstrumReviewListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM INSTRUM_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectInstrumReviewInfo" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo" resultType="kr.go.songpa.ssem.model.InstrumReviewVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM INSTRUM_REVIEW A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.INSTRUM_REVIEW_IDX=#{instrum_review_idx}
+	</select>
+
+    <select id="selectInstrumRegList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.InstrumVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM INSTRUM A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind3 == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind3 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind3 == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.NAME ASC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectInstrumRegListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM INSTRUM A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind3 == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind3 == '2'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind3 == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectInstrumInfo" parameterType="kr.go.songpa.ssem.model.InstrumVo" resultType="kr.go.songpa.ssem.model.InstrumVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM INSTRUM A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.INSTRUM_IDX=#{instrum_idx}
+	</select>
+
+    <select id="selectInstrumDntList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.InstrumDntVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM INSTRUM_DNT A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.INSTRUM_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PC_YEAR) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectInstrumDntListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM INSTRUM_DNT A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.STATUS = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.INSTRUM_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PC_YEAR) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectInstrumDntInfo" parameterType="kr.go.songpa.ssem.model.InstrumDntVo" resultType="kr.go.songpa.ssem.model.InstrumDntVo">
+        SELECT A.* FROM INSTRUM_DNT A WHERE A.INSTRUM_DNT_IDX=#{instrum_dnt_idx}
+	</select>
+
+    <select id="selectInstrumApyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.InstrumApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, I.NAME INSTRUM_NAME, I.GUBUN INSTRUM_GUBUN FROM INSTRUM_APY A, INSTRUM I
+        WHERE
+        1=1 AND A.INSTRUM_IDX = I.INSTRUM_IDX
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND I.GUBUN = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND A.STATUS = 'A'
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND A.STATUS = 'R'
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND A.PAY_STATUS = 'A'
+                </when>
+                <when test="searchKind4 == '4'.toString()">
+                    AND (A.PAY_STATUS != 'A' AND A.RETURN_YN = 'N')
+                </when>
+                <when test="searchKind4 == '5'.toString()">
+                    AND A.RETURN_YN = 'Y'
+                </when>
+                <when test="searchKind4 == '6'.toString()">
+                    AND (A.RETURN_YN = 'Y' AND TO_CHAR(A.RETURN_DT, 'YYYY-MM-DD') &gt; A.RETURN_DUE_DT)
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind != null  and searchKind !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.RENTAL_START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.RENTAL_END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.RENTAL_START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.RENTAL_END_DT BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(I.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectInstrumApyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM INSTRUM_APY A, INSTRUM I
+        WHERE
+        1=1 AND A.INSTRUM_IDX = I.INSTRUM_IDX
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND I.GUBUN = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND A.STATUS = 'A'
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND A.STATUS = 'R'
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND A.PAY_STATUS = 'A'
+                </when>
+                <when test="searchKind4 == '4'.toString()">
+                    AND (A.PAY_STATUS != 'A' AND A.RETURN_YN = 'N')
+                </when>
+                <when test="searchKind4 == '5'.toString()">
+                    AND A.RETURN_YN = 'Y'
+                </when>
+                <when test="searchKind4 == '6'.toString()">
+                    AND (A.RETURN_YN = 'Y' AND TO_CHAR(A.RETURN_DT, 'YYYY-MM-DD') &gt; A.RETURN_DUE_DT)
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind != null  and searchKind !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.RENTAL_START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.RENTAL_END_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.RENTAL_START_DT BETWEEN #{searchSDate} AND #{searchEDate} OR A.RENTAL_END_DT BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(I.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectInstrumApyInfo" parameterType="kr.go.songpa.ssem.model.InstrumApyVo" resultType="kr.go.songpa.ssem.model.InstrumApyVo">
+        SELECT A.*, I.NAME INSTRUM_NAME, I.GUBUN INSTRUM_GUBUN, I.FEE INSTRUM_FEE FROM INSTRUM_APY A, INSTRUM I WHERE A.INSTRUM_IDX=I.INSTRUM_IDX AND A.INSTRUM_APY_IDX=#{instrum_apy_idx}
+	</select>
+
+    <select id="selectNextPersonBook" parameterType="kr.go.songpa.ssem.model.PersonBookVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 PERSON_BOOK A
+	    WHERE
+	    	A.PERSON_BOOK_IDX=
+	    	(
+	    		SELECT MIN(PERSON_BOOK_IDX) FROM PERSON_BOOK WHERE PERSON_BOOK_IDX &gt; #{person_book_idx} AND GUBUN = #{gubun} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPrevPersonBook" parameterType="kr.go.songpa.ssem.model.PersonBookVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 PERSON_BOOK A
+	    WHERE
+	    	A.PERSON_BOOK_IDX=
+	    	(
+	    		SELECT MAX(PERSON_BOOK_IDX) FROM PERSON_BOOK WHERE PERSON_BOOK_IDX &lt; #{person_book_idx} AND GUBUN = #{gubun} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPersonInfoMonthInfo" parameterType="kr.go.songpa.ssem.model.PersonBookVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK A
+        WHERE
+            A.USE_YN = #{use_yn} AND A.GUBUN = #{gubun}
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 1
+        ) WHERE RNUM &gt;= 1
+	</select>
+
+    <select id="selectPersonMainList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK A
+        WHERE
+        A.GUBUN = 'N' AND A.USE_YN = 'Y'
+        ORDER BY A.ORD_DT DESC, A.UP_DT DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 8
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectLiveMainList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK A
+        WHERE
+        A.GUBUN = 'L' AND A.USE_YN = 'Y'
+        ORDER BY A.ORD_DT DESC, A.UP_DT DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectSchoolMainList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK A
+        WHERE
+        A.GUBUN = 'S' AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectReviewMainList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK A
+        WHERE
+        A.GUBUN = 'R' AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectNextFutureReview" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo" resultType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 FUTURE_EDU_REVIEW A
+	    WHERE
+	    	A.FUTURE_EDU_REVIEW_IDX=
+	    	(
+	    		SELECT MIN(FUTURE_EDU_REVIEW_IDX) FROM FUTURE_EDU_REVIEW WHERE FUTURE_EDU_REVIEW_IDX &gt; #{future_edu_review_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPrevFutureReview" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo" resultType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 FUTURE_EDU_REVIEW A
+	    WHERE
+	    	A.FUTURE_EDU_REVIEW_IDX=
+	    	(
+	    		SELECT MAX(FUTURE_EDU_REVIEW_IDX) FROM FUTURE_EDU_REVIEW WHERE FUTURE_EDU_REVIEW_IDX &lt; #{future_edu_review_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectNextInstrumReview" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo" resultType="kr.go.songpa.ssem.model.InstrumReviewVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 INSTRUM_REVIEW A
+	    WHERE
+	    	A.INSTRUM_REVIEW_IDX=
+	    	(
+	    		SELECT MIN(INSTRUM_REVIEW_IDX) FROM INSTRUM_REVIEW WHERE INSTRUM_REVIEW_IDX &gt; #{instrum_review_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPrevInstrumReview" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo" resultType="kr.go.songpa.ssem.model.InstrumReviewVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 INSTRUM_REVIEW A
+	    WHERE
+	    	A.INSTRUM_REVIEW_IDX=
+	    	(
+	    		SELECT MAX(INSTRUM_REVIEW_IDX) FROM INSTRUM_REVIEW WHERE INSTRUM_REVIEW_IDX &lt; #{instrum_review_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectNextSelfIntro" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo" resultType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 SELF_EDU_INTRO A
+	    WHERE
+	    	A.SELF_EDU_INTRO_IDX=
+	    	(
+	    		SELECT MIN(SELF_EDU_INTRO_IDX) FROM SELF_EDU_INTRO WHERE SELF_EDU_INTRO_IDX &gt; #{self_edu_intro_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPrevSelfIntro" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo" resultType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 SELF_EDU_INTRO A
+	    WHERE
+	    	A.SELF_EDU_INTRO_IDX=
+	    	(
+	    		SELECT MAX(SELF_EDU_INTRO_IDX) FROM SELF_EDU_INTRO WHERE SELF_EDU_INTRO_IDX &lt; #{self_edu_intro_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectSelfEduIntroMainList" resultType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM SELF_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=4
+        ) WHERE RNUM &gt;=1
+    </select>
+
+    <select id="selectFutureEduIntroMainList" resultType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM FUTURE_EDU_INTRO A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        ORDER BY A.REG_DT ASC
+    </select>
+
+    <select id="selectFutureEduReviewMainList" resultType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM FUTURE_EDU_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=4
+        ) WHERE RNUM &gt;=1
+    </select>
+
+    <select id="selectNextInstrum" parameterType="kr.go.songpa.ssem.model.InstrumVo" resultType="kr.go.songpa.ssem.model.InstrumVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 INSTRUM A
+	    WHERE
+	    	A.INSTRUM_IDX=
+	    	(
+	    		SELECT MIN(INSTRUM_IDX) FROM INSTRUM WHERE INSTRUM_IDX &gt; #{instrum_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectPrevInstrum" parameterType="kr.go.songpa.ssem.model.InstrumVo" resultType="kr.go.songpa.ssem.model.InstrumVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 INSTRUM A
+	    WHERE
+	    	A.INSTRUM_IDX=
+	    	(
+	    		SELECT MAX(INSTRUM_IDX) FROM INSTRUM WHERE INSTRUM_IDX &lt; #{instrum_idx} AND USE_YN = 'Y'
+	    	)
+	</select>
+
+    <select id="selectInstrumInfoByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.InstrumVo">
+        SELECT A.* FROM INSTRUM A WHERE A.INSTRUM_IDX=#{value}
+	</select>
+
+    <select id="selectInstrumApyInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.InstrumApyVo">
+        SELECT A.* FROM INSTRUM_APY A WHERE A.INSTRUM_APY_IDX=#{value}
+	</select>
+
+    <select id="selectPersonBookApyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM PERSON_BOOK_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.STATUS = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '3'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal8 != null  and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPersonBookApyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM PERSON_BOOK_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GUBUN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CATE_CD = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.STATUS = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.PERSON) like '%'||UPPER(#{searchVal})||'%' )
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '3'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.CONFIRM_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal8 != null  and searchVal8 !=''">
+            AND A.REG_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectRentalFtyList" resultType="kr.go.songpa.ssem.model.RentalFtyVo">
+        SELECT * FROM RENTAL_FTY WHERE USE_YN='Y' ORDER BY REG_DT ASC
+	</select>
+
+    <select id="selectRentalFtyByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.RentalFtyVo">
+        SELECT * FROM RENTAL_FTY WHERE RENTAL_FTY_IDX=#{value}
+	</select>
+
+    <select id="selectRentalFtySDList" parameterType="kr.go.songpa.ssem.model.RentalFtyVo" resultType="kr.go.songpa.ssem.model.RentalFtySdVo">
+        SELECT * FROM RENTAL_FTY_SD WHERE ( TO_CHAR(YEAR, 'FM0000')||'-'||TO_CHAR(MONTH, 'FM00')||'-'||TO_CHAR(DAY, 'FM00') BETWEEN #{start_date} AND #{end_date} ) AND  RENTAL_FTY_IDX = #{rental_fty_idx}
+	</select>
+
+    <select id="selectRentalFtySD" parameterType="kr.go.songpa.ssem.model.RentalFtySdVo" resultType="kr.go.songpa.ssem.model.RentalFtySdVo">
+        SELECT * FROM RENTAL_FTY_SD WHERE YEAR=#{year} AND MONTH=#{month} AND DAY=#{day} AND RENTAL_FTY_IDX=#{rental_fty_idx}
+	</select>
+
+    <select id="selectRentalFtyApyByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        SELECT * FROM RENTAL_FTY_APY WHERE RENTAL_FTY_APY_IDX=#{value}
+	</select>
+
+    <select id="selectRentalFtyApyInfo" parameterType="kr.go.songpa.ssem.model.RentalFtyApyVo" resultType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        SELECT * FROM RENTAL_FTY_APY WHERE RENTAL_FTY_IDX=#{rental_fty_idx} AND PAY_STATUS != 'C' AND TO_CHAR(RESV_DT, 'YYYY-MM-DD') = #{resv_dt}
+	</select>
+
+    <select id="selectRentalFtyApyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, R.NAME AS FTY_NAME FROM RENTAL_FTY_APY A, RENTAL_FTY R
+        WHERE
+        1=1 AND A.RENTAL_FTY_IDX = R.RENTAL_FTY_IDX AND A.PAY_STATUS != 'A'
+        <if test="searchKind != null and searchKind !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND A.PAY_STATUS = 'O'
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND A.PAY_STATUS = 'C'
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.RESV_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.PAY_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.PAY_CANCEL_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(R.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchVal8 != null  and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectRentalFtyApyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM RENTAL_FTY_APY A, RENTAL_FTY R
+        WHERE
+        1=1 AND A.RENTAL_FTY_IDX = R.RENTAL_FTY_IDX
+        <if test="searchKind != null and searchKind !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND A.PAY_STATUS = 'O'
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND A.PAY_STATUS = 'C'
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.RESV_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.PAY_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND TO_CHAR(A.PAY_CANCEL_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                    </if>
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(R.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchVal8 != null  and searchVal8 !=''">
+            AND A.APY_ID = #{searchVal8}
+        </if>
+    </select>
+
+    <select id="selectInstrumMainList" resultType="kr.go.songpa.ssem.model.InstrumVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM INSTRUM A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectInstrumReviewMainList" resultType="kr.go.songpa.ssem.model.InstrumReviewVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM INSTRUM_REVIEW A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.USE_YN = 'Y'
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectRentalFtyApyInfoListEx" parameterType="kr.go.songpa.ssem.model.RentalFtyApyVo" resultType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        SELECT * FROM RENTAL_FTY_APY WHERE RENTAL_FTY_IDX=#{rental_fty_idx} AND PAY_STATUS = 'O' AND TO_CHAR(RESV_DT, 'YYYY-MM-DD') = #{resv_dt}
+    </select>
+
+    <insert id="insertPersonBookInfo" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+        <selectKey resultType="int" keyProperty="person_book_idx" order="BEFORE">
+            SELECT nvl(MAX(PERSON_BOOK_IDX),0)+1 AS PERSON_BOOK_IDX  FROM PERSON_BOOK
+        </selectKey>
+        INSERT INTO PERSON_BOOK (
+        PERSON_BOOK_IDX
+        ,GROUP_IDX
+        ,USE_YN
+        ,CATE_CD
+        ,TITLE
+        ,GUBUN
+        ,YEAR
+        ,MONTH
+        ,SUMMARY
+        ,PERSON
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,CONT
+        ,MOVIE_URL
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{person_book_idx}
+        ,#{group_idx}
+        ,#{use_yn}
+        ,#{cate_cd}
+        ,#{title}
+        ,#{gubun}
+        ,#{year}
+        ,#{month}
+        ,#{summary}
+        ,#{person}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{cont}
+        ,#{movie_url}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertFutureEduInfoInfo" parameterType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+        <selectKey resultType="int" keyProperty="future_edu_intro_idx" order="BEFORE">
+            SELECT nvl(MAX(FUTURE_EDU_INTRO_IDX),0)+1 AS FUTURE_EDU_INTRO_IDX  FROM FUTURE_EDU_INTRO
+        </selectKey>
+        INSERT INTO FUTURE_EDU_INTRO (
+        FUTURE_EDU_INTRO_IDX
+        ,GROUP_IDX
+        ,NAME
+        ,CONT
+        ,TGT
+        ,TERM_TIME
+        ,CAPACITY
+        ,FEE
+        ,QUEST
+        ,LOCATION
+        ,EXPLAIN
+        ,THUMB_ATCH_FILE_ID
+        ,THUMB_SUB_FILE_ID1
+        ,THUMB_SUB_FILE_ID2
+        ,ALT_TXT
+        ,ALT_TXT1
+        ,ALT_TXT2
+        ,MAIN_YN
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{future_edu_intro_idx}
+        ,#{group_idx}
+        ,#{name}
+        ,#{cont}
+        ,#{tgt}
+        ,#{term_time}
+        ,#{capacity}
+        ,#{fee}
+        ,#{quest}
+        ,#{location}
+        ,#{explain}
+        ,#{thumb_atch_file_id}
+        ,#{thumb_sub_file_id1}
+        ,#{thumb_sub_file_id2}
+        ,#{alt_txt}
+        ,#{alt_txt1}
+        ,#{alt_txt2}
+        ,#{main_yn}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertFutureEduReviewInfo" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+        <selectKey resultType="int" keyProperty="future_edu_review_idx" order="BEFORE">
+            SELECT nvl(MAX(FUTURE_EDU_REVIEW_IDX),0)+1 AS FUTURE_EDU_REVIEW_IDX  FROM FUTURE_EDU_REVIEW
+        </selectKey>
+        INSERT INTO FUTURE_EDU_REVIEW (
+        FUTURE_EDU_REVIEW_IDX
+        ,GROUP_IDX
+        ,TITLE
+        ,CONT
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,ATCH_FILE_ID
+        ,USE_YN
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{future_edu_review_idx}
+        ,#{group_idx}
+        ,#{title}
+        ,#{cont}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{atch_file_id}
+        ,#{use_yn}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSelfEduIntroInfo" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+        <selectKey resultType="int" keyProperty="self_edu_intro_idx" order="BEFORE">
+            SELECT nvl(MAX(SELF_EDU_INTRO_IDX),0)+1 AS SELF_EDU_INTRO_IDX  FROM SELF_EDU_INTRO
+        </selectKey>
+        INSERT INTO SELF_EDU_INTRO (
+        SELF_EDU_INTRO_IDX
+        ,GROUP_IDX
+        ,TITLE
+        ,CONT
+        ,MOVIE_URL
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,ATCH_FILE_ID
+        ,USE_YN
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{self_edu_intro_idx}
+        ,#{group_idx}
+        ,#{title}
+        ,#{cont}
+        ,#{movie_url}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{atch_file_id}
+        ,#{use_yn}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertInstrumReviewInfo" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo">
+        <selectKey resultType="int" keyProperty="instrum_review_idx" order="BEFORE">
+            SELECT nvl(MAX(INSTRUM_REVIEW_IDX),0)+1 AS INSTRUM_REVIEW_IDX  FROM INSTRUM_REVIEW
+        </selectKey>
+        INSERT INTO INSTRUM_REVIEW (
+        INSTRUM_REVIEW_IDX
+        ,GROUP_IDX
+        ,TITLE
+        ,CONT
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,ATCH_FILE_ID
+        ,USE_YN
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{instrum_review_idx}
+        ,#{group_idx}
+        ,#{title}
+        ,#{cont}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{atch_file_id}
+        ,#{use_yn}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertInstrumInfo" parameterType="kr.go.songpa.ssem.model.InstrumVo">
+        <selectKey resultType="int" keyProperty="instrum_idx" order="BEFORE">
+            SELECT nvl(MAX(INSTRUM_IDX),0)+1 AS INSTRUM_IDX  FROM INSTRUM
+        </selectKey>
+        INSERT INTO INSTRUM (
+        INSTRUM_IDX
+        ,GROUP_IDX
+        ,USE_YN
+        ,GUBUN
+        ,NAME
+        ,FEE
+        ,QTY
+        ,RENTAL_QTY
+        ,ATCH_FILE_ID
+        ,ALT_TXT
+        ,CONT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{instrum_idx}
+        ,#{group_idx}
+        ,#{use_yn}
+        ,#{gubun}
+        ,#{name}
+        ,#{fee}
+        ,#{qty}
+        ,0
+        ,#{atch_file_id}
+        ,#{alt_txt}
+        ,#{cont}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertPersonBookApyInfo" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        <selectKey resultType="int" keyProperty="person_book_apy_idx" order="BEFORE">
+            SELECT nvl(MAX(PERSON_BOOK_APY_IDX),0)+1 AS PERSON_BOOK_APY_IDX  FROM PERSON_BOOK_APY
+        </selectKey>
+        INSERT INTO PERSON_BOOK_APY (
+        PERSON_BOOK_APY_IDX
+        ,PERSON_BOOK_IDX
+        ,GUBUN
+        ,CATE_CD
+        ,TITLE
+        ,PERSON
+        ,APY_NAME
+        ,APY_MOB_NO
+        ,APY_CNT
+        ,GRP_NAME
+        ,VIEW_DT
+        ,PLC
+        ,REASON
+        ,CNT
+        ,STATUS
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{person_book_apy_idx}
+        ,#{person_book_idx}
+        ,#{gubun}
+        ,#{cate_cd}
+        ,#{title}
+        ,#{person}
+        ,#{apy_name}
+        ,#{apy_mob_no}
+        ,#{apy_cnt}
+        ,#{grp_name}
+        ,#{view_dt}
+        ,#{plc}
+        ,#{reason}
+        ,0
+        ,#{status}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertPersonRegInfo" parameterType="kr.go.songpa.ssem.model.PersonBookRegVo">
+        <selectKey resultType="int" keyProperty="person_book_reg_idx" order="BEFORE">
+            SELECT nvl(MAX(PERSON_BOOK_REG_IDX),0)+1 AS PERSON_BOOK_REG_IDX  FROM PERSON_BOOK_REG
+        </selectKey>
+        INSERT INTO PERSON_BOOK_REG (
+        PERSON_BOOK_REG_IDX
+        ,CATE_CD
+        ,REG_NAME
+        ,REG_MOB_NO
+        ,REG_BIRTH
+        ,REG_GENDER
+        ,REG_AGE
+        ,REG_ADDR
+        ,REG_TEL_NO
+        ,REG_EMAIL
+        ,ATCH_FILE_ID
+        ,CAREER
+        ,INTRO
+        ,STATUS
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{person_book_reg_idx}
+        ,#{cate_cd}
+        ,#{reg_name}
+        ,#{reg_mob_no}
+        ,#{reg_birth}
+        ,#{reg_gender}
+        ,#{reg_age}
+        ,#{reg_addr}
+        ,#{reg_tel_no}
+        ,#{reg_email}
+        ,#{atch_file_id}
+        ,#{career}
+        ,#{intro}
+        ,'A'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertInstrumDntInfo" parameterType="kr.go.songpa.ssem.model.InstrumDntVo">
+        <selectKey resultType="int" keyProperty="instrum_dnt_idx" order="BEFORE">
+            SELECT nvl(MAX(INSTRUM_DNT_IDX),0)+1 AS INSTRUM_DNT_IDX  FROM INSTRUM_DNT
+        </selectKey>
+        INSERT INTO INSTRUM_DNT (
+        INSTRUM_DNT_IDX
+        ,STATUS
+        ,DNT_ID
+        ,DNT_NAME
+        ,DNT_MOB_NO
+        ,INSTRUM_NAME
+        ,GUBUN
+        ,PC_YEAR
+        ,ATCH_FILE_ID
+        ,CONT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{instrum_dnt_idx}
+        ,'A'
+        ,#{dnt_id}
+        ,#{dnt_name}
+        ,#{dnt_mob_no}
+        ,#{instrum_name}
+        ,#{gubun}
+        ,#{pc_year}
+        ,#{atch_file_id}
+        ,#{cont}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSelfCounselInfo" parameterType="kr.go.songpa.ssem.model.SelfCounselVo">
+        <selectKey resultType="int" keyProperty="self_counsel_idx" order="BEFORE">
+            SELECT nvl(MAX(SELF_COUNSEL_IDX),0)+1 AS SELF_COUNSEL_IDX  FROM SELF_COUNSEL
+        </selectKey>
+        INSERT INTO SELF_COUNSEL (
+        SELF_COUNSEL_IDX
+        ,STATUS
+        ,APY_NAME
+        ,APY_MOB_NO
+        ,GUBUN
+        ,MEET_DT
+        ,ABLE_PHONE_TIME
+        ,APY_MEMO
+        ,RESV_DT
+        ,MNG_MEMO
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ,ATCH_FILE_ID
+        ) VALUES (
+        #{self_counsel_idx}
+        ,'A'
+        ,#{apy_name}
+        ,#{apy_mob_no}
+        ,#{gubun}
+        ,#{meet_dt}
+        ,#{able_phone_time}
+        ,#{apy_memo}
+        ,#{resv_dt}
+        ,#{mng_memo}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        ,#{atch_file_id}
+        )
+    </insert>
+
+    <insert id="insertInstrumApyInfo" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+        <selectKey resultType="int" keyProperty="instrum_apy_idx" order="BEFORE">
+            SELECT nvl(MAX(INSTRUM_APY_IDX),0)+1 AS INSTRUM_APY_IDX  FROM INSTRUM_APY
+        </selectKey>
+        INSERT INTO INSTRUM_APY (
+        INSTRUM_APY_IDX
+        ,INSTRUM_IDX
+        ,GROUP_IDX
+        ,STATUS
+        ,GUBUN
+        ,GRP_NAME
+        ,MEM_CNT
+        ,RENTAL_START_DT
+        ,RENTAL_END_DT
+        ,RENTAL_MONTH
+        ,RETURN_DUE_DT
+        ,LATE_DAY
+        ,RENTAL_QTY
+        ,PURPOSE
+        ,PAY
+        ,RETURN_YN
+        ,APY_ID
+        ,APY_NM
+        ,APY_BIRTH
+        ,APY_MOB_NO
+        ,APY_TEL_NO
+        ,APY_EMAIL
+        ,APY_PARENT_NAME
+        ,APY_PARENT_MOB_NO
+        ,APY_ADDR
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{instrum_apy_idx}
+        ,#{instrum_idx}
+        ,#{group_idx}
+        ,'A'
+        ,#{gubun}
+        ,#{grp_name}
+        ,#{mem_cnt}
+        ,#{rental_start_dt}
+        ,#{rental_end_dt}
+        ,#{rental_month}
+        ,#{return_due_dt}
+        ,0
+        ,#{rental_qty}
+        ,#{purpose}
+        ,#{pay}
+        ,'N'
+        ,#{apy_id}
+        ,#{apy_nm}
+        ,#{apy_birth}
+        ,#{apy_mob_no}
+        ,#{apy_tel_no}
+        ,#{apy_email}
+        ,#{apy_parent_name}
+        ,#{apy_parent_mob_no}
+        ,#{apy_addr}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertRentalFtyApyInfo" parameterType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        <selectKey resultType="int" keyProperty="rental_fty_apy_idx" order="BEFORE">
+            SELECT nvl(MAX(RENTAL_FTY_APY_IDX),0)+1 AS RENTAL_FTY_APY_IDX  FROM RENTAL_FTY_APY
+        </selectKey>
+        INSERT INTO RENTAL_FTY_APY (
+        RENTAL_FTY_APY_IDX
+        ,RENTAL_FTY_IDX
+        ,GROUP_IDX
+        ,APY_ID
+        ,APY_NAME
+        ,RESV_DT
+        ,APY_MOB_NO
+        ,PAY_SUM
+        ,PAY_STATUS
+        ,H9
+        ,H10
+        ,H11
+        ,H12
+        ,H13
+        ,H14
+        ,H15
+        ,H16
+        ,H17
+        ,H18
+        ,H19
+        ,H20
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{rental_fty_apy_idx}
+        ,#{rental_fty_idx}
+        ,#{group_idx}
+        ,#{apy_id}
+        ,#{apy_name}
+        ,#{resv_dt}
+        ,#{apy_mob_no}
+        ,#{pay_sum}
+        ,'A'
+        ,#{h9}
+        ,#{h10}
+        ,#{h11}
+        ,#{h12}
+        ,#{h13}
+        ,#{h14}
+        ,#{h15}
+        ,#{h16}
+        ,#{h17}
+        ,#{h18}
+        ,#{h19}
+        ,#{h20}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updatePersonBookInfo" parameterType="kr.go.songpa.ssem.model.PersonBookVo">
+        UPDATE PERSON_BOOK SET
+        USE_YN = #{use_yn}
+        ,CATE_CD = #{cate_cd}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        ,PERSON = #{person}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="movie_url != null  and movie_url !=''">
+            ,MOVIE_URL = #{movie_url}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        <if test="year != null  and year !=''">
+            ,YEAR = #{year}
+        </if>
+        <if test="month != null  and month !=''">
+            ,MONTH = #{month}
+        </if>
+        <if test="summary != null  and summary !=''">
+            ,SUMMARY = #{summary}
+        </if>
+        WHERE PERSON_BOOK_IDX = #{person_book_idx}
+    </update>
+
+    <update id="updatePersonBookViewCnt" parameterType="kr.go.songpa.ssem.model.PersonBookVo">
+		UPDATE PERSON_BOOK SET
+			CNT = CNT + 1
+		WHERE PERSON_BOOK_IDX = #{person_book_idx}
+	</update>
+
+    <update id="updatePersonBookApplyViewCnt" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo">
+		UPDATE PERSON_BOOK_APY SET
+			CNT = CNT + 1
+		WHERE PERSON_BOOK_APY_IDX = #{person_book_apy_idx}
+	</update>
+
+    <update id="updatePersonBookApplyInfo" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        UPDATE PERSON_BOOK_APY SET
+        UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        <if test="status != null  and status !=''">
+            ,STATUS = #{status}
+        </if>
+        <if test="confirm_dt != null  and confirm_dt !=''">
+            ,CONFIRM_DT = TO_DATE(#{confirm_dt}, 'YYYY-MM-DD hh24:mi')
+        </if>
+        <if test="memo != null  and memo !=''">
+            ,MEMO = #{memo}
+        </if>
+        WHERE PERSON_BOOK_APY_IDX = #{person_book_apy_idx}
+    </update>
+
+    <update id="updatePersonBookRegInfo" parameterType="kr.go.songpa.ssem.model.PersonBookRegVo">
+        UPDATE PERSON_BOOK_REG SET
+        UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        <if test="reg_mob_no != null and reg_mob_no !=''">
+            ,REG_MOB_NO = #{reg_mob_no}
+        </if>
+        <if test="cate_cd != null and cate_cd !=''">
+            ,CATE_CD = #{cate_cd}
+        </if>
+        <if test="reg_gender != null and reg_gender !=''">
+            ,REG_GENDER = #{reg_gender}
+        </if>
+        <if test="reg_age != null and reg_age !=''">
+            ,REG_AGE = #{reg_age}
+        </if>
+        <if test="reg_addr != null and reg_addr !=''">
+            ,REG_ADDR = #{reg_addr}
+        </if>
+        <if test="reg_tel_no != null and reg_tel_no !=''">
+            ,REG_TEL_NO = #{reg_tel_no}
+        </if>
+        <if test="reg_email != null and reg_email !=''">
+            ,REG_EMAIL = #{reg_email}
+        </if>
+        <if test="atch_file_id != null and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="career != null and career !=''">
+            ,CAREER = #{career}
+        </if>
+        <if test="intro != null and intro !=''">
+            ,INTRO = #{intro}
+        </if>
+        WHERE PERSON_BOOK_REG_IDX = #{person_book_reg_idx}
+    </update>
+
+    <update id="updateFutureEduIntroViewCnt" parameterType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+		UPDATE FUTURE_EDU_INTRO SET
+			CNT = CNT + 1
+		WHERE FUTURE_EDU_INTRO_IDX = #{future_edu_intro_idx}
+	</update>
+
+    <update id="updateFutureEduIntroInfo" parameterType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+        UPDATE FUTURE_EDU_INTRO SET
+        MAIN_YN = #{main_yn}
+        ,NAME = #{name}
+        ,CONT = #{cont}
+        ,TGT = #{tgt}
+        ,TERM_TIME = #{term_time}
+        ,CAPACITY = #{capacity}
+        ,FEE = #{fee}
+        ,QUEST = #{quest}
+        ,LOCATION = #{location}
+        ,EXPLAIN = #{explain}
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        <if test="thumb_sub_file_id1 != null  and thumb_sub_file_id1 !=''">
+            ,THUMB_SUB_FILE_ID1 = #{thumb_sub_file_id1}
+        </if>
+        <if test="thumb_sub_file_id2 != null  and thumb_sub_file_id2 !=''">
+            ,THUMB_SUB_FILE_ID2 = #{thumb_sub_file_id2}
+        </if>
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="alt_txt1 != null  and alt_txt1 !=''">
+            ,ALT_TXT1 = #{alt_txt1}
+        </if>
+        <if test="alt_txt2 != null  and alt_txt2 !=''">
+            ,ALT_TXT2 = #{alt_txt2}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE FUTURE_EDU_INTRO_IDX = #{future_edu_intro_idx}
+    </update>
+
+    <update id="updateFutureEduReviewViewCnt" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+		UPDATE FUTURE_EDU_REVIEW SET
+			CNT = CNT + 1
+		WHERE FUTURE_EDU_REVIEW_IDX = #{future_edu_review_idx}
+	</update>
+
+    <update id="updateFutureEduReviewInfo" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+        UPDATE FUTURE_EDU_REVIEW SET
+        USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE FUTURE_EDU_REVIEW_IDX = #{future_edu_review_idx}
+    </update>
+
+    <update id="updateSelfEduIntroViewCnt" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+		UPDATE SELF_EDU_INTRO SET
+			CNT = CNT + 1
+		WHERE SELF_EDU_INTRO_IDX = #{self_edu_intro_idx}
+	</update>
+
+    <update id="updateSelfEduIntroInfo" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+        UPDATE SELF_EDU_INTRO SET
+        USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        ,MOVIE_URL = #{movie_url}
+        <if test="thumb_atch_file_id != null and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        <if test="atch_file_id != null and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="alt_txt != null and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="group_idx != null and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE SELF_EDU_INTRO_IDX = #{self_edu_intro_idx}
+    </update>
+
+    <update id="updateSelfEduCounselViewCnt" parameterType="kr.go.songpa.ssem.model.SelfCounselVo">
+		UPDATE SELF_COUNSEL SET
+			CNT = CNT + 1
+		WHERE SELF_COUNSEL_IDX = #{self_counsel_idx}
+	</update>
+
+    <update id="updateSelfEduCounselInfo" parameterType="kr.go.songpa.ssem.model.SelfCounselVo">
+        UPDATE SELF_COUNSEL SET
+        UP_ID	= #{up_id}
+        <if test="apy_mob_no != null and apy_mob_no !=''">
+            ,APY_MOB_NO = #{apy_mob_no}
+        </if>
+        <if test="gubun != null and gubun !=''">
+            ,GUBUN = #{gubun}
+        </if>
+        <if test="meet_dt != null and meet_dt !=''">
+            ,MEET_DT = #{meet_dt}
+        </if>
+        <if test="able_phone_time != null and able_phone_time !=''">
+            ,ABLE_PHONE_TIME = #{able_phone_time}
+        </if>
+        <if test="apy_memo != null and apy_memo !=''">
+            ,APY_MEMO = #{apy_memo}
+        </if>
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE SELF_COUNSEL_IDX = #{self_counsel_idx}
+    </update>
+
+    <update id="updateInstrumReviewInfo" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo">
+        UPDATE INSTRUM_REVIEW SET
+        USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE INSTRUM_REVIEW_IDX = #{instrum_review_idx}
+    </update>
+
+    <update id="updateInstrumReviewViewCnt" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo">
+		UPDATE INSTRUM_REVIEW SET
+			CNT = CNT + 1
+		WHERE INSTRUM_REVIEW_IDX = #{instrum_review_idx}
+	</update>
+
+    <update id="updateInstrumInfo" parameterType="kr.go.songpa.ssem.model.InstrumVo">
+        UPDATE INSTRUM SET
+        USE_YN = #{use_yn}
+        ,NAME = #{name}
+        ,CONT = #{cont}
+        ,FEE = #{fee}
+        ,QTY = #{qty}
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE INSTRUM_IDX = #{instrum_idx}
+    </update>
+
+    <update id="updateInstrumDntInfo" parameterType="kr.go.songpa.ssem.model.InstrumDntVo">
+        UPDATE INSTRUM_DNT SET
+        UP_ID	= #{up_id}
+        <if test="instrum_name != null and instrum_name !=''">
+            ,INSTRUM_NAME = #{instrum_name}
+        </if>
+        <if test="gubun != null and gubun !=''">
+            ,GUBUN = #{gubun}
+        </if>
+        <if test="pc_year != null and pc_year !=''">
+            ,PC_YEAR = #{pc_year}
+        </if>
+        <if test="atch_file_id != null and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="cont != null and cont !=''">
+            ,CONT = #{cont}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE INSTRUM_DNT_IDX = #{instrum_dnt_idx}
+    </update>
+
+    <update id="updateInstrumApyInfo" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+        UPDATE INSTRUM_APY SET
+        UP_ID	= #{up_id}
+        <if test="status != null  and status !=''">
+        ,STATUS = #{status}
+        </if>
+        <if test="pay_status != null  and pay_status !=''">
+        ,PAY_STATUS = #{pay_status}
+        </if>
+        <if test="pay_dt != null  and pay_dt !=''">
+            ,PAY_DT = TO_DATE(#{pay_dt}, 'YYYY-MM-DD')
+        </if>
+        <if test="refund_method != null  and refund_method !=''">
+        ,REFUND_METHOD = #{refund_method}
+        </if>
+        <if test="refund != null  and refund !=''">
+        ,REFUND = #{refund}
+        </if>
+        <if test="refund_dt != null  and refund_dt !=''">
+            ,REFUND_DT = TO_DATE(#{refund_dt}, 'YYYY-MM-DD')
+        </if>
+        <if test="return_yn != null  and return_yn !=''">
+        , RETURN_YN = #{return_yn}
+        </if>
+        <if test="return_dt != null  and return_dt !=''">
+            ,RETURN_DT = TO_DATE(#{return_dt}, 'YYYY-MM-DD')
+        </if>
+        ,RENTAL_QTY = #{rental_qty}
+        ,MEMO = #{memo}
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE INSTRUM_APY_IDX = #{instrum_apy_idx} AND INSTRUM_IDX = #{instrum_idx} AND GROUP_IDX = #{group_idx}
+    </update>
+
+    <update id="updateInstrumRentalQty" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+		UPDATE INSTRUM SET
+			RENTAL_QTY = RENTAL_QTY - #{rental_qty}
+		WHERE INSTRUM_IDX = #{instrum_idx}
+	</update>
+
+    <update id="updateInstrumRentalQtyPlus" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+		UPDATE INSTRUM SET
+			RENTAL_QTY = RENTAL_QTY + #{rental_qty}
+		WHERE INSTRUM_IDX = #{instrum_idx}
+	</update>
+
+    <update id="updateInstrumRentalQtyDiff" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+		UPDATE INSTRUM SET
+			RENTAL_QTY = RENTAL_QTY + #{qty_diff}
+		WHERE INSTRUM_IDX = #{instrum_idx}
+	</update>
+
+    <update id="updateInstrumRentalQtyEx" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+		UPDATE INSTRUM SET
+			RENTAL_QTY = RENTAL_QTY - #{rental_qty}
+		WHERE INSTRUM_IDX = #{instrum_idx}
+	</update>
+
+    <update id="updatePersonBookApyInfo" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo">
+        UPDATE PERSON_BOOK_APY SET
+        UP_ID	= #{up_id}
+        <if test="apy_mob_no != null and apy_mob_no !=''">
+            ,APY_MOB_NO = #{apy_mob_no}
+        </if>
+        <if test="apy_cnt != null and apy_cnt !=''">
+            ,APY_CNT = #{apy_cnt}
+        </if>
+        <if test="grp_name != null and grp_name !=''">
+            ,GRP_NAME = #{grp_name}
+        </if>
+        <if test="view_dt != null  and view_dt !=''">
+            ,VIEW_DT = #{view_dt}
+        </if>
+        <if test="plc != null  and plc !=''">
+            ,PLC = #{plc}
+        </if>
+        <if test="reason != null  and reason !=''">
+            ,REASON = #{reason}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE PERSON_BOOK_APY_IDX = #{person_book_apy_idx}
+    </update>
+
+    <update id="updatePersonBookApyInfoCancel" parameterType="kr.go.songpa.ssem.model.PersonBookApyVo">
+		UPDATE PERSON_BOOK_APY SET
+			STATUS = 'C'
+		WHERE PERSON_BOOK_APY_IDX = #{person_book_apy_idx}
+	</update>
+
+    <update id="updatePersonBookRegInfoCancel" parameterType="kr.go.songpa.ssem.model.PersonBookRegVo">
+		UPDATE PERSON_BOOK_REG SET
+			STATUS = 'C'
+		WHERE PERSON_BOOK_REG_IDX = #{person_book_reg_idx}
+	</update>
+
+    <update id="updateInstrumRentalCancel" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+		UPDATE INSTRUM_APY SET
+			STATUS = 'R'
+		    , RENTAL_END_DT = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+		WHERE INSTRUM_APY_IDX = #{instrum_apy_idx}
+	</update>
+
+    <update id="updateInstrumDntCancel" parameterType="kr.go.songpa.ssem.model.InstrumDntVo">
+		UPDATE INSTRUM_DNT SET
+			STATUS = 'C'
+		WHERE INSTRUM_DNT_IDX = #{instrum_dnt_idx}
+	</update>
+
+    <update id="updateInstrumRentalInfo" parameterType="kr.go.songpa.ssem.model.InstrumApyVo">
+        UPDATE INSTRUM_APY SET
+        UP_ID	= #{up_id}
+        <if test="apy_mob_no != null and apy_mob_no !=''">
+            ,APY_MOB_NO = #{apy_mob_no}
+        </if>
+        <if test="grp_name != null and grp_name !=''">
+            ,GRP_NAME = #{grp_name}
+        </if>
+        <if test="apy_tel_no != null and apy_tel_no !=''">
+            ,APY_TEL_NO = #{apy_tel_no}
+        </if>
+        <if test="apy_email != null and apy_email !=''">
+            ,APY_EMAIL = #{apy_email}
+        </if>
+        <if test="apy_addr != null and apy_addr !=''">
+            ,APY_ADDR = #{apy_addr}
+        </if>
+        <if test="mem_cnt != null and mem_cnt !=''">
+            ,MEM_CNT = #{mem_cnt}
+        </if>
+        <if test="purpose != null and purpose !=''">
+            ,PURPOSE = #{purpose}
+        </if>
+        <if test="apy_parent_name != null and apy_parent_name !=''">
+            ,APY_PARENT_NAME = #{apy_parent_name}
+        </if>
+        <if test="apy_parent_mob_no != null and apy_parent_mob_no !=''">
+            ,APY_PARENT_MOB_NO = #{apy_parent_mob_no}
+        </if>
+        <if test="rental_start_dt != null and rental_start_dt !=''">
+            ,RENTAL_START_DT = #{rental_start_dt}
+        </if>
+        <if test="rental_end_dt != null and rental_end_dt !=''">
+            ,RENTAL_END_DT = #{rental_end_dt}
+        </if>
+        <if test="rental_month != null and rental_month !=''">
+            ,RENTAL_MONTH = #{rental_month}
+        </if>
+        <if test="return_due_dt != null and return_due_dt !=''">
+            ,RETURN_DUE_DT = #{return_due_dt}
+        </if>
+        <if test="rental_qty != null and rental_qty !=''">
+            ,RENTAL_QTY = #{rental_qty}
+        </if>
+        <if test="pay != null and pay !=''">
+            ,PAY = #{pay}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE INSTRUM_APY_IDX = #{instrum_apy_idx}
+    </update>
+
+    <update id="updateSelfEduCounselCancel" parameterType="kr.go.songpa.ssem.model.SelfCounselVo">
+		UPDATE SELF_COUNSEL SET
+			STATUS = 'C'
+		WHERE SELF_COUNSEL_IDX = #{self_counsel_idx}
+	</update>
+
+    <update id="updateRentalFtyApyPayResult" parameterType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+        UPDATE RENTAL_FTY_APY SET
+        UP_ID = #{up_id}
+        <if test="pay_sucs_yn != null and pay_sucs_yn !=''">
+            ,PAY_SUCS_YN = #{pay_sucs_yn}
+        </if>
+        <if test="pay_sum != null and pay_sum !=''">
+            ,PAY_SUM = #{pay_sum}
+        </if>
+        , PAY_DT = SYSDATE
+        <if test="pay_code != null and pay_code !=''">
+            ,PAY_CODE = #{pay_code}
+        </if>
+        <if test="trade_code != null and trade_code !=''">
+            ,TRADE_CODE = #{trade_code}
+        </if>
+        , PAY_STATUS = #{pay_status}
+        , PAY_METHOD = #{pay_method}
+        , UP_DT = SYSDATE
+        WHERE RENTAL_FTY_APY_IDX = #{rental_fty_apy_idx}
+    </update>
+
+    <delete id="deletePersonBookInfo" parameterType="kr.go.songpa.ssem.model.PersonBookVo">
+	    DELETE FROM PERSON_BOOK WHERE PERSON_BOOK_IDX = #{person_book_idx}
+	</delete>
+
+    <delete id="deleteFutureEduIntroInfo" parameterType="kr.go.songpa.ssem.model.FutureEduIntroVo">
+	    DELETE FROM FUTURE_EDU_INTRO WHERE FUTURE_EDU_INTRO_IDX = #{future_edu_intro_idx}
+	</delete>
+
+    <delete id="deleteFutureEduReviewInfo" parameterType="kr.go.songpa.ssem.model.FutureEduReviewVo">
+	    DELETE FROM FUTURE_EDU_REVIEW WHERE FUTURE_EDU_REVIEW_IDX = #{future_edu_review_idx}
+	</delete>
+
+    <delete id="deleteSelfEduIntroInfo" parameterType="kr.go.songpa.ssem.model.SelfEduIntroVo">
+	    DELETE FROM SELF_EDU_INTRO WHERE SELF_EDU_INTRO_IDX = #{self_edu_intro_idx}
+	</delete>
+
+    <delete id="deleteInstrumReviewInfo" parameterType="kr.go.songpa.ssem.model.InstrumReviewVo">
+	    DELETE FROM INSTRUM_REVIEW WHERE INSTRUM_REVIEW_IDX = #{instrum_review_idx}
+	</delete>
+
+    <delete id="deleteInstrumDntInfo" parameterType="kr.go.songpa.ssem.model.InstrumDntVo">
+	    DELETE FROM INSTRUM_DNT WHERE INSTRUM_DNT_IDX = #{instrum_dnt_idx}
+	</delete>
+
+    <delete id="deleteRentalFtyApyInfo" parameterType="kr.go.songpa.ssem.model.RentalFtyApyVo">
+	    DELETE FROM RENTAL_FTY_APY WHERE RENTAL_FTY_APY_IDX = #{rental_fty_apy_idx}
+	</delete>
+
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Common CrossSite Tag Replace Special Html Code Convert(JSTL 1.1 core library 기반)</description>
+    <display-name>Common JSTL function core</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>commonFunc</short-name>
+    <function>
+        <name>bitCal</name>
+        <function-class>com.igc.app.util.BitCalculation</function-class>
+        <function-signature>
+            boolean bitCal(java.lang.Integer, java.lang.Integer)
+        </function-signature>
+    </function>
+    <function>
+        <name>bitCalOr</name>
+        <function-class>com.igc.app.util.BitCalculation</function-class>
+        <function-signature>
+            boolean bitCalOr(java.lang.Integer, java.lang.Integer)
+        </function-signature>
+    </function>
+    <function>
+        <name>bitCalXor</name>
+        <function-class>com.igc.app.util.BitCalculation</function-class>
+        <function-signature>
+            boolean bitCalXor(java.lang.Integer, java.lang.Integer)
+        </function-signature>
+    </function>
+    <function>
+        <name>bitCalNot</name>
+        <function-class>com.igc.app.util.BitCalculation</function-class>
+        <function-signature>
+            boolean bitCalNot(java.lang.Integer)
+        </function-signature>
+    </function>
+</taglib>

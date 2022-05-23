@@ -1,0 +1,686 @@
+/*
+*****************************************
+*             area  : start
+*****************************************
+*/
+$area-coloums : (
+    12 "",
+    15 "_15",
+    24 "_24",
+);
+
+$area-values: ("t" , "b", "l", "r", "tb", "lr");
+
+$area-bg-colors  : (
+    1 :  #ffffff,
+    2 :  #f7f7f7,
+    3 :  #222222,
+    4 :  #eeeeee,
+);
+
+/*scrollDisable : 스크롤 방지*/
+.scrollDisable {position: absolute; left: 0; height:100%; min-height:100%; overflow:hidden !important; touch-action:none;}
+.slick-list, .slick-track { touch-action:pan-y; }
+ 
+/*background*/
+@each $name, $color in $area-bg-colors {
+  .bg_color_#{$name} {background-color: $color;}
+}
+
+@include tab(){
+    @each $name, $color in $area-bg-colors {
+        .bg_color_md_#{$name} {background-color: $color;}
+      }
+      
+}
+
+
+@each $type in $area-values {
+  /*margin - #{$type}*/
+  @for $i from 0 to 22  {
+    .m#{$type}_#{5 * $i} {
+        @if $type == "t" {
+            margin-top: rem(5 * $i);
+        }
+        @else if $type == "b"{
+            margin-bottom: rem(5 * $i);
+        }
+        @else if $type == "l"{
+            margin-left: rem(5 * $i);
+        }
+        @else if $type == "r"{
+            margin-right: rem(5 * $i);
+        }
+        @else if $type == "tb"{
+            margin-top: rem(5 * $i);
+            margin-bottom: rem(5 * $i);
+        }
+        @else if $type == "lr"{
+            margin-left: rem(5 * $i);
+            margin-right: rem(5 * $i);
+        }
+      
+    }
+  }
+  @include pc-small {
+    /*md_margin - #{$type}*/
+    @for $i from 0 to 22  {
+      .m#{$type}_lg_#{5 * $i} {
+        @if $type == "tb"{
+            margin-top: rem(5 * $i, $var-browser-lg-context);
+            margin-bottom: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "lr"{
+            margin-left: rem(5 * $i, $var-browser-lg-context);
+            margin-right: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "t" {
+            margin-top: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "b"{
+            margin-bottom: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "l"{
+            margin-left: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "r"{
+            margin-right: rem(5 * $i, $var-browser-lg-context);
+        }
+        
+      }
+    }
+  }
+
+  @include tab {
+    /*md_margin - #{$type}*/
+    @for $i from 0 to 22  {
+      .m#{$type}_md_#{5 * $i} {
+        @if $type == "tb"{
+            margin-top: rem(5 * $i, $var-browser-md-context);
+            margin-bottom: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "lr"{
+            margin-left: rem(5 * $i, $var-browser-md-context);
+            margin-right: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "t" {
+            margin-top: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "b"{
+            margin-bottom: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "l"{
+            margin-left: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "r"{
+            margin-right: rem(5 * $i, $var-browser-md-context);
+        }
+        
+      }
+    }
+  }
+
+  @include mob {
+    /*md_margin - #{$type}*/
+    @for $i from 0 to 22  {
+      .m#{$type}_sm_#{5 * $i} {
+        @if $type == "tb"{
+            margin-top: rem(5 * $i, $var-browser-sm-context);
+            margin-bottom: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "lr"{
+            margin-left: rem(5 * $i, $var-browser-sm-context);
+            margin-right: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "t" {
+            margin-top: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "b"{
+            margin-bottom: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "l"{
+            margin-left: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "r"{
+            margin-right: rem(5 * $i, $var-browser-sm-context);
+        }
+        
+      }
+    }
+  }
+
+  /*padding - #{$type}*/
+  @for $i from 0 to 22  {
+    .p#{$type}_#{5 * $i} {
+        @if $type == "tb"{
+            padding-top: rem(5 * $i);
+            padding-bottom: rem(5 * $i);
+        }
+        @else if $type == "lr"{
+            padding-left: rem(5 * $i);
+            padding-right: rem(5 * $i);
+        }
+        @else if $type == "t" {
+            padding-top: rem(5 * $i);
+        }
+        @else if $type == "b"{
+            padding-bottom: rem(5 * $i);
+        }
+        @else if $type == "l"{
+            padding-left: rem(5 * $i);
+        }
+        @else if $type == "r"{
+            padding-right: rem(5 * $i);
+        }
+        
+    }
+  }
+  
+  @include pc-small {
+    /*md_padding - #{$type}*/
+    @for $i from 0 to 22  {
+      .p#{$type}_lg_#{5 * $i} {
+        @if $type == "tb"{
+            padding-top: rem(5 * $i, $var-browser-lg-context);
+            padding-bottom: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "lr"{
+            padding-left: rem(5 * $i, $var-browser-lg-context);
+            padding-right: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "t" {
+            padding-top: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "b"{
+            padding-bottom: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "l"{
+            padding-left: rem(5 * $i, $var-browser-lg-context);
+        }
+        @else if $type == "r"{
+            padding-right: rem(5 * $i, $var-browser-lg-context);
+        }
+      }
+    }
+  }
+  @include tab {
+    /*md_padding - #{$type}*/
+    @for $i from 0 to 22  {
+      .p#{$type}_md_#{5 * $i} {
+        @if $type == "tb"{
+            padding-top: rem(5 * $i, $var-browser-md-context);
+            padding-bottom: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "lr"{
+            padding-left: rem(5 * $i, $var-browser-md-context);
+            padding-right: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "t" {
+            padding-top: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "b"{
+            padding-bottom: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "l"{
+            padding-left: rem(5 * $i, $var-browser-md-context);
+        }
+        @else if $type == "r"{
+            padding-right: rem(5 * $i, $var-browser-md-context);
+        }
+        
+      }
+    }
+  }
+  @include mob {
+    /*md_padding - #{$type}*/
+    @for $i from 0 to 22  {
+      .p#{$type}_sm_#{5 * $i} {
+        @if $type == "tb"{
+            padding-top: rem(5 * $i, $var-browser-sm-context);
+            padding-bottom: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "lr"{
+            padding-left: rem(5 * $i, $var-browser-sm-context);
+            padding-right: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "t" {
+            padding-top: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "b"{
+            padding-bottom: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "l"{
+            padding-left: rem(5 * $i, $var-browser-sm-context);
+        }
+        @else if $type == "r"{
+            padding-right: rem(5 * $i, $var-browser-sm-context);
+        }
+      }
+    }
+  }
+}
+
+/*float*/
+.float_none{float: none !important;}
+.float_left{float: left;}
+.float_right{float: right;}
+@include tab {  //psd 
+  .float_md_none{float: none !important;}
+  .float_md_left{float: left !important;}
+  .float_md_right{float: right !important;}
+}
+
+/*position*/
+.por {position: relative;}
+.poa {position: absolute;}
+
+/*clearfix*/
+.clearfix {
+  @include clearfix();
+}
+.clearfix_after {
+  @include clearfix('after');
+}
+.clearboth {
+  clear: both
+}
+
+.row, .row_15, .row_24{
+    @include clearfix('after');
+    > [class *=col_]{
+        float: left;
+        &.float_right{
+            float:right;
+        }
+    }
+    &.row_p_15{
+        margin : {
+            left : rem(-15);
+            right : rem(-15);
+        }
+        > [class *=col_]{
+            padding : {
+                left : rem(15);
+                right : rem(15);
+            }
+        }
+    }
+    &.row_p_13{
+        margin : {
+            left : rem(-13);
+            right : rem(-13);
+        }
+        > [class *=col_]{
+            padding : {
+                left : rem(13);
+                right : rem(13);
+            }
+        }
+    }
+    &.row_p_10{
+        margin : {
+            left : rem(-10);
+            right : rem(-10);
+        }
+        > [class *=col_]{
+            padding : {
+                left : rem(10);
+                right : rem(10);
+            }
+        }
+    }
+    &.row_p_25{
+        margin : {
+            left : rem(-25);
+            right : rem(-25);
+        }
+        > [class *=col_]{
+            padding : {
+                left : rem(25);
+                right : rem(25);
+            }
+        }
+    }
+    &.row_p_23{
+        margin : {
+            left : rem(-23);
+            right : rem(-23);
+        }
+        > [class *=col_]{
+            padding : {
+                left : rem(23);
+                right : rem(23);
+            }
+        }
+    }
+}
+
+@include tab{
+   
+    
+    .row, .row_15, .row_24{
+        &.row_p_md_5{
+            margin : {
+                left : rem(-5);
+                right : rem(-5);
+            }
+            > [class *=col_]{
+                padding : {
+                    left : rem(5);
+                    right : rem(5);
+                }
+            }
+        }
+    }
+}
+
+@each $coloum, $name in $area-coloums {
+    @for $i from 1 to ($coloum + 1)  {
+        .row#{$name} > .col_#{$i}{width: (100% / $coloum) * $i;}
+    }
+    @for $i from 0 to ($coloum + 1)  {
+        .row#{$name} > .offset_#{$i}{margin-left: (100% / $coloum) * $i;}
+    }
+}
+
+@include pc-small() {
+    @each $coloum, $name in $area-coloums {
+        @for $i from 1 to ($coloum + 1)  {
+            .row#{$name} > .col_lg_#{$i}{width: (100% / $coloum) * $i;}
+        }
+        @for $i from 0 to ($coloum + 1)  {
+            .row#{$name} > .offset_lg_#{$i}{margin-left: (100% / $coloum) * $i;}
+        }
+    }
+}
+
+@include tab() {
+    @each $coloum, $name in $area-coloums {
+        @for $i from 1 to ($coloum + 1)  {
+            .row#{$name} > .col_md_#{$i}{width: (100% / $coloum) * $i;}
+        }
+        @for $i from 0 to ($coloum + 1)  {
+            .row#{$name} > .offset_md_#{$i}{margin-left: (100% / $coloum) * $i;}
+        }
+    }
+    @for $i from 1 to (12 + 1)  {
+        .row_md > .col_md_#{$i}{width: (100% / 12) * $i;}
+    }
+    @for $i from 0 to  (12 + 1)  {
+        .row_md > .offset_md_#{$i}{margin-left: (100% / 12) * $i;}
+    }
+}
+
+@include mob() {
+    @each $coloum, $name in $area-coloums {
+        @for $i from 1 to ($coloum + 1)  {
+            .row#{$name} > .col_sm_#{$i}{width: (100% / $coloum) * $i;}
+        }
+        @for $i from 0 to ($coloum + 1)  {
+            .row#{$name} > .offset_sm_#{$i}{margin-left: (100% / $coloum) * $i;}
+        }
+    }
+}
+
+
+@include mob-mid() {
+    @each $coloum, $name in $area-coloums {
+        @for $i from 1 to ($coloum + 1)  {
+            .row#{$name} > .col_xs_#{$i}{width: (100% / $coloum) * $i;}
+        }
+        @for $i from 0 to ($coloum + 1)  {
+            .row#{$name} > .offset_xs_#{$i}{margin-left: (100% / $coloum) * $i;}
+        }
+    }
+}
+
+@include mob-small {
+    @each $coloum, $name in $area-coloums {
+        @for $i from 1 to ($coloum + 1)  {
+            .row#{$name} > .col_xxs_#{$i}{width: (100% / $coloum) * $i;}
+        }
+        @for $i from 0 to ($coloum + 1)  {
+            .row#{$name} > .offset_xxs_#{$i}{margin-left: (100% / $coloum) * $i;}
+        }
+    }
+}
+
+.row_table{
+	display: table;
+	width: 100%;
+    table-layout: fixed;
+    .row{
+        display: table-row;
+    }
+	.col{
+        display: table-cell;
+        vertical-align: middle;
+        &.va_t{
+            vertical-align: top;
+        }
+        &.va_b{
+            vertical-align: top;
+        }
+	}
+}
+
+
+@include pc-small {
+    .row_lg_table_none{
+        display: block;
+        table-layout: fixed;
+        .row{
+            display: block;
+        }
+        .col{
+            display: block;
+        }
+    }
+}
+
+@include tab {
+    .row_md_table_none{
+        display: block;
+        table-layout: fixed;
+        .row{
+            display: block;
+        }
+        .col{
+            display: block;
+        }
+    }
+}
+
+@include mob {
+    .row_sm_table_none{
+        display: block;
+        table-layout: fixed;
+        .row{
+            display: block;
+        }
+        .col{
+            display: block;
+        }
+    }
+}
+
+
+@include mob-mid {
+    .row_xs_table_none{
+        display: block;
+        table-layout: fixed;
+        .row{
+            display: block;
+        }
+        .col{
+            display: block;
+        }
+    }
+}
+
+@include mob-small {
+    .row_xxs_table_none{
+        display: block;
+        table-layout: fixed;
+        .row{
+            display: block;
+        }
+        .col{
+            display: block;
+        }
+    }
+ 
+}
+
+
+
+.wrap{
+    width : 100%;
+    max-width:1440px;
+    margin : {
+        left: auto;
+        right: auto;
+    }
+}
+
+.wrap_1600 {
+    width : 100%;
+    max-width: 1600px;
+    margin : {
+        left: auto;
+        right: auto;
+    }
+    @include vendor(transition, ' all 0.3s');
+
+}
+.wrap_1400 {
+    max-width: 1400px;
+    margin : {
+        left: auto;
+        right: auto;
+    }
+}
+.wrap_1250{
+    max-width: 1250px;
+    margin : {
+        left: auto;
+        right: auto;
+    }
+}
+.wrap_1280{
+    max-width: 1280px;
+    margin : {
+        left: auto;
+        right: auto;
+    }
+}
+
+@media all and (max-width:1440px) {
+    .wrap, .wrap_1250, .wrap_1280 {
+        padding-left  : rem(20);
+        padding-right  : rem(20);
+    }
+}
+@include tab {
+    
+    .wrap_md_p_0{
+        padding-left  : 0;
+        padding-right  : 0;
+    }
+}
+
+@include mob {
+    .wrap_sm_p_0{
+        padding-left  : 0;
+        padding-right  : 0;
+    }
+}
+
+
+@include mob-mid {
+    .wrap_xs_p_0{
+        padding-left  : 0;
+        padding-right  : 0;
+    }
+}
+
+@include mob-small {
+    .wrap_xxs_p_0{
+        padding-left  : 0;
+        padding-right  : 0;
+    }
+}
+.text_hide{
+    position: absolute;
+    width: 1px;  height: 1px;
+    overflow: hidden;
+    text-indent: -9999px;
+}
+
+.dp_b{display: block}
+.dp_inb{display: inline-block}
+
+.screen_hide{display: none !important;}
+.screen_show{display: block}
+@include pc-small {
+    .dp_lg_inb{display: inline-block !important;}
+
+    .screen_lg_hide{display: none !important;}
+    .screen_lg_show{display: block !important;}
+}
+
+@include tab {
+    .dp_md_inb{display: inline-block !important;}
+    .dp_md_b{display: block;}
+
+    .screen_md_hide{display: none !important;}
+    .screen_md_show{display: block !important;}
+}
+
+@include mob {
+    .dp_sm_inb{display: inline-block !important;}
+
+    .screen_sm_hide{display: none !important;}
+    .screen_sm_show{display: block !important;}
+}
+
+
+@include mob-mid {
+    .dp_xs_inb{display: inline-block !important;}
+
+    .screen_xs_hide{display: none !important;}
+    .screen_xs_show{display: block !important;}
+}
+
+@include mob-small {
+    .dp_xxs_inb{display: inline-block !important;}
+
+    .screen_xxs_hide{display: none !important;}
+    .screen_xxs_show{display: block !important;}
+}
+
+
+//접근성
+.all_mneu_close,
+.accessClose{
+	position: absolute;
+	width:0;
+	height:0;
+	overflow: hidden;
+	opacity: 0.05;
+	&:focus{
+		width:auto;
+		height:auto;
+		opacity: 1;
+		right:1rem;
+		bottom:1rem;
+		font-size:1rem;
+		display: inline-block;
+		padding:0.25em 0.5em;
+		background:rgba(255, 255, 255, 0.3);
+	}
+}
+._focus_last{
+	position: absolute;
+	top:0;
+}

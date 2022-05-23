@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!--!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd"-->
+
+<tiles-definitions>
+    <!-- 메세지 처리 -->
+    <definition name="blank" template="/WEB-INF/views/layouts/blank/blank_layout.jsp">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/blank/body.jsp"/>
+    </definition>
+    <definition name="common/message" extends="blank">
+        <put-attribute name="body" value="/WEB-INF/views/common/message.jsp"/>
+    </definition>
+
+    <!-- 청소년교육 내용 -->
+    <definition name="youth_layout" template="/WEB-INF/views/layouts/youth/layout.jsp">
+        <put-attribute name="title" value="청소년교육 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/youth/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/youth/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/youth/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/youth/footer.jsp"/>
+    </definition>
+    <definition name="youth/*/*" extends="youth_layout">
+        <put-attribute name="body" value="/WEB-INF/views/youth/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 송파진로직업체험지원센터 -->
+    <definition name="dream_layout" template="/WEB-INF/views/layouts/dream/layout.jsp">
+        <put-attribute name="title" value="송파진로직업체험지원센터 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/dream/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/dream/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/dream/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/dream/footer.jsp"/>
+    </definition>
+    <definition name="dream/*/*" extends="dream_layout">
+        <put-attribute name="body" value="/WEB-INF/views/dream/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 교육지원 > 송파청소년센터 -->
+    <definition name="songpacenter_layout" template="/WEB-INF/views/layouts/songpacenter/layout.jsp">
+        <put-attribute name="title" value="송파청소년센터 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/songpacenter/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/songpacenter/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/songpacenter/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/songpacenter/footer.jsp"/>
+    </definition>
+    <definition name="songpacenter/*/*" extends="songpacenter_layout">
+        <put-attribute name="body" value="/WEB-INF/views/songpacenter/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 교육지원 > 마천청소년센터 -->
+    <definition name="machuncenter_layout" template="/WEB-INF/views/layouts/machuncenter/layout.jsp">
+        <put-attribute name="title" value="마천청소년센터 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/machuncenter/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/machuncenter/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/machuncenter/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/machuncenter/footer.jsp"/>
+    </definition>
+    <definition name="machuncenter/*/*" extends="machuncenter_layout">
+        <put-attribute name="body" value="/WEB-INF/views/machuncenter/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 교육지원 > 잠실청소년센터 -->
+    <definition name="jamsilcenter_layout" template="/WEB-INF/views/layouts/jamsilcenter/layout.jsp">
+        <put-attribute name="title" value="잠실청소년센터 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/jamsilcenter/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/jamsilcenter/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/jamsilcenter/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/jamsilcenter/footer.jsp"/>
+    </definition>
+    <definition name="jamsilcenter/*/*" extends="jamsilcenter_layout">
+        <put-attribute name="body" value="/WEB-INF/views/jamsilcenter/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 교육지원 > 구립송파 청소년미래센터 -->
+    <definition name="futurecenter_layout" template="/WEB-INF/views/layouts/futurecenter/layout.jsp">
+        <put-attribute name="title" value="구립송파 청소년미래센터 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/futurecenter/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/futurecenter/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/futurecenter/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/futurecenter/footer.jsp"/>
+    </definition>
+    <definition name="futurecenter/*/*" extends="futurecenter_layout">
+        <put-attribute name="body" value="/WEB-INF/views/futurecenter/{1}/{2}.jsp"/>
+    </definition>
+
+    <!-- 평생교육 내용 -->
+    <definition name="senior_layout" template="/WEB-INF/views/layouts/senior/layout.jsp">
+        <put-attribute name="title" value="청소년교육 홈페이지"/>
+        <put-attribute name="header" value="/WEB-INF/views/layouts/senior/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/layouts/senior/menu.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/layouts/senior/body.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/views/layouts/senior/footer.jsp"/>
+    </definition>
+    <definition name="senior/*/*" extends="senior_layout">
+        <put-attribute name="body" value="/WEB-INF/views/senior/{1}/{2}.jsp"/>
+    </definition>
+</tiles-definitions>

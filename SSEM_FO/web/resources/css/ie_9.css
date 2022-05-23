@@ -1,0 +1,1 @@
+.sel_box:before { content: ''; position: absolute; width: 3em; height: 100%; top: 0; right: 3px; z-index: 1; background-color: #fff; }

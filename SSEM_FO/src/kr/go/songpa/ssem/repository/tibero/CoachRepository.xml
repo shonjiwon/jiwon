@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.CoachRepository">
+
+	<select id="selectCoachList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.CoachVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.* FROM COACH A
+		WHERE
+		1=1
+		<if test="searchVal != null  and searchVal !=''">
+			AND (UPPER(A.SUBJECT) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+		</if>
+		ORDER BY A.REG_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectCoachListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM COACH A
+		WHERE
+		1=1
+		<if test="searchVal != null  and searchVal !=''">
+			AND (UPPER(A.SUBJECT) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+		</if>
+	</select>
+
+	<select id="selectCoachRoomInfo" resultType="kr.go.songpa.ssem.model.CoachRoomVo">
+		SELECT * FROM COACH_ROOM A WHERE COACH_ROOM_IDX = 1
+	</select>
+
+</mapper>

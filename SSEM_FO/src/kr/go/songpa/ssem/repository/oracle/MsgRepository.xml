@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.oracle.MsgRepository">
+
+    <insert id="sendMsgKakao" parameterType="kr.go.songpa.ssem.model.CustomSmsSendVo">
+        <selectKey resultType="int" keyProperty="id" order="BEFORE">
+            SELECT MONO_SOLUTIONS.CUSTOMER_SMS_SEND_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CUSTOMER_SMS_SEND (
+        ID
+        ,USER_ID
+        ,SCHEDULE_TYPE
+        ,TITLE
+        ,MSG_CONTENT
+        ,CALLING_NUM
+        ,TGT_NM
+        ,PHONE_NUM
+        ,TEMPLATE_CD
+        ,RESERV_DTTM
+        ,REG_DTTM
+        ) VALUES (
+        #{id}
+        ,#{user_id}
+        ,#{schedule_type}
+        ,#{title}
+        ,#{msg_content}
+        ,#{calling_num}
+        ,#{tgt_nm}
+        ,#{phone_num}
+        ,#{template_cd}
+        ,NULL
+        ,TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS')
+        )
+    </insert>
+
+</mapper>

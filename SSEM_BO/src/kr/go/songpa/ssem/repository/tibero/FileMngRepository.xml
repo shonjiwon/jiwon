@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.FileMngRepository">
+    <select id="selectFileInf" parameterType="kr.go.songpa.ssem.model.FileVo" resultType="kr.go.songpa.ssem.model.FileVo">
+		SELECT
+			ATCH_FILE_ID
+			, FILE_CON
+			, FILE_NUM
+			, FILE_STORE_PATH
+			, FILE_NM
+			, FILE_EXT
+			, FILE_ORI_NM
+			, FILE_SIZE
+			, FILE_EXP
+			, FILE_SRC
+		FROM
+			ATCH_FILE_DTL
+		WHERE
+			ATCH_FILE_ID = #{atch_file_id}
+		AND
+			FILE_NUM = #{file_num}
+	</select>
+
+    <select id="selectFileList" parameterType="kr.go.songpa.ssem.model.FileVo" resultType="kr.go.songpa.ssem.model.FileVo">
+		SELECT
+			a.ATCH_FILE_ID, b.FILE_CON, b.FILE_NUM, b.FILE_STORE_PATH, b.FILE_NM,
+			b.FILE_EXT, b.FILE_ORI_NM, b.FILE_SIZE, b.FILE_EXP, b.FILE_SRC, a.REG_DT
+		FROM
+			ATCH_FILE a, ATCH_FILE_DTL b
+		WHERE
+			a.ATCH_FILE_ID = #{atch_file_id}
+		AND
+			a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		AND
+			a.USE_YN = 'Y'
+		ORDER BY
+			b.FILE_NUM
+	</select>
+
+    <select id="selectFileAll" resultType="kr.go.songpa.ssem.model.FileVo">
+		SELECT
+			a.ATCH_FILE_ID, b.FILE_CON, b.FILE_NUM, b.FILE_STORE_PATH, b.FILE_NM,
+			b.FILE_EXT, b.FILE_ORI_NM, b.FILE_SIZE, b.FILE_EXP, b.FILE_SRC, a.REG_DT
+		FROM
+			ATCH_FILE a, ATCH_FILE_DTL b
+		WHERE
+			a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		AND
+			a.USE_YN = 'Y'
+		ORDER BY
+			b.FILE_NUM
+	</select>
+
+    <select id="getMaxFileSN" parameterType="kr.go.songpa.ssem.model.FileVo" resultType="int">
+	    SELECT
+	    	NVL(MAX(FILE_NUM),0) + 1 AS FILE_NUM
+		FROM
+			ATCH_FILE_DTL
+		WHERE
+			ATCH_FILE_ID =  #{atch_file_id}
+	</select>
+
+    <insert id="insertFileMaster" parameterType="kr.go.songpa.ssem.model.FileVo">
+		INSERT INTO ATCH_FILE
+		(
+			ATCH_FILE_ID, REG_DT, USE_YN
+		)
+		VALUES
+		(
+			#{atch_file_id}, SYSDATE, 'Y'
+		)
+	</insert>
+
+    <insert id="insertFileDetail" parameterType="kr.go.songpa.ssem.model.FileVo">
+	    INSERT INTO ATCH_FILE_DTL
+	    (
+			 ATCH_FILE_ID,
+			 FILE_NUM,
+			 FILE_STORE_PATH,
+			 FILE_NM,
+			 FILE_ORI_NM,
+			 FILE_EXT,
+			 FILE_SIZE,
+			 FILE_CON,
+			 FILE_EXP,
+			 FILE_SRC
+	    ) VALUES (
+		     #{atch_file_id},
+		     #{file_num},
+		     #{file_store_path},
+		     #{file_nm},
+			 #{file_ori_nm},
+			 #{file_ext},
+			 #{file_size},
+			 #{file_con},
+			 #{file_exp},
+			 #{file_src}
+	    )
+	</insert>
+
+    <update id="updateFileDetail" parameterType="kr.go.songpa.ssem.model.FileVo">
+		UPDATE ATCH_FILE_DTL SET
+		 	FILE_STORE_PATH	= #{file_store_path}
+			,FILE_NM 		= #{file_nm}
+			,FILE_ORI_NM	= #{file_ori_nm}
+			,FILE_EXT		= #{file_ext}
+			,FILE_SIZE		= #{file_size}
+			,FILE_CON		= #{file_con}
+			,FILE_EXP		= #{file_exp}
+			,FILE_SRC		= #{file_src}
+		WHERE
+			ATCH_FILE_ID = #{atch_file_id}
+		 	AND
+		 	FILE_NUM = #{file_num}
+	</update>
+
+    <update id="updateFileDetailEx" parameterType="kr.go.songpa.ssem.model.FileVo">
+		UPDATE ATCH_FILE_DTL SET
+			FILE_STORE_PATH	= #{file_store_path}
+		   ,FILE_NM 		= #{file_nm}
+		   ,FILE_ORI_NM	= #{file_ori_nm}
+		   ,FILE_EXT		= #{file_ext}
+		   ,FILE_SIZE		= #{file_size}
+		   ,FILE_CON		= #{file_con}
+		   ,FILE_EXP		= #{file_exp}
+		   ,FILE_SRC		= #{file_src}
+		   ,FILE_NUM		= #{file_num_tmp}
+		WHERE
+			ATCH_FILE_ID = #{atch_file_id}
+		  AND
+			FILE_NUM = #{file_num}
+	</update>
+
+    <delete id="deleteFileInf" parameterType="kr.go.songpa.ssem.model.FileVo">
+	    DELETE FROM ATCH_FILE_DTL
+		WHERE
+			ATCH_FILE_ID = #{atch_file_id}
+		AND
+			FILE_NUM = #{file_num}
+	</delete>
+
+    <delete id="deleteAllFileInf" parameterType="kr.go.songpa.ssem.model.FileVo">
+		DELETE FROM ATCH_FILE_DTL
+		WHERE
+			ATCH_FILE_ID = #{atch_file_id}
+	</delete>
+</mapper>

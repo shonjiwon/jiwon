@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.BbsRepoistory">
+    <select id="selectBbsList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.NAME REG_NM FROM BBS_DETAIL A, ADMIN G
+        WHERE
+        1=1 AND A.REG_ID = G.ADMIN_ID
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchVal2 != null and searchVal2 !=''">
+            <if test="searchVal3 == 'B'.toString()">
+            AND A.GROUP_IDX = #{searchVal2}
+            </if>
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.TYPE_CD = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.TOP_YN = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.TOP_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectbbsListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM BBS_DETAIL A, ADMIN G
+        WHERE
+        1=1 AND A.REG_ID = G.ADMIN_ID
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchVal2 != null and searchVal2 !=''">
+            <if test="searchVal3 == 'B'.toString()">
+                AND A.GROUP_IDX = #{searchVal2}
+            </if>
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.TYPE_CD = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.TOP_YN = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectBbsListEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE A.REG_ID = ADMIN_ID ) REG_NM FROM BBS_DETAIL A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.TYPE_CD = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.TOP_YN = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.P_TOP_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectbbsListTotalEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM BBS_DETAIL A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.TYPE_CD = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.TOP_YN = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '3'.toString()">
+                    AND (UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == 'ALL'.toString()">
+                    AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%' OR UPPER(G.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.CONT) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectBbsInfo" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM FROM BBS_DETAIL A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.BBS_DETAIL_IDX=#{bbs_detail_idx}
+	</select>
+
+    <select id="selectBannerMainList" parameterType="kr.go.songpa.ssem.model.BannerVo" resultType="kr.go.songpa.ssem.model.BannerVo">
+        SELECT A.* FROM BANNER A
+        WHERE
+            A.USE_YN = #{use_yn} AND A.GUBUN = #{gubun}
+        ORDER BY
+            A.ORD ASC, A.REG_DT DESC
+    </select>
+
+    <select id="selectBannerList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.BannerVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM BANNER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <!--<if test="searchVal2 != null and searchVal2 !=''">
+            AND A.GROUP_IDX = #{searchVal2}
+        </if>-->
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.USE_YN DESC, A.ORD ASC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectBannerListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM BANNER A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GUBUN = #{searchKind}
+        </if>
+        <!--<if test="searchVal2 != null and searchVal2 !=''">
+            AND A.GROUP_IDX = #{searchVal2}
+        </if>-->
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectBannerInfo" parameterType="kr.go.songpa.ssem.model.BannerVo" resultType="kr.go.songpa.ssem.model.BannerVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM BANNER A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.BANNER_IDX=#{banner_idx}
+	</select>
+
+    <select id="selectTogetherInfo" resultType="kr.go.songpa.ssem.model.TogetherVo">
+		SELECT * FROM TOGETHER ORDER BY IDX ASC
+	</select>
+
+    <select id="selectSiteBbsList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM BBS_DETAIL A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.TYPE_CD = 'B'
+        <if test="searchVal3 == null or searchVal3 ==''">
+            <if test="searchVal2 != null  and searchVal2 !=''">
+                AND G.P_IDX = #{searchVal2}
+            </if>
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchVal2 != null  and searchVal2 !=''">
+                    AND A.MAIN_USE_YN = #{searchKind2}
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
+        </if>
+        <choose>
+            <when test="searchKind2 == 'N'.toString()">
+                AND ( A.MAIN_USE_YN = #{searchKind2} OR A.MAIN_USE_YN IS NULL )
+            </when>
+            <when test="searchKind2 == 'Y'.toString()">
+                AND A.MAIN_USE_YN = #{searchKind2}
+            </when>
+        </choose>
+        <choose>
+            <when test="searchKind3 == 'N'.toString()">
+                AND ( A.P_TOP_YN = #{searchKind3} OR A.P_TOP_YN IS NULL )
+            </when>
+            <when test="searchKind3 == 'Y'.toString()">
+                AND A.P_TOP_YN = #{searchKind3}
+            </when>
+        </choose>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.USE_YN = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.MAIN_USE_YN DESC, A.P_TOP_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectSiteBbsListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM BBS_DETAIL A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND A.TYPE_CD = 'B'
+        <if test="searchVal3 == null or searchVal3 ==''">
+            <if test="searchVal2 != null  and searchVal2 !=''">
+                AND G.P_IDX = #{searchVal2}
+            </if>
+        </if>
+        <if test="searchVal3 != null and searchVal3 !=''">
+            AND A.GROUP_IDX = #{searchVal3}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchVal2 != null  and searchVal2 !=''">
+                    AND A.MAIN_USE_YN = #{searchKind2}
+                </when>
+                <otherwise>
+
+                </otherwise>
+            </choose>
+        </if>
+        <choose>
+            <when test="searchKind2 == 'N'.toString()">
+                AND ( A.MAIN_USE_YN = #{searchKind2} OR A.MAIN_USE_YN IS NULL )
+            </when>
+            <when test="searchKind2 == 'Y'.toString()">
+                AND A.MAIN_USE_YN = #{searchKind2}
+            </when>
+        </choose>
+        <choose>
+            <when test="searchKind3 == 'N'.toString()">
+                AND ( A.P_TOP_YN = #{searchKind3} OR A.P_TOP_YN IS NULL )
+            </when>
+            <when test="searchKind3 == 'Y'.toString()">
+                AND A.P_TOP_YN = #{searchKind3}
+            </when>
+        </choose>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.USE_YN = #{searchKind4}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectMainBbsList" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM BBS_DETAIL A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.MAIN_USE_YN='Y' ORDER BY A.PT_ORD ASC, A.REG_DT DESC
+	</select>
+
+    <select id="selectMainTempBbsList" parameterType="int" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM BBS_DETAIL A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX AND TYPE_CD = 'B' AND MAIN_USE_YN = 'N'
+        ORDER BY A.PT_ORD ASC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= #{value}
+        ) WHERE RNUM &gt;= 0
+    </select>
+
+    <select id="selectSurveyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.SvyMstVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM SVY_MST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.USE_YN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; TO_CHAR(A.START_DT, 'YYYY-MM-DD'))
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(A.START_DT, 'YYYY-MM-DD') AND TO_CHAR(A.END_DT, 'YYYY-MM-DD') )
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; TO_CHAR(A.END_DT, 'YYYY-MM-DD'))
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectSurveyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM SVY_MST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.USE_YN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; TO_CHAR(A.START_DT, 'YYYY-MM-DD'))
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(A.START_DT, 'YYYY-MM-DD') AND TO_CHAR(A.END_DT, 'YYYY-MM-DD') )
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; TO_CHAR(A.END_DT, 'YYYY-MM-DD'))
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectSurvey" parameterType="kr.go.songpa.ssem.model.SvyMstVo" resultType="kr.go.songpa.ssem.model.SvyMstVo">
+		SELECT
+			*
+		FROM
+			SVY_MST P
+		WHERE
+			SVY_IDX=#{svy_idx}
+	</select>
+
+    <select id="selectQuestList" parameterType="kr.go.songpa.ssem.model.SvyMstVo" resultType="kr.go.songpa.ssem.model.SvyQstVo">
+		SELECT
+			*
+		FROM
+			SVY_QST
+		WHERE
+			SVY_IDX=#{svy_idx}
+		ORDER BY
+			NO ASC
+	</select>
+
+    <select id="selectItemList" parameterType="kr.go.songpa.ssem.model.SvyQstVo" resultType="kr.go.songpa.ssem.model.SvyItemVo">
+		SELECT
+			*
+		FROM
+			SVY_ITEM
+		WHERE
+			SVY_IDX=#{svy_idx}
+			AND
+			SVY_QST_IDX = #{svy_qst_idx}
+		ORDER BY
+			NO ASC
+	</select>
+
+    <select id="selectReplyList" parameterType="kr.go.songpa.ssem.model.SvyItemVo" resultType="kr.go.songpa.ssem.model.SvyRpyVo">
+		SELECT
+			*
+		FROM
+			SVY_RPY
+		WHERE
+			SVY_ITEM_IDX=#{svy_item_idx}
+			AND
+			SVY_QST_IDX=#{svy_qst_idx}
+			AND
+			SVY_IDX=#{svy_idx}
+	</select>
+
+    <select id="selectQuestTotalReply" parameterType="kr.go.songpa.ssem.model.SvyItemVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			SVY_RPY
+		WHERE
+			SVY_QST_IDX=#{svy_qst_idx}
+			AND
+			SVY_IDX=#{svy_idx}
+	</select>
+
+    <select id="selectNoticeMainList" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM BBS_DETAIL A
+        WHERE
+            A.USE_YN = 'Y'
+            AND
+            (
+            <if test="group_idx != null and group_idx !=''">
+                ( A.TYPE_CD = #{type_cd} AND A.GUBUN = #{gubun} AND A.GROUP_IDX = #{group_idx} )
+            </if>
+            <if test="array_group_idx != null">
+                ( A.TYPE_CD = #{type_cd} AND A.GUBUN = #{gubun} AND
+                <foreach collection="array_group_idx" item="item" separator="OR" open="(" close=")">
+                    A.GROUP_IDX = #{item}
+                </foreach>
+                )
+            </if>
+            OR (A.TYPE_CD = #{type_cd} AND A.P_TOP_YN = 'Y')
+            )
+        ORDER BY A.PT_ORD ASC, A.P_TOP_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 4
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectNoticeMainListEx" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM BBS_DETAIL A
+        WHERE
+            A.USE_YN = 'Y'
+            AND
+            ( ( A.TYPE_CD = #{type_cd} AND A.GUBUN = #{gubun} AND A.GROUP_IDX = #{group_idx} ) OR (A.TYPE_CD = #{type_cd} AND A.P_TOP_YN = 'Y'))
+        ORDER BY A.PT_ORD ASC, A.P_TOP_YN DESC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;= 3
+        ) WHERE RNUM &gt;= 1
+    </select>
+
+    <select id="selectTogethInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.TogetherVo">
+        SELECT * FROM TOGETHER WHERE IDX = #{value}
+    </select>
+
+    <select id="selectNextBbs" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 BBS_DETAIL A
+	    WHERE
+	    	A.BBS_DETAIL_IDX=
+	    	(
+	    		SELECT MIN(BBS_DETAIL_IDX) FROM BBS_DETAIL WHERE BBS_DETAIL_IDX &gt; #{bbs_detail_idx} AND USE_YN = 'Y' AND GUBUN = #{gubun} AND TYPE_CD = #{type_cd}
+	    	)
+	</select>
+
+    <select id="selectPrevBbs" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 BBS_DETAIL A
+	    WHERE
+	    	A.BBS_DETAIL_IDX=
+	    	(
+	    		SELECT MAX(BBS_DETAIL_IDX) FROM BBS_DETAIL WHERE BBS_DETAIL_IDX &lt; #{bbs_detail_idx} AND USE_YN = 'Y' AND GUBUN = #{gubun} AND TYPE_CD = #{type_cd}
+	    	)
+	</select>
+
+    <select id="selectNextBbsEx" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 BBS_DETAIL A
+	    WHERE
+	    	A.BBS_DETAIL_IDX=
+	    	(
+	    		SELECT MIN(BBS_DETAIL_IDX) FROM BBS_DETAIL WHERE BBS_DETAIL_IDX &gt; #{bbs_detail_idx} AND USE_YN = 'Y' AND TYPE_CD = #{type_cd}
+	    	)
+	</select>
+
+    <select id="selectPrevBbsEx" parameterType="kr.go.songpa.ssem.model.BbsDetailVo" resultType="kr.go.songpa.ssem.model.BbsDetailVo">
+		SELECT
+	    	A.*, (SELECT NAME FROM ADMIN WHERE ADMIN_ID = A.REG_ID) REG_NM
+	    FROM
+	    	 BBS_DETAIL A
+	    WHERE
+	    	A.BBS_DETAIL_IDX=
+	    	(
+	    		SELECT MAX(BBS_DETAIL_IDX) FROM BBS_DETAIL WHERE BBS_DETAIL_IDX &lt; #{bbs_detail_idx} AND USE_YN = 'Y' AND TYPE_CD = #{type_cd}
+	    	)
+	</select>
+
+    <select id="checkSurveyReply" parameterType="kr.go.songpa.ssem.model.SvyMstVo" resultType="int">
+		SELECT COUNT(*) FROM SVY_RPY WHERE SVY_IDX=#{svy_idx} AND REG_ID = #{reg_id}
+	</select>
+
+    <select id="selectSurveyListForUser" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.SvyMstVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT M.* FROM (SELECT DISTINCT SVY_IDX FROM SVY_RPY WHERE REG_ID = #{searchKind3}) A, SVY_MST M
+        WHERE
+        1=1 AND A.SVY_IDX = M.SVY_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND M.USE_YN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; TO_CHAR(M.START_DT, 'YYYY-MM-DD'))
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(M.START_DT, 'YYYY-MM-DD') AND TO_CHAR(M.END_DT, 'YYYY-MM-DD') )
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; TO_CHAR(M.END_DT, 'YYYY-MM-DD'))
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(M.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( TO_CHAR(M.START_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(M.END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        ORDER BY M.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectSurveyListForUserTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM (SELECT DISTINCT SVY_IDX FROM SVY_RPY WHERE REG_ID = #{searchKind3}) A, SVY_MST M
+        WHERE
+        1=1 AND A.SVY_IDX = M.SVY_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND M.USE_YN = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') &lt; TO_CHAR(M.START_DT, 'YYYY-MM-DD'))
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND ( TO_CHAR(SYSDATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(M.START_DT, 'YYYY-MM-DD') AND TO_CHAR(M.END_DT, 'YYYY-MM-DD') )
+                </when>
+                <when test="searchKind2 == '3'.toString()">
+                    AND (TO_CHAR(SYSDATE, 'YYYY-MM-DD') &gt; TO_CHAR(M.END_DT, 'YYYY-MM-DD'))
+                </when>
+            </choose>
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(M.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( TO_CHAR(M.START_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(M.END_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+    </select>
+
+    <insert id="insertNoticeInfo" parameterType="kr.go.songpa.ssem.model.BbsDetailVo">
+        <selectKey resultType="int" keyProperty="bbs_detail_idx" order="BEFORE">
+            SELECT nvl(MAX(BBS_DETAIL_IDX),0)+1 AS BBS_DETAIL_IDX  FROM BBS_DETAIL
+        </selectKey>
+        INSERT INTO BBS_DETAIL (
+        BBS_DETAIL_IDX
+        ,GROUP_IDX
+        ,GUBUN
+        ,TYPE_CD
+        ,P_TOP_YN
+        ,TOP_YN
+        ,TITLE
+        ,CONT
+        ,USE_YN
+        ,ATCH_FILE_ID
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,MOVIE_URL
+        <if test="main_use_yn != null  and main_use_yn !=''">
+            ,MAIN_USE_YN
+        </if>
+        ) VALUES (
+        #{bbs_detail_idx}
+        ,#{group_idx}
+        ,#{gubun}
+        ,#{type_cd}
+        ,#{p_top_yn}
+        ,#{top_yn}
+        ,#{title}
+        ,#{cont}
+        ,#{use_yn}
+        ,#{atch_file_id}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{movie_url}
+        <if test="main_use_yn != null  and main_use_yn !=''">
+            ,#{main_use_yn}
+        </if>
+        )
+    </insert>
+
+    <insert id="insertBannerInfo" parameterType="kr.go.songpa.ssem.model.BannerVo">
+        <selectKey resultType="int" keyProperty="banner_idx" order="BEFORE">
+            SELECT nvl(MAX(BANNER_IDX),0)+1 AS BANNER_IDX  FROM BANNER
+        </selectKey>
+        INSERT INTO BANNER (
+        BANNER_IDX
+        ,GROUP_IDX
+        ,GUBUN
+        ,NAME
+        ,USE_YN
+        ,ORD
+        ,ATCH_FILE_ID
+        ,ALT_TXT
+        ,LINK
+        ,LINK_TGT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{banner_idx}
+        ,#{group_idx}
+        ,#{gubun}
+        ,#{name}
+        ,#{use_yn}
+        ,#{ord}
+        ,#{atch_file_id}
+        ,#{alt_txt}
+        ,#{link}
+        ,#{link_tgt}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSurveyMstInfo" parameterType="kr.go.songpa.ssem.model.SvyMstVo">
+        <selectKey resultType="int" keyProperty="svy_idx" order="BEFORE">
+            SELECT nvl(MAX(SVY_IDX),0)+1 AS SVY_IDX  FROM SVY_MST
+        </selectKey>
+        INSERT INTO SVY_MST (
+        SVY_IDX
+        ,TITLE
+        ,START_DT
+        ,END_DT
+        ,REPLY_CNT
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{svy_idx}
+        ,#{title}
+        ,TO_DATE(#{start_dt}, 'YYYY-MM-DD hh24:mi')
+        ,TO_DATE(#{end_dt}, 'YYYY-MM-DD hh24:mi')
+        ,0
+        ,#{use_yn}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSurveyQstInfo" parameterType="kr.go.songpa.ssem.model.SvyQstVo">
+        <selectKey resultType="int" keyProperty="svy_qst_idx" order="BEFORE">
+            SELECT nvl(MAX(SVY_QST_IDX),0)+1 AS SVY_QST_IDX  FROM SVY_QST
+        </selectKey>
+        INSERT INTO SVY_QST (
+        SVY_QST_IDX
+        ,SVY_IDX
+        ,NO
+        ,TITLE
+        ,TYPE
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{svy_qst_idx}
+        ,#{svy_idx}
+        ,#{no}
+        ,#{title}
+        ,#{type}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSurveyItemInfo" parameterType="kr.go.songpa.ssem.model.SvyItemVo">
+        <selectKey resultType="int" keyProperty="svy_item_idx" order="BEFORE">
+            SELECT nvl(MAX(SVY_ITEM_IDX),0)+1 AS SVY_ITEM_IDX  FROM SVY_ITEM
+        </selectKey>
+        INSERT INTO SVY_ITEM (
+        SVY_ITEM_IDX
+        ,SVY_QST_IDX
+        ,SVY_IDX
+        ,NO
+        ,CONT
+        ,SA_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{svy_item_idx}
+        ,#{svy_qst_idx}
+        ,#{svy_idx}
+        ,#{no}
+        ,#{cont}
+        ,#{sa_yn}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertSurveyReplyInfo" parameterType="kr.go.songpa.ssem.model.SvyRpyVo">
+        <selectKey resultType="int" keyProperty="svy_rpy_idx" order="BEFORE">
+            SELECT nvl(MAX(SVY_RPY_IDX),0)+1 AS SVY_RPY_IDX  FROM SVY_RPY
+        </selectKey>
+        INSERT INTO SVY_RPY (
+        SVY_RPY_IDX
+        ,SVY_ITEM_IDX
+        ,SVY_QST_IDX
+        ,SVY_IDX
+        ,ANSWER
+        ,RPY_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{svy_rpy_idx}
+        ,#{svy_item_idx}
+        ,#{svy_qst_idx}
+        ,#{svy_idx}
+        ,#{answer}
+        ,#{rpy_yn}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateBbsViewCnt" parameterType="kr.go.songpa.ssem.model.BbsDetailVo">
+		UPDATE BBS_DETAIL SET
+			CNT = CNT + 1
+		WHERE BBS_DETAIL_IDX = #{bbs_detail_idx}
+	</update>
+
+    <update id="updateBbsInfo" parameterType="kr.go.songpa.ssem.model.BbsDetailVo">
+		UPDATE BBS_DETAIL SET
+			TOP_YN = #{top_yn}
+			,TITLE = #{title}
+			,CONT = #{cont}
+			,USE_YN = #{use_yn}
+			,ATCH_FILE_ID = #{atch_file_id}
+			,UP_ID	= #{up_id}
+			,UP_DT = SYSDATE
+            <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+                ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+            </if>
+            <if test="alt_txt != null  and alt_txt !=''">
+                ,ALT_TXT = #{alt_txt}
+            </if>
+            <if test="movie_url != null  and movie_url !=''">
+                ,MOVIE_URL = #{movie_url}
+            </if>
+            <if test="group_idx != null  and group_idx !=''">
+                ,GROUP_IDX = #{group_idx}
+            </if>
+            <if test="p_top_yn != null  and p_top_yn !=''">
+                ,P_TOP_YN = #{p_top_yn}
+            </if>
+            <if test="main_use_yn != null  and main_use_yn !=''">
+                ,MAIN_USE_YN = #{main_use_yn}
+            </if>
+		WHERE BBS_DETAIL_IDX = #{bbs_detail_idx}
+	</update>
+
+    <update id="updateBannerInfo" parameterType="kr.go.songpa.ssem.model.BannerVo">
+        UPDATE BANNER SET
+        NAME = #{name}
+        ,USE_YN = #{use_yn}
+        ,ORD = #{ord}
+        ,ATCH_FILE_ID = #{atch_file_id}
+        ,ALT_TXT = #{alt_txt}
+        ,LINK = #{link}
+        ,LINK_TGT = #{link_tgt}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE BANNER_IDX = #{banner_idx}
+    </update>
+
+    <update id="updateBannerOrd" parameterType="kr.go.songpa.ssem.model.OrdVo">
+        UPDATE BANNER SET ORD = #{val} WHERE BANNER_IDX = #{idx}
+    </update>
+
+    <update id="updateTogetherInfo" parameterType="kr.go.songpa.ssem.model.TogetherVo">
+        UPDATE TOGETHER SET
+        ATCH_FILE_ID = #{atch_file_id}
+        <if test="reg_id != null  and reg_id !=''">
+            , REG_ID = #{reg_id}
+            , REG_DT = SYSDATE
+        </if>
+        <if test="up_id != null  and up_id !=''">
+            , UP_ID = #{up_id}
+            , UP_DT = SYSDATE
+        </if>
+        WHERE IDX = #{idx}
+    </update>
+
+    <update id="updateMainUseY" parameterType="int">
+        UPDATE BBS_DETAIL SET MAIN_USE_YN = 'Y' WHERE BBS_DETAIL_IDX = #{value}
+    </update>
+
+    <update id="updateMainUseN" parameterType="int">
+        UPDATE BBS_DETAIL SET MAIN_USE_YN = 'N' WHERE BBS_DETAIL_IDX = #{value}
+    </update>
+
+    <update id="updateBbsOrd" parameterType="kr.go.songpa.ssem.model.OrdVo">
+        UPDATE BBS_DETAIL SET PT_ORD = #{val} WHERE BBS_DETAIL_IDX = #{idx}
+    </update>
+
+    <update id="updateSurveyMstInfo" parameterType="kr.go.songpa.ssem.model.SvyMstVo">
+		UPDATE SVY_MST SET
+		USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,START_DT = TO_DATE(#{start_dt}, 'YYYY-MM-DD hh24:mi')
+        ,END_DT = TO_DATE(#{end_dt}, 'YYYY-MM-DD hh24:mi')
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+		WHERE SVY_IDX = #{svy_idx}
+	</update>
+
+    <update id="updateSurveyReplyCnt" parameterType="long">
+		UPDATE SVY_MST SET
+			REPLY_CNT = REPLY_CNT + 1
+		WHERE SVY_IDX = #{value}
+	</update>
+
+    <delete id="deleteBbsInfo" parameterType="kr.go.songpa.ssem.model.BbsDetailVo">
+	    DELETE FROM BBS_DETAIL WHERE BBS_DETAIL_IDX = #{bbs_detail_idx}
+	</delete>
+
+    <delete id="deleteBannerInfo" parameterType="kr.go.songpa.ssem.model.BannerVo">
+	    DELETE FROM BANNER WHERE BANNER_IDX = #{banner_idx}
+	</delete>
+
+    <delete id="deleteSurveyItem" parameterType="kr.go.songpa.ssem.model.SvyMstVo">
+		DELETE FROM SVY_ITEM WHERE SVY_IDX = #{svy_idx}
+	</delete>
+
+    <delete id="deleteSurveyQuest" parameterType="kr.go.songpa.ssem.model.SvyMstVo">
+		DELETE FROM SVY_QST WHERE SVY_IDX = #{svy_idx}
+	</delete>
+
+    <delete id="deleteSurveyMst" parameterType="kr.go.songpa.ssem.model.SvyMstVo">
+		DELETE FROM SVY_MST WHERE SVY_IDX = #{svy_idx}
+	</delete>
+</mapper>

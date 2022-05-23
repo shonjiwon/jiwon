@@ -1,0 +1,1401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.SelfHallRepository">
+
+    <select id="selectProgramList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracProgramVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TRAC_PROGRAM A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( #{searchSDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) OR #{searchEDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) )
+        </if>
+        <choose>
+            <when test="searchKind3 == '1'.toString()">
+                ORDER BY A.DONG_CD ASC
+            </when>
+            <when test="searchKind3 == '2'.toString()">
+                ORDER BY A.COURSE_SDATE DESC
+            </when>
+            <when test="searchKind3 == '3'.toString()">
+                ORDER BY A.DIV_CD ASC
+            </when>
+            <otherwise>
+                ORDER BY A.REG_DATE DESC
+            </otherwise>
+        </choose>
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectProgramExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracProgramVo">
+        SELECT A.* FROM TRAC_PROGRAM A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( #{searchSDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) OR #{searchEDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) )
+        </if>
+        <choose>
+            <when test="searchKind3 == '1'.toString()">
+                ORDER BY A.DONG_CD ASC
+            </when>
+            <when test="searchKind3 == '2'.toString()">
+                ORDER BY A.COURSE_SDATE DESC
+            </when>
+            <when test="searchKind3 == '3'.toString()">
+                ORDER BY A.DIV_CD ASC
+            </when>
+            <otherwise>
+                ORDER BY A.REG_DATE DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectProgramListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_PROGRAM A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND ( #{searchSDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) OR #{searchEDate} BETWEEN SUBSTR(A.COURSE_SDATE, 1, 4)||'-'||SUBSTR(A.COURSE_SDATE, 5, 2) AND  SUBSTR(A.COURSE_EDATE, 1, 4)||'-'||SUBSTR(A.COURSE_EDATE, 5, 2) )
+        </if>
+    </select>
+
+    <select id="selectProgramInfo" parameterType="kr.go.songpa.ssem.model.TracProgramVo" resultType="kr.go.songpa.ssem.model.TracProgramVo">
+        SELECT * FROM TRAC_PROGRAM WHERE PROG_SEQ = #{prog_seq}
+    </select>
+
+    <select id="selectTeacherList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracLecturerVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_LECTURER A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.FIELD_CD = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.LECTURER_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeacherExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracLecturerVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_LECTURER A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.FIELD_CD = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.LECTURER_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DATE DESC
+    </select>
+
+    <select id="selectTeacherListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_LECTURER A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.DIV_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.FIELD_CD = #{searchKind3}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind4 == '1'.toString()">
+                    AND (UPPER(A.LECTURER_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind4 == '2'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectTeacherInfo" parameterType="kr.go.songpa.ssem.model.TracLecturerVo" resultType="kr.go.songpa.ssem.model.TracLecturerVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_LECTURER A, TRAC_PROGRAM P  WHERE A.PROG_SEQ = P.PROG_SEQ AND A.LECTURER_SEQ = #{lecturer_seq}
+    </select>
+
+    <select id="selectTeacherPayList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracLecturerCostVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TRAC_LECTURER_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        ORDER BY A.REG_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeacherPayExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracLecturerCostVo">
+        SELECT A.* FROM TRAC_LECTURER_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        ORDER BY A.REG_DATE DESC
+    </select>
+
+    <select id="selectTeacherPayListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_LECTURER_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+    </select>
+
+    <select id="selectTeacherPayInfo" parameterType="kr.go.songpa.ssem.model.TracLecturerCostVo" resultType="kr.go.songpa.ssem.model.TracLecturerCostVo">
+        SELECT * FROM TRAC_LECTURER_COST WHERE LECTURER_COST = #{lecturer_cost}
+    </select>
+
+    <select id="selectVolunteerPayList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracServiceCostVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TRAC_SERVICE_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        ORDER BY A.REG_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectVolunteerPayExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracServiceCostVo">
+        SELECT A.* FROM TRAC_SERVICE_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        ORDER BY A.REG_DATE DESC
+    </select>
+
+    <select id="selectVolunteerPayListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_SERVICE_COST A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+    </select>
+
+    <select id="selectVolunteerPayInfo" parameterType="kr.go.songpa.ssem.model.TracServiceCostVo" resultType="kr.go.songpa.ssem.model.TracServiceCostVo">
+        SELECT * FROM TRAC_SERVICE_COST WHERE SERVICE_COST_SEQ = #{service_cost_seq}
+    </select>
+
+    <select id="selectFundList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracFundMngVo">
+        SELECT A.* FROM TRAC_FUND_MNG A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        ORDER BY A.DONG_CD ASC
+    </select>
+
+    <select id="selectFundListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_FUND_MNG A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+    </select>
+
+    <select id="selectStudentList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracStudentVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TRAC_STUDENT A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.STUDENT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectStudentExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracStudentVo">
+        SELECT A.* FROM TRAC_STUDENT A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.STUDENT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DATE DESC
+    </select>
+
+    <select id="selectStudentListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_STUDENT A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.STUDENT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectStudentInfo" parameterType="kr.go.songpa.ssem.model.TracStudentVo" resultType="kr.go.songpa.ssem.model.TracStudentVo">
+        SELECT * FROM TRAC_STUDENT WHERE STUDENT_SEQ = #{student_seq}
+    </select>
+
+    <select id="selectIncomeList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN = 'I' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectIncomeExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN = 'I' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectIncomeListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_INOUT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN = 'I' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND (UPPER(P.PROG_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectInoutInfo" parameterType="kr.go.songpa.ssem.model.TracInoutVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.* FROM TRAC_INOUT A WHERE A.USE_YN='Y' AND A.INOUT_SEQ = #{inout_seq}
+    </select>
+
+    <select id="selectStudentByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.TracStudentVo">
+        SELECT * FROM TRAC_STUDENT WHERE STUDENT_SEQ = #{value}
+    </select>
+
+    <select id="selectIncomeListByProgram" parameterType="long" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.*, p.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P WHERE A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN='I' AND A.USE_YN='Y' AND A.PROG_SEQ = #{value} ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectIncomeListByStudent" parameterType="long" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.*, p.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P WHERE A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN='I' AND A.USE_YN='Y' AND A.STUDENT_SEQ = #{value} ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectOutcomeList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TRAC_INOUT A
+        WHERE
+        1=1 AND A.INOUT_YN = 'E' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectOutcomeExcelList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.* FROM TRAC_INOUT A
+        WHERE
+        1=1 AND A.INOUT_YN = 'E' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectOutcomeListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_INOUT A
+        WHERE
+        1=1 AND A.INOUT_YN = 'E' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+    </select>
+
+    <select id="selectIncomeListEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN = 'I' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectOutcomeListEx" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_INOUT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.INOUT_YN = 'E' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (SUBSTR(A.STANDARD_DATE, 1, 4)||'-'||SUBSTR(A.STANDARD_DATE, 5, 2)||'-'||SUBSTR(A.STANDARD_DATE, 7, 2) BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectProgramResultList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TracProgResultVo">
+        SELECT A.*, P.PROG_NM PROG_NM FROM TRAC_PROG_RESULT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+        ORDER BY A.REG_DATE ASC
+    </select>
+
+    <select id="selectProgramResultListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TRAC_PROG_RESULT A, TRAC_PROGRAM P
+        WHERE
+        1=1 AND A.PROG_SEQ = P.PROG_SEQ AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !=''">
+            AND (SUBSTR(A.STANDARD_YYMM, 1, 4)||'-'||SUBSTR(A.STANDARD_YYMM, 5, 2) = #{searchSDate})
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.DONG_CD = #{searchKind}
+        </if>
+    </select>
+
+    <select id="selectProgramResultInfo" parameterType="kr.go.songpa.ssem.model.TracProgResultVo" resultType="kr.go.songpa.ssem.model.TracProgResultVo">
+        SELECT * FROM TRAC_PROG_RESULT WHERE PROG_RESULT_SEQ = #{prog_result_seq}
+    </select>
+
+    <select id="selectProgramByIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.TracProgramVo">
+        SELECT * FROM TRAC_PROGRAM WHERE PROG_SEQ = #{value}
+    </select>
+
+    <select id="selectInoutByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.TracInoutVo">
+        SELECT * FROM TRAC_INOUT WHERE INOUT_SEQ = #{value}
+    </select>
+
+    <select id="selectNewProgramResultList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracProgResultVo">
+        SELECT A.* FROM NEW_TRAC_PROG_RESULT A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchEDate != null and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        ORDER BY A.REG_DT ASC
+    </select>
+
+    <select id="selectNewProgramResultListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_PROG_RESULT A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchEDate != null and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+    </select>
+
+    <select id="selectNewProgramResultListEx" parameterType="kr.go.songpa.ssem.model.GroupVo" resultType="kr.go.songpa.ssem.model.NewTracProgResultVo">
+        SELECT A.* FROM NEW_TRAC_PROG_RESULT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.STANDARD_YYMM = #{sdate} AND A.GROUP_IDX = #{group_idx}
+        ORDER BY A.REG_DT ASC
+    </select>
+
+    <select id="selectNewProgramResultInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.NewTracProgResultVo">
+        SELECT * FROM NEW_TRAC_PROG_RESULT WHERE USE_YN='Y' AND PROG_RESULT_SEQ = #{value}
+    </select>
+
+    <select id="selectNewTeacherPaytList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracLecturerCostVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM NEW_TRAC_LECTURER_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectNewTeacherPaytListExcel" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracLecturerCostVo">
+        SELECT A.* FROM NEW_TRAC_LECTURER_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewTeacherPayListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_LECTURER_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewTeacherPayInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.NewTracLecturerCostVo">
+        SELECT * FROM NEW_TRAC_LECTURER_COST WHERE USE_YN='Y' AND LECTURER_COST = #{value}
+    </select>
+
+    <select id="selectNewVolunteerPaytList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracServiceCostVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM NEW_TRAC_SERVICE_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectNewVolunteerPaytListExcel" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracServiceCostVo">
+        SELECT A.* FROM NEW_TRAC_SERVICE_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewVolunteerPayListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_SERVICE_COST A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewVolunteerPayInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.NewTracServiceCostVo">
+        SELECT * FROM NEW_TRAC_SERVICE_COST WHERE USE_YN='Y' AND SERVICE_COST_SEQ = #{value}
+    </select>
+
+    <select id="selectNewVFundtList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracFundMngVo">
+        SELECT A.* FROM NEW_TRAC_FUND_MNG A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewFundListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_FUND_MNG A
+        WHERE
+        1=1 AND A.USE_YN='Y'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_YYMM = #{searchEDate}
+        </if>
+    </select>
+
+    <select id="selectNewFundInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.NewTracFundMngVo">
+        SELECT * FROM NEW_TRAC_FUND_MNG WHERE USE_YN='Y' AND FUND_MNG_SEQ = #{value}
+    </select>
+
+    <select id="selectNewInCostList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'I'
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.INOUT_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.GROUP_IDX = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectNewInCostListExcel" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'I'
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.INOUT_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.GROUP_IDX = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectNewInCostListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'I'
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.INOUT_CD = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.GROUP_IDX = #{searchKind3}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.LECTURE_NM) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectNewInoutByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM NEW_TRAC_INOUT WHERE USE_YN='Y' AND INOUT_SEQ = #{value}
+    </select>
+
+    <select id="selectNewInCostListByStudent" parameterType="long" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM NEW_TRAC_INOUT WHERE KIND_CD='I' AND USE_YN='Y' AND STUDENT_IDX = #{value} ORDER BY STANDARD_DATE DESC
+    </select>
+
+    <select id="selectNewInoutByLectureIdx" parameterType="long" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM NEW_TRAC_INOUT WHERE KIND_CD='I' AND USE_YN='Y' AND LECTURE_IDX = #{value} AND (REFUND_YN IS NULL OR REFUND_YN = 'N') ORDER BY REG_DT ASC
+    </select>
+
+    <select id="selectNewInoutRefundInfo" parameterType="kr.go.songpa.ssem.model.NewTracInoutVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM NEW_TRAC_INOUT WHERE REF_SEQ = #{inout_seq}
+    </select>
+
+    <select id="selectNewIncomeReportList" parameterType="kr.go.songpa.ssem.model.GroupVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM NEW_TRAC_INOUT WHERE USE_YN='Y' AND KIND_CD='I' AND STANDARD_DATE = #{sdate} AND GROUP_IDX = #{group_idx}
+    </select>
+
+    <select id="selectPopupIncomeList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'I' AND (A.REFUND_YN IS NULL OR A.REFUND_YN = 'N')
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPopupIncomeListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'I' AND (A.REFUND_YN IS NULL OR A.REFUND_YN = 'N')
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectNewExpendList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'E'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.INOUT_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GROUP_IDX = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectNewExpendListExcel" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'E'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.INOUT_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GROUP_IDX = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.STANDARD_DATE DESC
+    </select>
+
+    <select id="selectNewExpendListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.KIND_CD = 'E'
+        <if test="searchKind != null and searchKind !=''">
+            AND A.INOUT_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.GROUP_IDX = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            AND (UPPER(A.INOUT_NM) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectNewIncomeCostList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.KIND_CD = 'I' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.INOUT_CD = #{searchKind2}
+        </if>
+        ORDER BY A.STANDARD_DATE ASC
+    </select>
+
+    <select id="selectNewExpendCostList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        SELECT A.* FROM NEW_TRAC_INOUT A
+        WHERE
+        1=1 AND A.KIND_CD = 'E' AND A.USE_YN='Y'
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND A.STANDARD_DATE BETWEEN #{searchSDate} AND #{searchEDate}
+        </if>
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GROUP_IDX = #{searchKind}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.INOUT_CD = #{searchKind3}
+        </if>
+        ORDER BY A.STANDARD_DATE ASC
+    </select>
+
+    <select id="selectOldPrevInTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="long">
+        SELECT NVL(SUM(AMOUNT), 0) FROM TRAC_INOUT WHERE INOUT_YN='I' AND ADJ_YN = 'Y' AND STANDARD_DATE &lt; #{searchSDate} <if test="searchKind != null and searchKind !=''"> AND DONG_CD = #{searchKind} </if>
+    </select>
+
+    <select id="selectOldPrevExTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="long">
+        SELECT NVL(SUM(AMOUNT), 0) FROM TRAC_INOUT WHERE INOUT_YN='E' AND STANDARD_DATE &lt; #{searchSDate} <if test="searchKind != null and searchKind !=''"> AND DONG_CD = #{searchKind} </if>
+    </select>
+
+    <select id="selectNewPrevInTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="long">
+        SELECT NVL(SUM(INOUT_COST), 0) FROM NEW_TRAC_INOUT WHERE KIND_CD='I' AND ADJ_YN = 'Y' AND STANDARD_DATE &lt; #{searchSDate} <if test="searchKind != null and searchKind !=''"> AND GROUP_IDX = #{searchKind} </if>
+    </select>
+
+    <select id="selectNewPrevExTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="long">
+        SELECT NVL(SUM(INOUT_COST), 0) FROM NEW_TRAC_INOUT WHERE KIND_CD='E' AND STANDARD_DATE &lt; #{searchSDate} <if test="searchKind != null and searchKind !=''"> AND GROUP_IDX = #{searchKind} </if>
+    </select>
+
+    <insert id="insertNewTracProgResultVo" parameterType="kr.go.songpa.ssem.model.NewTracProgResultVo">
+        <selectKey resultType="int" keyProperty="prog_result_seq" order="BEFORE">
+            SELECT nvl(MAX(PROG_RESULT_SEQ),0)+1 AS PROG_RESULT_SEQ  FROM NEW_TRAC_PROG_RESULT
+        </selectKey>
+        INSERT INTO NEW_TRAC_PROG_RESULT (
+        PROG_RESULT_SEQ
+        ,STANDARD_YYMM
+        ,GROUP_IDX
+        ,DIV_CD
+        ,LECTURE_IDX
+        ,MAN_CNT
+        ,WOMAN_CNT
+        ,ADULT_WOMAN_CNT
+        ,YOUTH_CNT
+        ,ADULT_MAN_CNT
+        ,OLDMAN_CNT
+        ,TAX_EXEMPTION
+        ,TUITION_MONTHLY_FEE
+        ,LECTURER_HOURLY_FEE
+        ,LECTURE_HOUR
+        ,OPERATE_CNT
+        ,REDUCE5_CNT
+        ,REDUCE5_COST
+        ,REDUCE10_CNT
+        ,REDUCE10_COST
+        ,REDUCE15_CNT
+        ,REDUCE15_COST
+        ,REDUCE20_CNT
+        ,REDUCE20_COST
+        ,REDUCE25_CNT
+        ,REDUCE25_COST
+        ,REDUCE30_CNT
+        ,REDUCE30_COST
+        ,REDUCE50_CNT
+        ,REDUCE50_COST
+        ,REDUCE100_CNT
+        ,REDUCE100_COST
+        ,LECTURER_FUND_COST
+        ,LECTURER_EXIST_COST
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{prog_result_seq}
+        ,#{standard_yymm}
+        ,#{group_idx}
+        ,#{div_cd}
+        ,#{lecture_idx}
+        ,#{man_cnt}
+        ,#{woman_cnt}
+        ,#{adult_woman_cnt}
+        ,#{youth_cnt}
+        ,#{adult_man_cnt}
+        ,#{oldman_cnt}
+        ,#{tax_exemption}
+        ,#{tuition_monthly_fee}
+        ,#{lecturer_hourly_fee}
+        ,#{lecture_hour}
+        ,#{operate_cnt}
+        ,#{reduce5_cnt}
+        ,#{reduce5_cost}
+        ,#{reduce10_cnt}
+        ,#{reduce10_cost}
+        ,#{reduce15_cnt}
+        ,#{reduce15_cost}
+        ,#{reduce20_cnt}
+        ,#{reduce20_cost}
+        ,#{reduce25_cnt}
+        ,#{reduce25_cost}
+        ,#{reduce30_cnt}
+        ,#{reduce30_cost}
+        ,#{reduce50_cnt}
+        ,#{reduce50_cost}
+        ,#{reduce100_cnt}
+        ,#{reduce100_cost}
+        ,#{lecturer_fund_cost}
+        ,#{lecturer_exist_cost}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertNewTracLecturerCost" parameterType="kr.go.songpa.ssem.model.NewTracLecturerCostVo">
+        <selectKey resultType="int" keyProperty="lecturer_cost" order="BEFORE">
+            SELECT nvl(MAX(LECTURER_COST),0)+1 AS LECTURER_COST FROM NEW_TRAC_LECTURER_COST
+        </selectKey>
+        INSERT INTO NEW_TRAC_LECTURER_COST (
+        LECTURER_COST
+        ,STANDARD_YYMM
+        ,GROUP_IDX
+        ,CLASSROOM_CNT
+        ,LECTURE_CNT
+        ,TEACHER_CNT
+        ,PAY_AMOUNT
+        ,APPLY_AMOUNT
+        ,NOTE
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{lecturer_cost}
+        ,#{standard_yymm}
+        ,#{group_idx}
+        ,#{classroom_cnt}
+        ,#{lecture_cnt}
+        ,#{teacher_cnt}
+        ,#{pay_amount}
+        ,#{apply_amount}
+        ,#{note}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertNewVolunteerCost" parameterType="kr.go.songpa.ssem.model.NewTracServiceCostVo">
+        <selectKey resultType="int" keyProperty="service_cost_seq" order="BEFORE">
+            SELECT nvl(MAX(SERVICE_COST_SEQ),0)+1 AS SERVICE_COST_SEQ FROM NEW_TRAC_SERVICE_COST
+        </selectKey>
+        INSERT INTO NEW_TRAC_SERVICE_COST (
+        SERVICE_COST_SEQ
+        ,STANDARD_YYMM
+        ,GROUP_IDX
+        ,DIV_CD
+        ,DIV_CD_COST
+        ,NM
+        ,RESI_NO
+        ,WORK_CNT
+        ,AMOUNT
+        ,NOTE
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{service_cost_seq}
+        ,#{standard_yymm}
+        ,#{group_idx}
+        ,#{div_cd}
+        ,#{div_cd_cost}
+        ,#{nm}
+        ,#{resi_no}
+        ,#{work_cnt}
+        ,#{amount}
+        ,#{note}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertNewFundInfo" parameterType="kr.go.songpa.ssem.model.NewTracFundMngVo">
+        <selectKey resultType="int" keyProperty="fund_mng_seq" order="BEFORE">
+            SELECT nvl(MAX(FUND_MNG_SEQ),0)+1 AS FUND_MNG_SEQ FROM NEW_TRAC_FUND_MNG
+        </selectKey>
+        INSERT INTO NEW_TRAC_FUND_MNG (
+        FUND_MNG_SEQ
+        ,STANDARD_YYMM
+        ,GROUP_IDX
+        ,DIV_CD
+        ,AMOUNT
+        ,NOTE
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{fund_mng_seq}
+        ,#{standard_yymm}
+        ,#{group_idx}
+        ,#{div_cd}
+        ,#{amount}
+        ,#{note}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertNewInCost" parameterType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        <selectKey resultType="int" keyProperty="inout_seq" order="BEFORE">
+            SELECT nvl(MAX(INOUT_SEQ),0)+1 AS INOUT_SEQ FROM NEW_TRAC_INOUT
+        </selectKey>
+        INSERT INTO NEW_TRAC_INOUT (
+        INOUT_SEQ
+        ,STANDARD_DATE
+        ,GROUP_IDX
+        ,KIND_CD
+        ,INOUT_CD
+        ,INOUT_COST
+        ,STUDENT_IDX
+        ,LECTURE_IDX
+        ,INOUT_NM
+        ,SDATE
+        ,EDATE
+        ,DISCOUNT_IDX
+        ,ADJ_YN
+        ,DISCOUNT_YN
+        ,NOTE
+        ,LECTURE_NM
+        ,BIRTH
+        ,GENDER
+        ,MOB_NO
+        ,DISCOUNT_RATE
+        ,DISCOUNT_INFO
+        ,POST_NO
+        ,ADDR
+        ,ADDR_DETAIL
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{inout_seq}
+        ,#{standard_date}
+        ,#{group_idx}
+        ,'I'
+        ,#{inout_cd}
+        ,#{inout_cost}
+        ,#{student_idx}
+        ,#{lecture_idx}
+        ,#{inout_nm}
+        ,#{sdate}
+        ,#{edate}
+        ,#{discount_idx}
+        ,#{adj_yn}
+        ,#{discount_yn}
+        ,#{note}
+        ,#{lecture_nm}
+        ,#{birth}
+        ,#{gender}
+        ,#{mob_no}
+        ,#{discount_rate}
+        ,#{discount_info}
+        ,#{post_no}
+        ,#{addr}
+        ,#{addr_detail}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertNewExpendCost" parameterType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        <selectKey resultType="int" keyProperty="inout_seq" order="BEFORE">
+            SELECT nvl(MAX(INOUT_SEQ),0)+1 AS INOUT_SEQ FROM NEW_TRAC_INOUT
+        </selectKey>
+        INSERT INTO NEW_TRAC_INOUT (
+        INOUT_SEQ
+        ,STANDARD_DATE
+        ,GROUP_IDX
+        ,KIND_CD
+        ,INOUT_CD
+        ,INOUT_COST
+        ,E_NOTE
+        ,REF_SEQ
+        ,LECTURE_IDX
+        ,STUDENT_IDX
+        ,INOUT_NM
+        ,NOTE
+        ,LECTURE_NM
+        ,POST_NO
+        ,ADDR
+        ,ADDR_DETAIL
+        ,METHOD_CD
+        ,BANK_CD
+        ,BANK_NO
+        ,USE_YN
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{inout_seq}
+        ,#{standard_date}
+        ,#{group_idx}
+        ,'E'
+        ,#{inout_cd}
+        ,#{inout_cost}
+        ,#{e_note}
+        ,#{ref_seq}
+        ,#{lecture_idx}
+        ,#{student_idx}
+        ,#{inout_nm}
+        ,#{note}
+        ,#{lecture_nm}
+        ,#{post_no}
+        ,#{addr}
+        ,#{addr_detail}
+        ,#{method_cd}
+        ,#{bank_cd}
+        ,#{bank_no}
+        ,'Y'
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateNewProgramResult" parameterType="kr.go.songpa.ssem.model.NewTracProgResultVo">
+        UPDATE NEW_TRAC_PROG_RESULT SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,DIV_CD = #{div_cd}
+        ,LECTURE_IDX = #{lecture_idx}
+        ,MAN_CNT = #{man_cnt}
+        ,WOMAN_CNT = #{woman_cnt}
+        ,ADULT_WOMAN_CNT = #{adult_woman_cnt}
+        ,YOUTH_CNT = #{youth_cnt}
+        ,ADULT_MAN_CNT = #{adult_man_cnt}
+        ,OLDMAN_CNT = #{oldman_cnt}
+        ,TAX_EXEMPTION = #{tax_exemption}
+        ,TUITION_MONTHLY_FEE = #{tuition_monthly_fee}
+        ,LECTURER_HOURLY_FEE = #{lecturer_hourly_fee}
+        ,LECTURE_HOUR = #{lecture_hour}
+        ,OPERATE_CNT = #{operate_cnt}
+        ,REDUCE5_CNT = #{reduce5_cnt}
+        ,REDUCE5_COST = #{reduce5_cost}
+        ,REDUCE10_CNT = #{reduce10_cnt}
+        ,REDUCE10_COST = #{reduce10_cost}
+        ,REDUCE15_CNT = #{reduce15_cnt}
+        ,REDUCE15_COST = #{reduce15_cost}
+        ,REDUCE20_CNT = #{reduce20_cnt}
+        ,REDUCE20_COST = #{reduce20_cost}
+        ,REDUCE25_CNT = #{reduce25_cnt}
+        ,REDUCE25_COST = #{reduce25_cost}
+        ,REDUCE30_CNT = #{reduce30_cnt}
+        ,REDUCE30_COST = #{reduce30_cost}
+        ,REDUCE50_CNT = #{reduce50_cnt}
+        ,REDUCE50_COST = #{reduce50_cost}
+        ,REDUCE100_CNT = #{reduce100_cnt}
+        ,REDUCE100_COST = #{reduce100_cost}
+        ,LECTURER_FUND_COST = #{lecturer_fund_cost}
+        ,LECTURER_EXIST_COST = #{lecturer_exist_cost}
+        ,UP_DT = SYSDATE
+        WHERE PROG_RESULT_SEQ = #{prog_result_seq}
+    </update>
+
+    <update id="updateNewTeacherPay" parameterType="kr.go.songpa.ssem.model.NewTracLecturerCostVo">
+        UPDATE NEW_TRAC_LECTURER_COST SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,CLASSROOM_CNT = #{classroom_cnt}
+        ,LECTURE_CNT = #{lecture_cnt}
+        ,TEACHER_CNT = #{teacher_cnt}
+        ,PAY_AMOUNT = #{pay_amount}
+        ,APPLY_AMOUNT = #{apply_amount}
+        ,NOTE = #{note}
+        ,UP_DT = SYSDATE
+        WHERE LECTURER_COST = #{lecturer_cost}
+    </update>
+
+    <update id="updateNewVolunteerPay" parameterType="kr.go.songpa.ssem.model.NewTracServiceCostVo">
+        UPDATE NEW_TRAC_SERVICE_COST SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,DIV_CD = #{div_cd}
+        ,DIV_CD_COST = #{div_cd_cost}
+        ,NM = #{nm}
+        ,RESI_NO = #{resi_no}
+        ,WORK_CNT = #{work_cnt}
+        ,AMOUNT = #{amount}
+        ,NOTE = #{note}
+        ,UP_DT = SYSDATE
+        WHERE SERVICE_COST_SEQ = #{service_cost_seq}
+    </update>
+
+    <update id="updateNewFund" parameterType="kr.go.songpa.ssem.model.NewTracFundMngVo">
+        UPDATE NEW_TRAC_FUND_MNG SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,DIV_CD = #{div_cd}
+        ,AMOUNT = #{amount}
+        ,NOTE = #{note}
+        ,UP_DT = SYSDATE
+        WHERE FUND_MNG_SEQ = #{fund_mng_seq}
+    </update>
+
+    <update id="updateNewInCost" parameterType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        UPDATE NEW_TRAC_INOUT SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,STANDARD_DATE = #{standard_date}
+        ,INOUT_CD = #{inout_cd}
+        ,INOUT_COST = #{inout_cost}
+        ,STUDENT_IDX = #{student_idx}
+        ,LECTURE_IDX = #{lecture_idx}
+        ,INOUT_NM = #{inout_nm}
+        ,SDATE = #{sdate}
+        ,EDATE = #{edate}
+        ,ADJ_YN = #{adj_yn}
+        ,DISCOUNT_YN = #{discount_yn}
+        ,DISCOUNT_IDX = #{discount_idx}
+        ,DISCOUNT_RATE = #{discount_rate}
+        ,DISCOUNT_INFO = #{discount_info}
+        ,POST_NO = #{post_no}
+        ,ADDR = #{addr}
+        ,ADDR_DETAIL = #{addr_detail}
+        ,LECTURE_NM = #{lecture_nm}
+        ,BIRTH = #{birth}
+        ,MOB_NO = #{mob_no}
+        ,GENDER = #{gender}
+        ,NOTE = #{note}
+        ,UP_DT = SYSDATE
+        WHERE INOUT_SEQ = #{inout_seq}
+    </update>
+
+    <update id="updateNewIncomeRefundByIdx" parameterType="long">
+        UPDATE NEW_TRAC_INOUT SET
+        REFUND_YN = 'Y'
+        WHERE INOUT_SEQ = #{value}
+    </update>
+
+    <update id="updateNewExpendCost" parameterType="kr.go.songpa.ssem.model.NewTracInoutVo">
+        UPDATE NEW_TRAC_INOUT SET
+        UP_ID	= #{up_id}
+        ,GROUP_IDX = #{group_idx}
+        ,STANDARD_DATE = #{standard_date}
+        ,INOUT_CD = #{inout_cd}
+        ,INOUT_COST = #{inout_cost}
+        ,LECTURE_IDX = #{lecture_idx}
+        ,INOUT_NM = #{inout_nm}
+        ,POST_NO = #{post_no}
+        ,ADDR = #{addr}
+        ,ADDR_DETAIL = #{addr_detail}
+        ,LECTURE_NM = #{lecture_nm}
+        ,E_NOTE = #{e_note}
+        ,BANK_CD = #{bank_cd}
+        ,BANK_NO = #{bank_no}
+        ,METHOD_CD = #{method_cd}
+        ,REF_SEQ = #{ref_seq}
+        ,NOTE = #{note}
+        ,UP_DT = SYSDATE
+        WHERE INOUT_SEQ = #{inout_seq}
+    </update>
+
+    <update id="updateNewExpendRefundByIdx" parameterType="long">
+        UPDATE NEW_TRAC_INOUT SET
+            REFUND_YN = 'N'
+        WHERE INOUT_SEQ = #{value}
+    </update>
+
+    <delete id="deleteNewProgramResult" parameterType="int">
+        DELETE FROM NEW_TRAC_PROG_RESULT WHERE PROG_RESULT_SEQ = #{value}
+    </delete>
+
+    <delete id="deleteNewTracProgResult" parameterType="kr.go.songpa.ssem.model.GroupVo">
+        DELETE FROM NEW_TRAC_PROG_RESULT WHERE GROUP_IDX = #{group_idx} AND STANDARD_YYMM = #{sdate}
+    </delete>
+
+    <delete id="deleteNewTeacherPay" parameterType="int">
+        DELETE FROM NEW_TRAC_LECTURER_COST WHERE LECTURER_COST = #{value}
+    </delete>
+
+    <delete id="deleteNewVolunteerPay" parameterType="int">
+        DELETE FROM NEW_TRAC_SERVICE_COST WHERE SERVICE_COST_SEQ = #{value}
+    </delete>
+
+    <delete id="deleteNewFund" parameterType="int">
+        DELETE FROM NEW_TRAC_FUND_MNG WHERE FUND_MNG_SEQ = #{value}
+    </delete>
+
+    <delete id="deleteNewInoutInfo" parameterType="int">
+        DELETE FROM NEW_TRAC_INOUT WHERE INOUT_SEQ = #{value}
+    </delete>
+</mapper>

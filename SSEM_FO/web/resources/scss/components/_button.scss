@@ -1,0 +1,246 @@
+/*
+*****************************************
+*          button  : start
+*****************************************
+*/
+
+
+///
+/// btn-color             : btn-item-color mixin (버튼 컬러)
+/// date                  : 2020.07.27
+/// @param {color} $bg    : 배경색
+/// @param {color} $text  : 글자색
+/// @param {color} $border: 글자색
+///
+@mixin btn-color($bg, $text, $border : null) {
+  background: $bg;
+
+  color: $text;
+
+  @if $border {
+      border: 1px solid $border;
+  }
+
+  @else {
+      border: 0px;
+  }
+}
+
+//
+// btn-item-color  : btn-item-color mixin (버튼 컬러 지정)
+// date            : 2020.07.27
+///
+/// @param {color} $bg          : 배경색
+/// @param {color} $text        : 글자색
+/// @param {color} $border      : 글자색
+/// @param {color} $bg-hover    : hover-배경색
+/// @param {color} $text-hover  : hover-글자색
+/// @param {color} $border-hover: hover-글자색
+///
+@mixin btn-item-color($bg, $text, $border, $bg-hover : $bg, $text-hover  : $text, $border-hover  : $border) {
+
+  @include btn-color($bg, $text, $border);
+
+  &:hover,
+  &:focus {
+      @include btn-color($bg-hover, $text-hover, $border-hover); 
+  }
+
+  &:active {
+      @include btn-color($bg-hover, $text-hover, $border-hover); 
+  }
+}
+
+
+$btn-colors  : (
+  "color_1" map-get($colors,1) #fff map-get($colors,1) #fff saturate(darken(map-get($colors,1),10),20) map-get($colors,1),
+  "color_2" map-get($colors,2) #fff map-get($colors,2) #fff saturate(darken(map-get($colors,2),10),20) map-get($colors,2),
+  "color_3" map-get($colors,3) #fff map-get($colors,3) #fff saturate(darken(map-get($colors,3),10),20) map-get($colors,3),
+  "color_4" map-get($colors,4) #fff map-get($colors,4) #fff saturate(darken(map-get($colors,4),10),20) map-get($colors,4),
+  "color_5" map-get($colors,5) #fff map-get($colors,5) #fff saturate(darken(map-get($colors,5),10),20) map-get($colors,5),
+
+    "line_color_1" transparent $color-text-b #888888 transparent $color-text-b #888888,
+    "line_color_2" transparent map-get($colors,2)  map-get($colors,2) map-get($colors,2) #fff map-get($colors,2),
+    "line_color_3" transparent map-get($colors,3)  map-get($colors,3) map-get($colors,3) #fff map-get($colors,3),
+    "line_color_4" transparent map-get($colors,4)  map-get($colors,4) map-get($colors,4) #fff map-get($colors,4),
+    "line_color_5" transparent map-get($colors,5)  map-get($colors,5) map-get($colors,5) #fff map-get($colors,5),
+
+    "color_t"  #f7f7f7 $color-text-b  #dddddd  #ffffff $color-text-b  #999999 ,
+);
+
+button{
+  > *{
+    display: inline-block;
+    vertical-align: middle !important;
+    margin-top: rem(-4);
+  }
+}
+
+a.btn,
+input[type='button'].btn,
+input[type='submit'].btn,
+button.btn {
+    position: relative;
+    overflow: hidden; display: inline-block;
+    text-decoration: none;
+    padding: 0 rem(20);
+    width: rem(180); height: rem(60);
+    font-size: 1rem; line-height: rem(60);
+    text-align: center; vertical-align: middle;
+    cursor: pointer;
+
+    @include btn-item-color(#ffffff, $color-text-b, #dddddd, #ffffff, $color-text-b, #999999);
+    @include vendor(transition, 'all 0.2s ease-out');
+
+    &:active {
+        @include vendor(transform,scale(0.97));
+    }
+    
+    &.btn_h_50{
+      padding: em(14) em(20);
+      height: rem(50);
+    }
+
+    &.fs_auto{
+      font-size: inherit;
+    }
+}
+
+a.btn ,
+input[type='button'].btn,
+input[type='submit'].btn,
+button.btn {
+  > * {
+    display: inline-block;
+    vertical-align: middle !important;
+    line-height: 1.5;
+    margin-top: -4px;
+  }
+}
+
+/*btn_size*/
+.btn{
+  &.btn_round {
+      border-radius: em(50);
+      &:before,
+      &::before,
+      &:after,
+      &::after {
+          border-radius: em(50);
+      }
+  }
+  &.btn_small {
+    width: rem(150);
+    height: em(40);
+    line-height: em(38);
+  }
+  &.btn_big {
+    font-size: rem(20);
+  }
+  &.btn_short {
+    width: em(90);
+  }
+  &.btn_long {
+    width: rem(250);
+  }
+  //div span 부모 
+  .btn_full &  {
+    width: 100%;
+  }
+  &.btn_auto{
+    width: auto !important;
+    min-width: auto;
+    padding : {
+      left : em(20);
+      right: em(20);
+    } 
+  }
+}
+
+.btn.gradation_01{
+  color: #ffffff !important;
+  position: relative;
+  border-color: #2075dd !important;
+  background: #2075dd !important;
+  &:before{
+    content:'';
+    position: absolute; 
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    @include vendor(transition, ' opacity 0.3s !important');
+    @include gradation(#4187cf, #2075dd);
+    opacity: 1;
+  }
+  &:hover{
+    &:before{
+      opacity: 0;
+    }
+  }
+  > span{
+    display: block;
+    text-align: center;
+    @include ps-center;
+  }
+}
+
+
+// common > _color.scss
+@each $name, $bg, $text, $border, $bg-hover, $text-hover, $border-hover in $btn-colors {
+  /*btn_#{$name}*/
+  .btn.btn_#{$name} {
+    @include btn-item-color($bg, $text, $border, $bg-hover, $text-hover, $border-hover);
+  }
+}
+
+@include tab {
+  a.btn,
+  input[type='button'].btn,
+  input[type='submit'].btn,
+  button.btn {
+    font-size: resRem(26, 'md');
+    min-width: resRem(250, 'md');
+    width: auto;
+    height: resRem(90, 'md');
+    line-height: resRem(90, 'md');
+    &.btn_short {
+      min-width: resRem(150, 'md');
+      width: auto;
+    }
+  }
+    /*btn_size*/
+  .btn{
+    &.btn_samll {
+    }
+    &.btn_big {
+      font-size: resRem(26, 'md');
+    }
+    &.btn_short {
+      min-width: resRem(150, 'md');
+      width: auto;
+    }
+    &.btn_long {
+      min-width: resRem(300, 'md');
+      width: auto;
+    }
+    //div span 부모 
+    .btn_full &  {
+    }
+    &.btn_auto{
+      padding : {
+        left : em(20);
+        right: em(20);
+      } 
+    }
+    &.btn_md_auto{
+      min-width: auto;
+      width: auto !important;
+      padding : {
+        left : em(20);
+        right: em(20);
+      } 
+    }
+  }
+
+
+}
+

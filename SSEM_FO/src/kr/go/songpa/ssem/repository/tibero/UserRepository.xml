@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.UserRepository">
+	<select id="selectUserInfo" parameterType="kr.go.songpa.ssem.model.TnUserInfoVo" resultType="kr.go.songpa.ssem.model.TnUserInfoVo">
+        SELECT * FROM TN_USER_INFO WHERE USER_ID = #{user_id} AND PASSWORD = #{password}
+	</select>
+
+	<select id="selectIsTeacherByID" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM TEACHER WHERE USER_ID = #{value}
+	</select>
+
+	<select id="selectUserInfoById" parameterType="String" resultType="kr.go.songpa.ssem.model.TnUserInfoVo">
+		SELECT * FROM TN_USER_INFO WHERE USER_ID = #{value} AND USER_SE = 'GNRL'
+	</select>
+</mapper>

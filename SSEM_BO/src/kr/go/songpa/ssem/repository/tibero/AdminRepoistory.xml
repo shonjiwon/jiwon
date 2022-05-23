@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.AdminRepoistory">
+    <select id="checkAdminrId" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM ADMIN WHERE ADMIN_ID = #{value}
+	</select>
+
+	<select id="selectIpCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM IP_CON WHERE IP=#{value}
+	</select>
+
+	<select id="selectAdminInfo" parameterType="kr.go.songpa.ssem.model.AdminLoginVo" resultType="kr.go.songpa.ssem.model.AdminLoginVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME, (SELECT MENU_INFO FROM ADMIN_RULE WHERE A.ADMIN_RULE_IDX = ADMIN_RULE_IDX) MENU_INFO FROM ADMIN A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.ADMIN_ID=#{admin_id} AND A.PWD=#{pwd} AND A.DEL_YN='N'
+	</select>
+
+	<select id="selectAdminList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.AdminVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM ADMIN A, GROUP_INFO G
+		WHERE
+		1=1 AND A.DEL_YN != 'Y' AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchVal4 != null and searchVal4 !=''">
+			AND A.TYPE = #{searchVal4}
+		</if>
+		<if test="searchVal5 != null and searchVal5 !=''">
+			AND A.APY_PATH = #{searchVal5}
+		</if>
+		<if test="searchVal6 != null and searchVal6 !=''">
+			AND A.APP_YN = #{searchVal6}
+		</if>
+		<if test="searchVal7 != null and searchVal7 !=''">
+			AND A.STATUS = #{searchVal7}
+		</if>
+		<if test="searchVal8 != null and searchVal8 !=''">
+			AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY A.REG_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectAdminListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM ADMIN A, GROUP_INFO G
+		WHERE
+		1=1 AND A.DEL_YN != 'Y' AND A.GROUP_IDX = G.GROUP_IDX
+		<if test="searchVal3 != null and searchVal3 !=''">
+			AND G.GROUP_IDX = #{searchVal3}
+		</if>
+		<if test="searchVal3 == null or searchVal3 ==''">
+			<if test="searchVal2 != null  and searchVal2 !=''">
+				AND G.P_IDX = #{searchVal2}
+			</if>
+		</if>
+		<if test="searchVal4 != null and searchVal4 !=''">
+			AND A.TYPE = #{searchVal4}
+		</if>
+		<if test="searchVal5 != null and searchVal5 !=''">
+			AND A.APY_PATH = #{searchVal5}
+		</if>
+		<if test="searchVal6 != null and searchVal6 !=''">
+			AND A.APP_YN = #{searchVal6}
+		</if>
+		<if test="searchVal7 != null and searchVal7 !=''">
+			AND A.STATUS = #{searchVal7}
+		</if>
+		<if test="searchVal8 != null and searchVal8 !=''">
+			AND (UPPER(A.MOB_NO) like '%'||UPPER(#{searchVal8})||'%')
+		</if>
+		<if test="searchVal != null  and searchVal !=''">
+			<choose>
+				<when test="searchKind == '1'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == '2'.toString()">
+					AND (UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+				<when test="searchKind == 'ALL'.toString()">
+					AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.ADMIN_ID) like '%'||UPPER(#{searchVal})||'%')
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="selectAdminById" parameterType="String" resultType="kr.go.songpa.ssem.model.AdminVo">
+		SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM ADMIN A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.ADMIN_ID=#{value}
+	</select>
+
+	<select id="selectAdminRuleList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.AdminRuleVo">
+		SELECT * FROM (
+		SELECT ROWNUM AS RNUM, T.* FROM (
+		SELECT A.* FROM ADMIN_RULE A
+		WHERE
+		1=1
+		<if test="searchKind != null and searchKind !=''">
+			AND A.TYPE = #{searchKind}
+		</if>
+		<if test="searchKind2 != null and searchKind2 !=''">
+			AND A.USE_YN = #{searchKind2}
+		</if>
+		<if test="searchVal != null and searchVal !=''">
+			AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+		</if>
+		ORDER BY A.REG_DT DESC
+		) T WHERE ROWNUM &lt;=#{lastIndex}
+		) WHERE RNUM &gt;=#{firstIndex}
+	</select>
+
+	<select id="selectAdminRuleListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+		SELECT COUNT(*) FROM ADMIN_RULE A
+		WHERE
+		1=1
+		<if test="searchKind != null and searchKind !=''">
+			AND A.TYPE = #{searchKind}
+		</if>
+		<if test="searchKind2 != null and searchKind2 !=''">
+			AND A.USE_YN = #{searchKind2}
+		</if>
+		<if test="searchVal != null and searchVal !=''">
+			AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+		</if>
+	</select>
+
+	<select id="selectAdminRuleInfo" parameterType="kr.go.songpa.ssem.model.AdminRuleVo" resultType="kr.go.songpa.ssem.model.AdminRuleVo">
+		SELECT * FROM ADMIN_RULE WHERE ADMIN_RULE_IDX=#{admin_rule_idx}
+	</select>
+
+	<select id="getRuleListByType" parameterType="String" resultType="kr.go.songpa.ssem.model.AdminRuleVo">
+		SELECT * FROM ADMIN_RULE WHERE TYPE=#{value} ORDER BY REG_DT DESC
+	</select>
+
+	<select id="selectCurrentPwd" parameterType="kr.go.songpa.ssem.model.AdminVo" resultType="int">
+		SELECT COUNT(*) FROM ADMIN WHERE ADMIN_ID=#{admin_id} AND PWD=#{cur_pwd}
+	</select>
+
+	<select id="selectAdminRuleInfoByIdx" parameterType="long" resultType="String">
+		SELECT NAME FROM ADMIN_RULE WHERE ADMIN_RULE_IDX=#{value}
+	</select>
+
+	<insert id="insertAdminInfo" parameterType="kr.go.songpa.ssem.model.AdminVo">
+		INSERT INTO ADMIN (
+		ADMIN_ID
+		,GROUP_IDX
+		<if test="admin_rule_idx != null and admin_rule_idx !=''">
+			,ADMIN_RULE_IDX
+		</if>
+		,NAME
+		,MOB_NO
+		,TEL_NO
+		,EMAIL
+		,PWD
+		,APP_YN
+		,DEL_YN
+		,APY_PATH
+		,STATUS
+		,LOGIN_CNT
+		<if test="type != null and type !=''">
+			,TYPE
+		</if>
+		<if test="login_ip != null and login_ip !=''">
+			,LOGIN_IP
+		</if>
+		,REG_ID
+		,REG_DT
+		) VALUES (
+		#{admin_id}
+		,#{group_idx}
+		<if test="admin_rule_idx != null and admin_rule_idx !=''">
+			,#{admin_rule_idx}
+		</if>
+		,#{name}
+		,#{mob_no}
+		,#{tel_no}
+		,#{email}
+		,#{pwd}
+		,#{app_yn}
+		,'N'
+		,#{apy_path}
+		,#{status}
+		,0
+		<if test="type != null and type !=''">
+			,#{type}
+		</if>
+		<if test="login_ip != null and login_ip !=''">
+			,#{login_ip}
+		</if>
+		,#{admin_id}
+		,SYSDATE
+		)
+	</insert>
+
+	<insert id="insertAdminConInfo" parameterType="kr.go.songpa.ssem.model.StatConVo">
+		<selectKey resultType="int" keyProperty="stat_con_idx" order="BEFORE">
+			SELECT nvl(MAX(STAT_CON_IDX),0)+1 AS STAT_CON_IDX  FROM STAT_CON
+		</selectKey>
+		INSERT INTO STAT_CON (
+		STAT_CON_IDX
+		,GROUP_IDX
+		,ADMIN_ID
+		,NAME
+		,IP
+		,OS
+		,BROWSER
+		,LOGIN_DT
+		,TYPE
+		) VALUES (
+		#{stat_con_idx}
+		,#{group_idx}
+		,#{admin_id}
+		,#{name}
+		,#{ip}
+		,#{os}
+		,#{browser}
+		,SYSDATE
+		,#{type}
+		)
+	</insert>
+
+	<insert id="insertAdminRuleInfo" parameterType="kr.go.songpa.ssem.model.AdminRuleVo">
+		<selectKey resultType="int" keyProperty="admin_rule_idx" order="BEFORE">
+			SELECT nvl(MAX(ADMIN_RULE_IDX),0)+1 AS ADMIN_RULE_IDX  FROM ADMIN_RULE
+		</selectKey>
+		INSERT INTO ADMIN_RULE (
+		ADMIN_RULE_IDX
+		,TYPE
+		,NAME
+		,EXPLAIN
+		,MENU_INFO
+		,USE_YN
+		,REG_ID
+		,REG_DT
+		) VALUES (
+		#{admin_rule_idx}
+		,#{type}
+		,#{name}
+		,#{explain}
+		,#{menu_info}
+		,#{use_yn}
+		,#{reg_id}
+		,SYSDATE
+		)
+	</insert>
+
+	<update id="updateLoginSuccessInfo" parameterType="kr.go.songpa.ssem.model.AdminLoginVo">
+		UPDATE ADMIN SET
+			LAST_LOGIN_DT = SYSDATE
+			, LAST_LOGIN_IP = #{last_login_ip}
+			, LOGIN_CNT = LOGIN_CNT + 1
+			, LOGIN_FAIL_CNT = 0
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+
+	<update id="updateAdminInfo" parameterType="kr.go.songpa.ssem.model.AdminVo">
+		UPDATE ADMIN SET
+		UP_ID = #{up_id}
+		<if test="group_idx != null and group_idx !=''">
+			, GROUP_IDX = #{group_idx}
+		</if>
+		<if test="type != null and type !=''">
+			, TYPE = #{type}
+		</if>
+		<if test="mob_no != null and mob_no !=''">
+			, MOB_NO = #{mob_no}
+		</if>
+		<if test="tel_no != null and tel_no !=''">
+			, TEL_NO = #{tel_no}
+		</if>
+		<if test="email != null and email !=''">
+			, EMAIL = #{email}
+		</if>
+		<if test="login_ip != null and login_ip !=''">
+			, LOGIN_IP = #{login_ip}
+		</if>
+		<if test="app_yn != null and app_yn !=''">
+			, APP_YN = #{app_yn}
+		</if>
+		<if test="del_yn != null and del_yn !=''">
+			, DEL_YN = #{del_yn}
+		</if>
+		<if test="status != null and status !=''">
+			, STATUS = #{status}
+		</if>
+		<if test="admin_rule_idx != null and admin_rule_idx !=''">
+			, ADMIN_RULE_IDX = #{admin_rule_idx}
+		</if>
+		, UP_DT = SYSDATE
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+
+	<update id="updateAdminInfoEx" parameterType="kr.go.songpa.ssem.model.AdminVo">
+		UPDATE ADMIN SET
+		MOB_NO = #{mob_no}
+		<if test="tel_no != null and tel_no !=''">
+			, TEL_NO = #{tel_no}
+		</if>
+		<if test="email != null and email !=''">
+			, EMAIL = #{email}
+		</if>
+		<if test="pwd != null and pwd !=''">
+			, PWD = #{pwd}
+		</if>
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+
+	<update id="updateAdminRuleInfo" parameterType="kr.go.songpa.ssem.model.AdminRuleVo">
+		UPDATE ADMIN_RULE SET
+			TYPE = #{type}
+			,NAME = #{name}
+			,EXPLAIN = #{explain}
+			,MENU_INFO = #{menu_info}
+			,USE_YN = #{use_yn}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE ADMIN_RULE_IDX = #{admin_rule_idx}
+	</update>
+
+	<update id="updateAdminPwd" parameterType="kr.go.songpa.ssem.model.AdminVo">
+		UPDATE ADMIN SET
+			PWD = #{pwd}
+			, UP_ID = #{up_id}
+			, UP_DT = SYSDATE
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+
+	<update id="updateLoginFailedCnt" parameterType="kr.go.songpa.ssem.model.AdminLoginVo">
+		UPDATE ADMIN SET
+			LOGIN_FAIL_CNT = LOGIN_FAIL_CNT + 1
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+
+	<update id="updateAdminNoUse" parameterType="String">
+		UPDATE ADMIN SET
+			STATUS = 'N'
+		WHERE ADMIN_ID = #{admin_id}
+	</update>
+</mapper>

@@ -1,0 +1,100 @@
+//미더쿼리 사이즈
+$desktop-l-width  : 1700px;
+$desktop-s-width  : 1440px;
+$tablet-l-width   : 1025px;
+$tablet-s-width   : 767px;
+$mob-l-width      : 640px;
+$mob-m-width      : 501px;   
+$mob-s-width      : 374px;
+$mob-ss-width     : 320px;
+
+
+
+// only PC
+@mixin pc-only {
+  @media screen and (min-width: #{$tablet-l-width}) {
+    @content;
+  }
+}
+
+// PC small
+@mixin pc-small ($media : false) {
+  @if $media {
+    @media screen and (min-width: #{$tablet-l-width + 1}) and (max-width: #{$desktop-s-width}) {
+      @content;
+    }
+  }
+  @else {
+    @media screen and (max-width: #{$desktop-s-width}) {
+      @content;
+    }
+  }
+}
+
+// PC large
+@mixin pc-large {
+  @media screen and (max-width: #{$desktop-l-width}) {
+    @content;
+  }
+}
+
+
+// --------------------------------------------------
+
+// tab
+@mixin tab ($media : false){
+  @if $media {
+    @media screen and (min-width: #{$tablet-s-width + 1}) and (max-width: #{$tablet-l-width}) {
+      @content;
+    }
+  }
+  @else {
+    @media screen and (max-width: #{$tablet-l-width}) {
+      @content;
+    }
+  }
+}
+
+// --------------------------------------------------
+
+// mob
+@mixin mob  ($media : false){
+  @if $media {
+    @media screen and (min-width: #{$mob-m-width + 1}) and (max-width: #{$tablet-s-width}) {
+      @content;
+    }
+  }
+  @else {
+    @media screen and (max-width: #{$tablet-s-width}) {
+      @content;
+    }
+  }
+}
+
+// mob mid
+@mixin mob-mid ($media : false){
+  @if $media {
+    @media screen and (min-width: #{$mob-s-width + 1}) and (max-width: #{$mob-m-width}) {
+      @content;
+    }
+  }
+  @else{
+    @media screen and (max-width: #{$mob-m-width})   {
+      @content;
+    }
+  }
+}
+// mob small
+@mixin mob-small ($media : false){
+  @if $media {
+    @media screen and (min-width: #{$mob-ss-width + 1}) and (max-width: #{$mob-s-width}) {
+      @content;
+    }
+  }
+  @else{
+    @media screen and (max-width: #{$mob-s-width})   {
+      @content;
+    }
+  }
+}
+

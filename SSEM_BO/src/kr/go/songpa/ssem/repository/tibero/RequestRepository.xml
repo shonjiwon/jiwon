@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.RequestRepository">
+
+    <select id="selectRequestList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.RequestVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.NAME GRP_NAME FROM REQUEST A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GBN_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.WORK_TYPE = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectRequestListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM REQUEST A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.GBN_CD = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.WORK_TYPE = #{searchKind2}
+        </if>
+        <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+            AND (TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectRequest" parameterType="kr.go.songpa.ssem.model.RequestVo" resultType="kr.go.songpa.ssem.model.RequestVo">
+        SELECT A.*, G.NAME GRP_NAME FROM REQUEST A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND REQ_IDX = #{req_idx}
+    </select>
+
+    <insert id="insertRequest" parameterType="kr.go.songpa.ssem.model.RequestVo">
+        <selectKey resultType="int" keyProperty="req_idx" order="BEFORE">
+            SELECT nvl(MAX(REQ_IDX),0)+1 AS REQ_IDX  FROM REQUEST
+        </selectKey>
+        INSERT INTO REQUEST (
+        REQ_IDX
+        ,GROUP_IDX
+        ,GBN_CD
+        ,WORK_TYPE
+        ,REG_NM
+        ,TEL_NO
+        ,URL
+        ,TITLE
+        ,CONT
+        ,ATCH_FILE_ID
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{req_idx}
+        ,#{group_idx}
+        ,#{gbn_cd}
+        ,#{work_type}
+        ,#{reg_nm}
+        ,#{tel_no}
+        ,#{url}
+        ,#{title}
+        ,#{cont}
+        ,#{atch_file_id}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateRequestViewCnt" parameterType="kr.go.songpa.ssem.model.RequestVo">
+        UPDATE REQUEST SET
+            CNT = CNT + 1
+        WHERE REQ_IDX = #{req_idx}
+    </update>
+
+    <update id="updateRequest" parameterType="kr.go.songpa.ssem.model.RequestVo">
+        UPDATE REQUEST SET
+        GBN_CD = #{gbn_cd}
+        ,WORK_TYPE = #{work_type}
+        ,TEL_NO = #{tel_no}
+        ,URL = #{url}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        <if test="atch_file_id != null and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE REQ_IDX = #{req_idx}
+    </update>
+
+    <delete id="deleteRequest" parameterType="kr.go.songpa.ssem.model.RequestVo">
+        DELETE FROM REQUEST WHERE REQ_IDX = #{req_idx}
+    </delete>
+
+</mapper>

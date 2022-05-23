@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+    <import resource="mvc-view-config.xml"/>
+
+    <context:component-scan base-package="kr.go.songpa.ssem.controller, kr.go.songpa.ssem" />
+
+    <mvc:annotation-driven/>
+
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+
+    <!-- 로컬 -->
+    <mvc:default-servlet-handler/>
+    <!-- 운영 -->
+    <!-- mvc:default-servlet-handler default-servlet-name="WorkerServlet"/-->
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource"
+          p:basename="messages/messages"/>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- view name resolved using bean of type InternalResourceViewResolver
+            (declared in mvc-view-config.xml) -->
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">
+                    cmmn/bizError
+                </prop>
+            </props>
+        </property>
+        <property name="defaultErrorView" value="cmmn/bizError"/>
+        <property name="warnLogCategory" value="warn"/>
+        <!-- needed otherwise exceptions won't be logged anywhere -->
+    </bean>
+
+    <!-- MULTIPART RESOLVERS -->
+    <!-- regular spring resolver -->
+    <bean id="spring.RegularCommonsMultipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="5242880"/>
+        <property name="maxInMemorySize" value="5242880"/>
+    </bean>
+
+    <alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver"/>
+
+    <!--<aop:aspectj-autoproxy proxy-target-class="true" />-->
+    <!--<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+        	<mvc:exclude-mapping path="/resources/**"/>
+			<bean id="loggerInterceptor" class="org.ucity.yongin.core.web.interceptor.StatisticInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+
+    <!--<bean id="stringMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+                <value>text/html;charset=UTF-8</value>
+                <value>text/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>-->
+
+    <!--<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                &lt;!&ndash;
+                    <value>/WEB-INF/tiles-config/tiles-def.xml</value>&ndash;&gt;
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+        <property name="order" value="0" />
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0" />
+
+    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
+
+      <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1" />
+      </bean>-->
+</beans>

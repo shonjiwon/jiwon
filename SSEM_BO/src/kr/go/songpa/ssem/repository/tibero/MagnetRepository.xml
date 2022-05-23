@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.MagnetRepository">
+
+    <select id="selectChannelStudyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.ChannelStudyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, G.P_NAME P_NAME, G.NAME GRP_NAME FROM CHANNEL_STUDY A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.USE_YN = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectChannelStudyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM CHANNEL_STUDY A, GROUP_INFO G
+        WHERE
+        1=1 AND A.GROUP_IDX = G.GROUP_IDX
+        <if test="searchKind != null and searchKind !=''">
+            AND A.USE_YN = #{searchKind}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.TITLE) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectChannelStudyInfo" parameterType="kr.go.songpa.ssem.model.ChannelStudyVo" resultType="kr.go.songpa.ssem.model.ChannelStudyVo">
+        SELECT A.*, G.P_IDX, G.P_NAME, G.NAME GRP_NAME FROM CHANNEL_STUDY A, GROUP_INFO G WHERE A.GROUP_IDX = G.GROUP_IDX AND A.CHANNEL_STUDY_IDX=#{channel_study_idx}
+	</select>
+
+    <select id="selectTeachApplyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TeacherApyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.*, (SELECT CD_VAL FROM CODE WHERE A.CODE_IDX = CODE_IDX) CODE_NAME FROM TEACHER_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CODE_IDX = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.APY_GENDER = #{searchKind4}
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeachApplyistTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TEACHER_APY A
+        WHERE
+        1=1
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.STATUS = #{searchKind2}
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            AND A.CODE_IDX = #{searchKind3}
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.APY_GENDER = #{searchKind4}
+        </if>
+        <choose>
+            <when test="searchVal2 == '1'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == '2'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}
+                </if>
+            </when>
+            <when test="searchVal2 == 'ALL'.toString()">
+                <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                    AND ( TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} OR TO_CHAR(A.UP_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate} )
+                </if>
+            </when>
+        </choose>
+        <if test="searchVal != null  and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectTeachApplyInfo" parameterType="kr.go.songpa.ssem.model.TeacherApyVo" resultType="kr.go.songpa.ssem.model.TeacherApyVo">
+        SELECT A.*, (SELECT CD_VAL FROM CODE WHERE A.CODE_IDX = CODE_IDX) CODE_NAME FROM TEACHER_APY A WHERE A.TEACHER_APY_IDX=#{teacher_apy_idx}
+	</select>
+
+    <select id="selectHopeStudyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.HopeStudyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM HOPE_STUDY A
+        WHERE
+        1=1 AND USE_YN='Y'
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.CLOSE_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND ((TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}) OR (A.CLOSE_DT BETWEEN #{searchSDate} AND #{searchEDate}))
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            <choose>
+                <when test="searchKind3 == '1'.toString()">
+                    AND A.CLOSE_DT &gt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                </when>
+                <when test="searchKind3 == '2'.toString()">
+                    AND A.CLOSE_DT &lt; TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.SELECT_YN = #{searchKind4}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectHopeStudyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM HOPE_STUDY A
+        WHERE
+        1=1 AND USE_YN='Y'
+        <if test="searchKind2 != null and searchKind2 !=''">
+            <choose>
+                <when test="searchKind2 == '1'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind2 == '2'.toString()">
+                    <if test="searchSDate != null and searchSDate !='' and searchEDate != null  and searchEDate !=''">
+                        AND (A.CLOSE_DT BETWEEN #{searchSDate} AND #{searchEDate})
+                    </if>
+                </when>
+                <when test="searchKind2 == 'ALL'.toString()">
+                    AND ((TO_CHAR(A.REG_DT, 'YYYY-MM-DD') BETWEEN #{searchSDate} AND #{searchEDate}) OR (A.CLOSE_DT BETWEEN #{searchSDate} AND #{searchEDate}))
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind3 != null and searchKind3 !=''">
+            <choose>
+                <when test="searchKind3 == '1'.toString()">
+                    AND A.CLOSE_DT &gt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                </when>
+                <when test="searchKind3 == '2'.toString()">
+                    AND A.CLOSE_DT &lt; TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+                </when>
+            </choose>
+        </if>
+        <if test="searchKind4 != null and searchKind4 !=''">
+            AND A.SELECT_YN = #{searchKind4}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectJoinStudyCountByIdx" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM JOIN_STUDY WHERE HOPE_STUDY_IDX = #{value}
+    </select>
+
+    <select id="selectTeachStudyCountByIdx" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM TEACH_STUDY WHERE HOPE_STUDY_IDX = #{value} AND USE_YN='Y'
+    </select>
+
+    <select id="selectHopeStudyInfo" parameterType="kr.go.songpa.ssem.model.HopeStudyVo" resultType="kr.go.songpa.ssem.model.HopeStudyVo">
+        SELECT * FROM HOPE_STUDY WHERE HOPE_STUDY_IDX = #{hope_study_idx}
+    </select>
+
+    <select id="selectJoinStudyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.JoinStudyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM JOIN_STUDY A
+        WHERE
+        1=1 AND A.HOPE_STUDY_IDX = #{searchVal2}
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_MOB_NO = #{searchVal8}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectJoinStudyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM JOIN_STUDY A
+        WHERE
+        1=1 AND A.HOPE_STUDY_IDX = #{searchVal2}
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_MOB_NO = #{searchVal8}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectTeachStudyList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.TeachStudyVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM TEACH_STUDY A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.HOPE_STUDY_IDX = #{searchVal2}
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_MOB_NO = #{searchVal8}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectTeachStudyListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM TEACH_STUDY A
+        WHERE
+        1=1 AND A.USE_YN='Y' AND A.HOPE_STUDY_IDX = #{searchVal2}
+        <if test="searchVal8 != null and searchVal8 !=''">
+            AND A.APY_MOB_NO = #{searchVal8}
+        </if>
+        <if test="searchVal != null and searchVal !=''">
+            <choose>
+                <when test="searchKind == '1'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == '2'.toString()">
+                    AND (UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+                <when test="searchKind == 'ALL'.toString()">
+                    AND (UPPER(A.APY_NAME) like '%'||UPPER(#{searchVal})||'%' OR UPPER(A.APY_ID) like '%'||UPPER(#{searchVal})||'%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectTeachStudyInfoByIdx" parameterType="int" resultType="kr.go.songpa.ssem.model.TeachStudyVo">
+        SELECT * FROM TEACH_STUDY WHERE TEACH_STUDY_IDX = #{value}
+    </select>
+
+    <insert id="insertChannelStudyInfo" parameterType="kr.go.songpa.ssem.model.ChannelStudyVo">
+        <selectKey resultType="int" keyProperty="channel_study_idx" order="BEFORE">
+            SELECT nvl(MAX(CHANNEL_STUDY_IDX),0)+1 AS CHANNEL_STUDY_IDX  FROM CHANNEL_STUDY
+        </selectKey>
+        INSERT INTO CHANNEL_STUDY (
+        CHANNEL_STUDY_IDX
+        ,GROUP_IDX
+        ,USE_YN
+        ,TITLE
+        ,THUMB_ATCH_FILE_ID
+        ,ALT_TXT
+        ,CONT
+        ,ATCH_FILE_ID
+        ,CNT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{channel_study_idx}
+        ,#{group_idx}
+        ,#{use_yn}
+        ,#{title}
+        ,#{thumb_atch_file_id}
+        ,#{alt_txt}
+        ,#{cont}
+        ,#{atch_file_id}
+        ,0
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateChannelStudyViewCnt" parameterType="kr.go.songpa.ssem.model.ChannelStudyVo">
+		UPDATE CHANNEL_STUDY SET
+			CNT = CNT + 1
+		WHERE CHANNEL_STUDY_IDX = #{channel_study_idx}
+	</update>
+
+    <update id="updateChannelStudyInfo" parameterType="kr.go.songpa.ssem.model.ChannelStudyVo">
+        UPDATE CHANNEL_STUDY SET
+        USE_YN = #{use_yn}
+        ,TITLE = #{title}
+        ,CONT = #{cont}
+        <if test="thumb_atch_file_id != null  and thumb_atch_file_id !=''">
+            ,THUMB_ATCH_FILE_ID = #{thumb_atch_file_id}
+        </if>
+        <if test="atch_file_id != null  and atch_file_id !=''">
+            ,ATCH_FILE_ID = #{atch_file_id}
+        </if>
+        <if test="alt_txt != null  and alt_txt !=''">
+            ,ALT_TXT = #{alt_txt}
+        </if>
+        <if test="group_idx != null  and group_idx !=''">
+            ,GROUP_IDX = #{group_idx}
+        </if>
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE CHANNEL_STUDY_IDX = #{channel_study_idx}
+    </update>
+
+    <update id="updateTeachApplyInfo" parameterType="kr.go.songpa.ssem.model.TeacherApyVo">
+        UPDATE TEACHER_APY SET
+        UP_ID	= #{up_id}
+        ,STATUS = #{status}
+        ,MEMO = #{memo}
+        ,UP_DT = SYSDATE
+        WHERE TEACHER_APY_IDX = #{teacher_apy_idx}
+    </update>
+
+    <update id="updateHopeStudyInfo" parameterType="kr.go.songpa.ssem.model.HopeStudyVo">
+        UPDATE HOPE_STUDY SET
+        UP_ID	= #{up_id}
+        <if test="select_yn != null and select_yn !=''">
+            ,SELECT_YN = #{select_yn}
+        </if>
+        <if test="lecture_idx != null and lecture_idx !=''">
+            ,LECTURE_IDX = #{lecture_idx}
+        </if>
+        ,UP_DT = SYSDATE
+        WHERE HOPE_STUDY_IDX = #{hope_study_idx}
+    </update>
+
+    <update id="deleteHopeStudyInfo" parameterType="kr.go.songpa.ssem.model.HopeStudyVo">
+        UPDATE HOPE_STUDY SET
+        UP_ID	= #{up_id}
+        ,USE_YN = 'N'
+        ,UP_DT = SYSDATE
+        WHERE HOPE_STUDY_IDX = #{hope_study_idx}
+    </update>
+
+    <delete id="deleteChannelStudyInfo" parameterType="kr.go.songpa.ssem.model.ChannelStudyVo">
+	    DELETE FROM CHANNEL_STUDY WHERE CHANNEL_STUDY_IDX = #{channel_study_idx}
+	</delete>
+
+    <delete id="deleteTeachApplyInfo" parameterType="kr.go.songpa.ssem.model.TeacherApyVo">
+	    DELETE FROM TEACHER_APY WHERE TEACHER_APY_IDX = #{teacher_apy_idx}
+	</delete>
+
+</mapper>

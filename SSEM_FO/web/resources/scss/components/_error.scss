@@ -1,0 +1,97 @@
+
+@font-face {
+    font-family: 'teko';
+    src: url('https://cdn.jsdelivr.net/npm/typeface-teko@1/files/teko-latin-500.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'metropolis';
+    src: url('https://cdn.jsdelivr.net/npm/fontsource-metropolis@3.0.1/files/metropolis-all-500-normal.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+.error_box{
+	background-color:  #eeeeee;
+	padding-top: rem(115);
+	img{
+		display: block;
+		float:right;
+	}
+	.wrap{
+		max-width: 930px;
+	}
+	.img_box{
+		width: 55%;
+		overflow: hidden;
+	}
+	.text_box{
+		width: 40%;
+		margin-right: 5%;
+		text-align: center;
+		.error_tit{
+			margin-top: rem(65);
+			color: #16c1f3;
+			font-size: rem(140);
+			font-family: 'teko', 'Roboto', 'Noto Sans Korean', sans-serif ;
+			letter-spacing: 0.1em;
+			line-height: 1;
+		}
+		.error_sub{
+			font-family: 'metropolis', 'Roboto', 'Noto Sans Korean', sans-serif ;
+			font-size: rem(30);
+			line-height: 1;
+			color: #222222;
+		}
+		font-size: rem(22);
+		color:#555555;
+		.btn{
+			font-size: rem(20);
+			height: rem(50);
+			width: rem(170);
+			line-height: rem(48);
+			background-color: #b1b5ba;
+			border-color: #b1b5ba;
+			color: #ffffff;
+			&:hover{
+				background-color: #16c1f3;
+				border-color: #16c1f3;
+			}
+		}
+	}
+}
+
+@include mob{
+	
+.error_box{
+	img{
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: resRem(382,'sm');
+	}
+	.img_box{
+		margin-top: resRem(50,'sm');
+		width: 100%;
+		float: none;
+	}
+	.text_box{
+		width: 100%;
+		float: none;
+		margin-right: 0%;
+		font-size: resRem(32,'sm');
+		.error_sub{
+			font-size:resRem(40,'sm');
+		}
+		
+		.btn{
+			font-size: resRem(30,'sm');
+			height:  resRem(60,'sm');
+			width:  resRem(170,'sm');
+			line-height:  resRem(58,'sm');
+		}
+	}
+}
+
+}

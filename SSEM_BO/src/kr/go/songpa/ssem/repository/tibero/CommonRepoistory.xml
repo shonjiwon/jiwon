@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.CommonRepoistory">
+    <select id="getNextStringId" resultType="String">
+		SELECT LPAD(NVL(MAX(SEQ), 0) + 1,8, 0) FROM COMMONSEQ WHERE TABLE_ID='FILE_ID'
+	</select>
+
+	<update id="setNextStringId">
+	    UPDATE COMMONSEQ SET SEQ = SEQ + 1 WHERE TABLE_ID='FILE_ID'
+	</update>
+</mapper>

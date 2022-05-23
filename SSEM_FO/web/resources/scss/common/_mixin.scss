@@ -1,0 +1,73 @@
+//
+// gradation  : gradation 
+// date       : 2020.07.27
+/// @param {color} $colorBg  : 배경색1
+/// @param {color} $colorBg2 : 배경색2
+// 
+@mixin gradation($colorBg, $colorBg2, $deg : 45deg) {
+  background: $colorBg; /* Old browsers */
+  background: -moz-linear-gradient($deg,  $colorBg 0%, $colorBg 30%, $colorBg2 70%, $colorBg2 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient($deg,  $colorBg 0%,$colorBg 30%,$colorBg2 70%,$colorBg2 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient($deg,  $colorBg 0%,$colorBg 30%,$colorBg2 70%,$colorBg2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#{$colorBg}, endColorstr=#{$colorBg2},GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  /* IE6-9 */
+  transition: none;
+}
+
+
+
+//
+// clearfix        : clearfix mixin (정렬)
+// date            : 2020.07.27
+//
+/// @param {string} $type          : 종류
+/// 
+@mixin clearfix($type : null) {
+  @if $type == null {
+    overflow: hidden;
+  }
+  @else if $type == "after"{
+    &::after {
+        display: block;
+        content: "";
+        clear: both;
+    }
+  }
+}
+
+//
+// ps-center       : ps-center mixin (정렬 : transform)
+// date            : 2020.07.27
+///
+/// @param {string} $type       : 위치
+///
+@mixin ps-center($type : null) {
+  position: absolute;
+  @if $type == null {
+    width: 100%;
+    top: 50%; left: 50%;
+    @include vendor(transform,translate(-50%, -50%));
+  }
+  @else if $type == "middle" {
+    top: 50%;
+    @include vendor(transform,translate(0, -50%));
+  }
+  @else if $type == "center" {
+    left: 50%;
+    @include vendor(transform,translate( -50%, 0));
+  }
+}
+
+@mixin  margin-auto {
+    margin: {
+      left: auto;
+      right:auto;
+  }; 
+}
+
+@mixin background-img($url) {
+  background-image: url($url);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}

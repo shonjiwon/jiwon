@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.songpa.ssem.repository.tibero.MainRepository">
+
+    <select id="selectMainImgList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.MainImgVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM MAIN_IMG A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.KIND = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.USE_YN DESC, A.ORD ASC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectMainImgListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM MAIN_IMG A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.KIND = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectMainImgInfo" parameterType="kr.go.songpa.ssem.model.MainImgVo" resultType="kr.go.songpa.ssem.model.MainImgVo">
+        SELECT * FROM MAIN_IMG WHERE MAIN_IMG_IDX=#{main_img_idx}
+	</select>
+
+    <select id="selectPopupList" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="kr.go.songpa.ssem.model.PopupVo">
+        SELECT * FROM (
+        SELECT ROWNUM AS RNUM, T.* FROM (
+        SELECT A.* FROM POPUP A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.KIND = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+        ORDER BY A.USE_YN DESC, A.ORD ASC, A.REG_DT DESC
+        ) T WHERE ROWNUM &lt;=#{lastIndex}
+        ) WHERE RNUM &gt;=#{firstIndex}
+    </select>
+
+    <select id="selectPopupListTotal" parameterType="kr.go.songpa.ssem.model.SearchVo" resultType="int">
+        SELECT COUNT(*) FROM POPUP A
+        WHERE
+        1=1
+        <if test="searchKind != null and searchKind !=''">
+            AND A.KIND = #{searchKind}
+        </if>
+        <if test="searchKind2 != null and searchKind2 !=''">
+            AND A.USE_YN = #{searchKind2}
+        </if>
+        <if test="searchVal != null  and searchVal !=''">
+            AND (UPPER(A.NAME) like '%'||UPPER(#{searchVal})||'%')
+        </if>
+    </select>
+
+    <select id="selectPopupInfo" parameterType="kr.go.songpa.ssem.model.PopupVo" resultType="kr.go.songpa.ssem.model.PopupVo">
+        SELECT * FROM POPUP WHERE POPUP_IDX=#{popup_idx}
+	</select>
+
+    <insert id="insertMainImgInfo" parameterType="kr.go.songpa.ssem.model.MainImgVo">
+        <selectKey resultType="int" keyProperty="main_img_idx" order="BEFORE">
+            SELECT nvl(MAX(MAIN_IMG_IDX),0)+1 AS MAIN_IMG_IDX  FROM MAIN_IMG
+        </selectKey>
+        INSERT INTO MAIN_IMG (
+        MAIN_IMG_IDX
+        ,KIND
+        ,NAME
+        ,USE_YN
+        ,ORD
+        ,ATCH_FILE_ID
+        ,ALT_TXT
+        ,LINK
+        ,LINK_TGT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{main_img_idx}
+        ,#{kind}
+        ,#{name}
+        ,#{use_yn}
+        ,'1'
+        ,#{atch_file_id}
+        ,#{alt_txt}
+        ,#{link}
+        ,#{link_tgt}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <insert id="insertPopupInfo" parameterType="kr.go.songpa.ssem.model.PopupVo">
+        <selectKey resultType="int" keyProperty="popup_idx" order="BEFORE">
+            SELECT nvl(MAX(POPUP_IDX),0)+1 AS POPUP_IDX  FROM POPUP
+        </selectKey>
+        INSERT INTO POPUP (
+        POPUP_IDX
+        ,KIND
+        ,NAME
+        ,USE_YN
+        ,ORD
+        ,START_DT
+        ,END_DT
+        ,ATCH_FILE_ID
+        ,ALT_TXT
+        ,LINK
+        ,LINK_TGT
+        ,REG_ID
+        ,REG_DT
+        ) VALUES (
+        #{popup_idx}
+        ,#{kind}
+        ,#{name}
+        ,#{use_yn}
+        ,#{ord}
+        ,TO_DATE(#{start_dt}, 'YYYY-MM-DD hh24:mi')
+        ,TO_DATE(#{end_dt}, 'YYYY-MM-DD hh24:mi')
+        ,#{atch_file_id}
+        ,#{alt_txt}
+        ,#{link}
+        ,#{link_tgt}
+        ,#{reg_id}
+        ,SYSDATE
+        )
+    </insert>
+
+    <update id="updateMainImgOrd" parameterType="kr.go.songpa.ssem.model.OrdVo">
+        UPDATE MAIN_IMG SET ORD = #{val} WHERE MAIN_IMG_IDX = #{idx}
+    </update>
+
+    <update id="updateMainImgInfo" parameterType="kr.go.songpa.ssem.model.MainImgVo">
+        UPDATE MAIN_IMG SET
+        KIND = #{kind}
+        ,NAME = #{name}
+        ,USE_YN = #{use_yn}
+        ,ORD = #{ord}
+        ,ATCH_FILE_ID = #{atch_file_id}
+        ,ALT_TXT = #{alt_txt}
+        ,LINK = #{link}
+        ,LINK_TGT = #{link_tgt}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE MAIN_IMG_IDX = #{main_img_idx}
+    </update>
+
+    <update id="updatePopupOrd" parameterType="kr.go.songpa.ssem.model.OrdVo">
+        UPDATE POPUP SET ORD = #{val} WHERE POPUP_IDX = #{idx}
+    </update>
+
+    <update id="updatePopupInfo" parameterType="kr.go.songpa.ssem.model.PopupVo">
+        UPDATE POPUP SET
+        KIND = #{kind}
+        ,NAME = #{name}
+        ,USE_YN = #{use_yn}
+        ,ORD = #{ord}
+        ,START_DT = TO_DATE(#{start_dt}, 'YYYY-MM-DD hh24:mi')
+        ,END_DT = TO_DATE(#{end_dt}, 'YYYY-MM-DD hh24:mi')
+        ,ATCH_FILE_ID = #{atch_file_id}
+        ,ALT_TXT = #{alt_txt}
+        ,LINK = #{link}
+        ,LINK_TGT = #{link_tgt}
+        ,UP_ID	= #{up_id}
+        ,UP_DT = SYSDATE
+        WHERE POPUP_IDX = #{popup_idx}
+    </update>
+
+    <update id="updateMainImgOrdAll" parameterType="kr.go.songpa.ssem.model.OrdVo">
+        UPDATE MAIN_IMG SET ORD = ORD + 1 WHERE USE_YN = 'Y'
+    </update>
+
+    <delete id="deleteMainImgInfo" parameterType="kr.go.songpa.ssem.model.MainImgVo">
+	    DELETE FROM MAIN_IMG WHERE MAIN_IMG_IDX = #{main_img_idx}
+	</delete>
+
+    <delete id="deletePopupInfo" parameterType="kr.go.songpa.ssem.model.PopupVo">
+	    DELETE FROM POPUP WHERE POPUP_IDX = #{popup_idx}
+	</delete>
+
+</mapper>

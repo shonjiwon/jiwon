@@ -1,0 +1,152 @@
+/*
+*****************************************
+*          typography  : start
+*****************************************
+*/
+
+//
+// font-face  : font mixin (폰트)
+// date       : 2020.07.27
+// 
+@mixin font-face(
+  $font-family,
+  $font-path,
+  $font-weight: null, 
+  $uni : null,
+  $font-style: null, 
+  $exts: woff2 woff eot otf
+) {
+
+  $src: null;
+
+  $extmods: (
+    eot: "?",
+    svg: "#" + str-replace($font-family, " ", "_")
+  );
+
+  $formats: (
+    otf: "opentype",
+    ttf: "truetype"
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($font-path + "." + $extmod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-family: quote($font-family);
+    src: $src;
+    font-style: $font-style;
+    font-weight: $font-weight;
+    @if $uni{
+      unicode-range: unquote($uni);
+    }
+  }
+}
+
+/*
+영문 (대문자) : U+0041-005A
+영문 (소문자) : U+0061-007A
+숫자 : U+0030-0039
+한글 : U+AC00-U+D7A3
+*/
+
+
+//폰트관련
+$font-path: "fonts/NotoSans/";
+$font-name: "NotoSans";
+/*font : Noto Sans Korean*/
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Thin", 100);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Light", 200);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Light", 300);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Regular", 400);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Medium", 500);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Bold", 600);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Bold", 700);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Black", 800);
+@include font-face("Noto Sans Korean", $font-path + $font-name + "-Black", 900);
+
+
+$font-path: "fonts/Roboto/";
+$font-name: "roboto-v20-latin";
+/*font : Roboto*/
+@include font-face("Roboto", $font-path + $font-name + "-100", 100, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-300", 200, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-300", 300, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-regular", 400, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-500", 500, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-700", 600, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-700", 700, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-900", 800, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+@include font-face("Roboto", $font-path + $font-name + "-900", 900, 'U+0041-005A, U+0061-007A, U+0030-0039' ,null, woff woff2);
+
+$font-path: "fonts/SCcore/";
+$font-name: "S-CoreDream";
+/*font : SCore*/
+@include font-face("S Core Dream", $font-path + $font-name + "-1", 100, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-2", 200, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-3", 300, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-4", 400, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-5", 500, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-6", 600, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-7", 700, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-8", 800, null, null, woff);
+@include font-face("S Core Dream", $font-path + $font-name + "-8", 900, null, null, woff);
+
+
+
+$font-path: "fonts/Montserrat/";
+$font-name: "montserrat-v14-latin";
+/*font : SCore*/
+@include font-face("Montserrat", $font-path + $font-name + "-100",     100, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-200",     200, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-300",     300, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-regular", 400, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-500",     500, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-600",     600, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-700",     700, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-800",     800, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("Montserrat", $font-path + $font-name + "-800",     900, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+
+
+/*font : RobotoSlab*/
+$font-path: "fonts/RobotoSlab/";
+$font-name: "roboto-slab-v12-latin";
+@include font-face("RobotoSlab", $font-path + $font-name + "-regular",     400, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+@include font-face("RobotoSlab", $font-path + $font-name + "-600",         600, 'U+0041-005A, U+0061-007A, U+0030-0039', null, woff woff2);
+
+
+/*font : Noto Serif Korean*/
+$font-path: "fonts/NotoSerif/";
+$font-name: "noto-serif-kr-v6-korean";
+@include font-face("Noto Serif Korean", $font-path + $font-name + "-Regular", 500, null, null, woff woff2);
+@include font-face("Noto Serif Korean", $font-path + $font-name + "-600", 600, null, null, woff woff2);
+
+
+
+/*font : DaxlinePro*/
+$font-path: "fonts/DaxlinePro/";
+$font-name: "DaxlinePro";
+@include font-face("DaxlinePro", $font-path + $font-name + "-Thin", 100, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-Light", 200, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-Regular", 300, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-Medium", 400, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-Bold", 500, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-ExtraBold", 600, null, null, woff);
+@include font-face("DaxlinePro", $font-path + $font-name + "-Black", 700, null, null, woff);
+
+body, html{font-family: 'Roboto', 'Noto Sans Korean', sans-serif ; line-height: 1.5; }
+
+.font_nsk  { font-family: 'Noto Sans Korean', sans-serif;}
+.font_nsfk { font-family: 'Noto Serif Korean', sans-serif;}
+.font_robo { font-family: 'Roboto', sans-serif;}
+.font_sc { font-family: 'S Core Dream', sans-serif;}
+.font_mts { font-family: 'Montserrat', sans-serif;}
+.font_roboS { font-family: 'Montserrat', sans-serif;}
+.font_dxlp { font-family:'DaxlinePro', sans-serif;}
+
+$font-family : 'Roboto', 'Noto Sans Korean', sans-serif ;
+
+

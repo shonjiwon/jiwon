@@ -1,0 +1,367 @@
+$mypageColors : (
+	1 : #3f78d4,
+	2 : #1fb592,
+	3 : #f33636,
+	4 : #ff9b21,
+);
+@each $name, $color in $mypageColors {
+	.my_tc_#{$name}{
+		color:$color;
+	}
+}
+/*마이페이지 : s*/
+$mypage_tab_box : (
+    "height"          : rem(70),
+    "text-color"      : $color-text-b,
+    "bg-color"        : transparent,
+);
+.mypage_tab_box{
+	background: #222222;
+	color:#ffffff;
+	line-height: 1.2;
+	> .tab{
+		width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		max-width: rem(1440);
+		text-align: center;
+		height:  map-get($mypage_tab_box, "height");
+		
+		.tab_item{
+			width: auto;
+			float: none;
+			display: inline-block;
+			vertical-align: middle;
+			position: relative;
+			height:  map-get($mypage_tab_box, "height");
+			font-weight: 300;
+			color: rgba(255,255,255,0.6);
+			padding-left: rem(50);
+			padding-right: rem(50);
+			&.on, &:hover{
+				border-bottom: 0;
+				border-width: 0;
+				background : transparent !important;
+				color : #ffffff;
+				font-weight: 600;
+			}
+			&:first-child{
+				&:before{
+					display: none !important;
+				}
+			}
+			& + li {
+				&:before{
+					display: block !important;
+				}
+			}
+			
+			&:before{
+				content: '';
+				display: block;
+				position: absolute;
+				top:50%; margin-top: rem(-2.5);
+				left: 0;
+				width: rem(5);
+				height: rem(5);
+				border-radius: 100%;
+				background-color: rgba(255,255,255,0.6);
+			}
+			
+			a{
+				height:  map-get($mypage_tab_box, "height");
+				line-height:  map-get($mypage_tab_box, "height");
+				position: relative;
+				width: auto;
+				&:hover, &:focus{
+					color: #ffffff;
+				}
+			}
+		}
+	}
+}
+
+$mypage_tab_box : (
+    "height"          : resRem(90,'md'),
+);
+@include tab{
+	.mypage_tab_box{
+		background: #ffffff !important;
+		> .tab{
+			height:  map-get($mypage_tab_box, "height");
+			overflow: hidden;
+			border-top: 1px solid #dddddd;
+			border-bottom: 1px solid #dddddd;
+			@for $i from 1 to 12 {
+				&.tab_#{$i}{
+					.tab_item{
+						width: (100% / $i);
+					}
+				}
+			}
+			.tab_item{
+				float: left;
+				display: block;
+				position: relative;
+				height:  map-get($mypage_tab_box, "height");
+				color: #222222;
+				font-size:  resRem(26,'md');
+				&.on, &:hover{
+					color: #222222;
+					&:after{
+						left: 0;
+						width: 100%;
+					}
+				}
+				&:before{
+					display: none !important;
+				}
+				
+				&:after{
+					content: '';
+					display: block;
+					position: absolute;
+					bottom:2px;
+					left: 50%;
+					width: 0;
+					height: 2px;
+					background-color: #222222;
+					@include vendor(transition, 'all 0.3s');
+				}
+				
+				a{
+					@include ps-center();
+					line-height: 1.2;
+					height: auto;
+					&:hover, &:focus{
+						color: inherit;
+					}
+				}
+			}
+		}
+	}
+}
+
+.password_ok_wrap{
+	border-top: 1px solid map-get($colors, 1 );
+	padding: rem(90) rem(50) rem(100);
+	text-align: center;
+	.password_box{
+		width: 100%;
+		max-width: rem(730);
+		padding: rem(50) rem(80);
+		margin-top:rem(30);
+		@include margin-auto;
+		background-color: #f6f6f6;
+		border: 1px solid #dddddd;
+		.fm_inp{
+			height: rem(60);
+			line-height: rem(60);
+		}
+	}
+}
+
+@include tab {
+	.password_ok_wrap{
+		.password_box{
+			.fm_inp{
+				height: resRem(90,'md');
+			}
+		}
+		border-bottom: 1px solid #dddddd;
+	}
+}
+
+
+.sub_con.mypage_st .table_box_ul {
+	.btn.btn_color_t{
+		background-color: #9f9f9f;
+		color: #ffffff;
+		border:#9f9f9f;
+	}
+}
+.sub_con.mypage_st .table_list_ul{
+	overflow-y: auto;
+	li{
+		min-width: 1440px;
+	}
+	.table{
+		.col{
+			padding : {
+				left:0;
+				right:0;
+			}
+		}
+	}
+
+}
+@include tab{
+	.sub_con.mypage_st .table_list_ul{
+		li{
+			min-width: auto;
+		}
+		.table{
+			.col{
+				padding : {
+					left:0;
+					right:0;
+				}
+			}
+		}
+	}
+}
+
+.line_mark_box{
+	height: rem(40);
+	line-height: rem(34);
+	width: rem(150);
+	border: 1px solid #222222;
+	background-color: #ffffff;
+	color: #222222;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	> *{
+		display: inline-block;
+		vertical-align: middle !important;
+	}
+}
+
+@include tab{
+	.btn_box{
+		.btn.btn_long.btn_big.btn_md_auto{
+			min-width: resRem(240,'md');
+		}
+	}
+	.mypage_btn_box{
+		[class*=col_]{
+			width: auto;
+			float:none;
+			display: inline-block;
+		}
+	}
+}
+@include tab{
+	.line_mark_box{
+		height: resRem(60,'md');
+		line-height: resRem(54,'md');
+		width: resRem(260,'md');
+	}
+}
+.survey_box{
+	border-top: 2px solid map-get($colors, 1 );
+	border-bottom: 1px solid #dddddd;
+	.table{
+		width: 100%;
+		display: table;
+		table-layout: fixed;
+		text-align: left;
+		> *:first-child{
+			border-left: 0 !important;
+		}
+		&:last-child{
+			> .td,> .th{
+				border-bottom: 0 !important;
+			}
+		}
+		> .td,> .th{
+			display: table-cell;
+			vertical-align: middle;
+			height: rem(60);
+			border-bottom: 1px solid #dddddd;
+			border-left: 1px solid #dddddd;
+		}
+		> .th{
+			padding-left: rem(52) ;
+			
+			background-color: #f6f6f6;
+		}
+	}
+	> .table  > .th{
+		width: rem(300);
+	}
+	.q_table{
+		> .table{
+			> .th{
+				text-align: center;
+				padding: rem(10);
+			}	
+			> .td{
+				padding: rem(10);
+			}	
+			> *{
+				width: rem(180);
+				text-align: center;
+			}
+			> *:first-child{
+				width: auto;
+				padding-left: rem(52) ;
+				text-align: left;
+			}
+		}
+		
+	}
+
+	
+}
+@include tab {
+	
+.survey_box{
+	.table{
+		&:last-child{
+			> .td,> .th{
+				border-bottom: 0 !important;
+			}
+		}
+		> .td,> .th{
+			height: resRem(90,'md');
+		}
+		> .th{
+			padding-left: resRem(20,'md');;
+		}
+	}
+	> .table{
+		display: block;
+		> .th,
+		> .td{
+			display: block;
+			width: 100%;
+			height: auto;
+			min-height: resRem(90,'md');
+		}
+		> .th{
+			text-align: center;
+			padding-top: resRem(25, 'md');
+		}
+		> .td{
+			border-left: 0 !important;
+		}
+		&:last-child{
+			> .th{
+				border-bottom: 1px solid #dddddd !important;
+			}
+		}
+	}
+	.q_table{
+		> .table{
+			> .th{
+				padding:  resRem(20, 'md');;
+			}	
+			> .td{
+				padding: resRem(20, 'md');
+			}	
+			> *{
+				width:  resRem(120, 'md');
+			}
+			> *:first-child{
+				width: auto;
+				padding-left: resRem(20, 'md');;
+				text-align: left;
+			}
+		}
+		
+	}
+
+}
+}
+/*마이페이지 : e*/

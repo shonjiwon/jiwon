@@ -1,0 +1,110 @@
+/*로그인 : s*/
+.login_wrap{
+	@include background-img('../img/login/login_bg.jpg');
+	padding: rem(110) 0;
+	.login_box{
+		background-color: #ffffff;
+		max-width: rem(630);
+		padding: rem(60) rem(83) 0;
+		width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+	}
+	.login_link{
+		li{
+			display: inline-block;
+			vertical-align: middle;
+			padding-left: rem(18);
+			padding-right: rem(18);
+			line-height: 1;
+			&:not(:first-child){
+				border-left: 1px solid #dddddd;
+			}
+			a{
+				line-height: 1;
+			}
+		}
+	}
+	.login_info{
+		margin-left: rem(-83);
+		margin-right: rem(-83);
+		color: #444444;
+		> ul {
+			li{
+				padding-left: 1.25em;
+				text-indent: -1.25em;
+			}
+		}
+	}
+	.login_from{
+		padding-top: rem(10);
+		li{
+			overflow: hidden;
+			position: relative;
+			margin-top: rem(10);
+			padding-left: rem(80);
+			.fm_inp{
+				height: rem(50);
+				line-height: rem(50);
+			}
+			.label{
+				width: rem(80);
+				left: 0;
+				@include ps-center('middle');
+			}
+		}
+	}
+	
+	.btn_login{
+		width: 100%;
+		max-width: none;
+		height: rem(70);
+		line-height: rem(70);
+		border-radius: rem(70);
+		font-size: rem(18);
+	}
+}
+@include tab{
+	.login_wrap{
+		padding: resRem(100, 'md') resRem(42, 'md');
+		.login_box{
+			max-width:  resRem(667, 'md');
+			padding:  resRem(95, 'md') resRem(80, 'md') 0;
+		}
+		.login_info{
+			margin-left: resRem(-80, 'md');
+			margin-right: resRem(-80, 'md');
+		}
+		.login_from{
+			padding-top: rem(10);
+			li{
+				overflow: hidden;
+				position: relative;
+				margin-top: rem(10);
+				padding-left:  resRem(120, 'md');
+				.fm_inp{
+					height:  resRem(80, 'md');
+					line-height:  resRem(80, 'md');
+				}
+				.label{
+					width: resRem(120, 'md');
+				}
+			}
+		}
+		
+		.btn_login{
+			height: resRem(90, 'md');
+			line-height: resRem(90, 'md');
+			border-radius: resRem(90, 'md');
+			font-size:resRem(26, 'md');
+		}
+	}
+	
+}
+@include mob{
+	.login_wrap{
+		@include background-img('../img/login/login_bg_m.jpg');
+	}
+}
+/*로그인 : e*/
